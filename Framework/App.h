@@ -6,14 +6,15 @@ class CApp
 private:
 	HWND		m_hWnd;
 	HINSTANCE	m_hInst;
+	LPCWSTR		m_lpClassName;
 
 public:
-	HRESULT Initialize(HINSTANCE hInst);
+	HRESULT Initialize(HINSTANCE hInst, LPCWSTR lpClassName, LPCWSTR lpCWindowName,int iWidth, int iHeight);
 	VOID Run();
 
 public:
 	ATOM RegisterWindow();
-	void CreateWnd();
+	void CreateWnd(LPCWSTR lpCWindowName, int iWidth, int iHeight);
 
 public:
 	static LRESULT WINAPI MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );

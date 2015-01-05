@@ -23,7 +23,7 @@ INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
 
 	CApp* pApp = new CApp();
 
-	if(FAILED(pApp->Initialize(hInst)))
+	if(FAILED(pApp->Initialize(hInst, L"ExpressWork", L"qiomoip", 800, 600)))
 	{
 		SAFE_DELETE(pApp);
 		return 0;

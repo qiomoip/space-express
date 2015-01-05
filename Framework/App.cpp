@@ -5,6 +5,7 @@
 CApp::CApp(void)
 	: m_hWnd(NULL)
 	, m_hInst(NULL)
+	, m_lpClassName(NULL)
 {
 }
 
@@ -13,11 +14,12 @@ CApp::~CApp(void)
 {
 }
 
-HRESULT CApp::Initialize(HINSTANCE hInst)
+HRESULT CApp::Initialize(HINSTANCE hInst, LPCWSTR lpClassName, LPCWSTR lpCWindowName, int iWidth, int iHeight)
 {
 	m_hInst = hInst;
+	m_lpClassName = lpClassName;
 
-	CreateWnd();
+	CreateWnd(lpCWindowName, iWidth, iHeight);
 
 	if(!m_hWnd)
 		return E_FAIL;
@@ -50,15 +52,16 @@ VOID CApp::Run()
 		}
 	}
 
-	UnregisterClass( L"D3D Tutorial", m_hInst );
+	UnregisterClass( m_lpClassName, m_hInst );
 }
 
-void CApp::CreateWnd()
+void CApp::CreateWnd(LPCWSTR lpCWindowName, int iWidth, int iHeight)
 {
 	RegisterWindow();
+
 	// Create the application's window
-    m_hWnd = CreateWindow( L"D3D Tutorial", L"D3D Tutorial 01: Framework",
-                              WS_OVERLAPPEDWINDOW, 100, 100, 300, 300,
+    m_hWnd = CreateWindow( m_lpClassName, lpCWindowName,
+                              WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, iWidth, iHeight,
 							  NULL, NULL, m_hInst, NULL );
 }
 
@@ -90,7 +93,7 @@ ATOM CApp::RegisterWindow()
     {
         sizeof( WNDCLASSEX ), CS_CLASSDC, CApp::MsgProc, 0L, 0L,
         m_hInst, NULL, NULL, NULL, NULL,
-        L"D3D Tutorial", NULL
+        m_lpClassName, NULL
     };
     return RegisterClassEx( &wc );
 }
