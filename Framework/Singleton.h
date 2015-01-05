@@ -3,10 +3,10 @@
 싱글턴 클래스
 
 사용법 : 싱글턴화 하려는 클래스에 
-싱글턴 클래스를 상속 받은뒤 friend Singleton; 을 추가한다.
+싱글턴 클래스를 상속 받아서 사용.
 */
 template<typename T>
-class Singleton
+class CSingleton
 {
 private:
 	
@@ -14,8 +14,8 @@ private:
 
 protected:
 	
-	Singleton(void){};
-	~Singleton(void){};
+	CSingleton(void){};
+	~CSingleton(void){};
 
 public:
 
@@ -36,4 +36,4 @@ public:
 //아니면  NULL로 초기화하고 GetInstance()를 처음
 //호출할때 인스턴스를 생성하는 싱글턴.
 template<typename T>
-T* Singleton<T>::pInstance = NULL;
+T* CSingleton<T>::pInstance = NULL;

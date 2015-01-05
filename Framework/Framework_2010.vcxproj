@@ -376,12 +376,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Device.cpp" />
-    <ClCompile Include="Framework.cpp" />
+    <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="define.h" />
     <ClInclude Include="Device.h" />
+    <ClInclude Include="Engine.h" />
+    <ClInclude Include="Entity.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="Singleton.h" />
     <ResourceCompile Include="Framework.rc" />

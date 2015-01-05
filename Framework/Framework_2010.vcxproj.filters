@@ -5,6 +5,30 @@
       <UniqueIdentifier>{8e114980-c1a3-4ada-ad7c-83caadf5daeb}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{12a6e5d2-28d0-47fe-8648-98f3afe6c2ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director">
+      <UniqueIdentifier>{b30220cd-6f8f-4be7-bc90-2aefb511ba9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\Manager">
+      <UniqueIdentifier>{59c85987-0b2c-4d16-b206-b19ae70fb57b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\DesignPattern">
+      <UniqueIdentifier>{002bea38-5a56-4869-927c-0de328bb3a47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Entity">
+      <UniqueIdentifier>{d15de485-2854-4be0-a4bb-44a2357670ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\DesignPattern\Singleton">
+      <UniqueIdentifier>{a95882fa-bc9c-48fe-9924-eb585af1b2ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header">
+      <UniqueIdentifier>{719403a9-e9e6-457a-bcc7-42df50f74516}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{89847285-302f-4315-a84c-23376608ed0f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXUT\Optional\directx.ico">
@@ -12,12 +36,35 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Framework.cpp" />
-    <ClCompile Include="Device.cpp" />
+    <ClCompile Include="Device.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Engine\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Device.h" />
-    <ClInclude Include="Singleton.h" />
+    <ClInclude Include="Singleton.h">
+      <Filter>Engine\DesignPattern\Singleton</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Engine\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="define.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

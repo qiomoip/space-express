@@ -8,13 +8,9 @@ CDevice::~CDevice(void)
 {
 }
 
-VOID CDevice::SetProjectName(LPCWSTR _name)
-{
-	const LPCWSTR name = _name;
-	m_Name = name;
-}
 
-HRESULT CDevice::InitD3D( HWND hWnd)
+
+HRESULT CDevice::CreateDevice(HWND hWnd)
 {
 	// Create the D3D object, which is needed to create the D3DDevice.
     if( NULL == ( m_pD3D = Direct3DCreate9( D3D_SDK_VERSION ) ) )
@@ -60,23 +56,14 @@ VOID CDevice::Cleanup()
         m_pD3D->Release();
 }
 
-VOID CDevice::Render()
+LPDIRECT3DDEVICE9 CDevice::GetDevice() const
 {
-	if( NULL == m_pd3dDevice )
-        return;
+	return m_pd3dDevice;
+}
 
-    // Clear the backbuffer to a blue color
-    m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB( 0, 0, 255 ), 1.0f, 0 );
+HRESULT CDevice::Initialize(HWND hWnd)
+{
+	HRESULT hr = CreateDevice(hWnd);
 
-    // Begin the scene
-    if( SUCCEEDED( m_pd3dDevice->BeginScene() ) )
-    {
-        // Rendering of scene objects can happen here
-
-        // End the scene
-        m_pd3dDevice->EndScene();
-    }
-
-    // Present the backbuffer contents to the display
-    m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+	return hr;
 }

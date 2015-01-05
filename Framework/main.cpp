@@ -9,10 +9,8 @@
 //-----------------------------------------------------------------------------
 //#include <d3d9.h>
 //#pragma warning( disable : 4996 ) // disable deprecated warning 
-#include <strsafe.h>
-#pragma warning( default : 4996 )
-
-#include "Device.h"
+#include "define.h"
+#include "Engine.h"
 
 
 //-----------------------------------------------------------------------------
@@ -24,7 +22,7 @@ LRESULT WINAPI MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
     switch( msg )
     {
         case WM_DESTROY:
-            GetDevice()->Cleanup();
+            _SINGLE(CEngine)->Destroy();
             PostQuitMessage( 0 );
             return 0;
 		case WM_KEYDOWN:
@@ -62,7 +60,7 @@ INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
                               NULL, NULL, wc.hInstance, NULL );
 
     // Initialize Direct3D
-    if( SUCCEEDED( GetDevice()->InitD3D( hWnd ) ) )
+    if( SUCCEEDED( _SINGLE(CEngine)->Initialize( hWnd ) ) )
     {
         // Show the window
         ShowWindow( hWnd, SW_SHOWDEFAULT );
@@ -81,7 +79,7 @@ INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
 					
 			}
 			else
-				_SINGLETON(CDevice)->Render();
+				_SINGLE(CEngine)->Render();
 		}
     }
 

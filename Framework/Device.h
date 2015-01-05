@@ -1,38 +1,31 @@
 #pragma once
 
-#include <d3d9.h>
-#pragma warning( disable : 4996 ) // disable deprecated warning 
-#include <strsafe.h>
-#pragma warning( default : 4996 )
+#include "define.h"
 #include "Singleton.h"
 
-class CDevice : public Singleton<CDevice>
+class CDevice : public CSingleton<CDevice>
 {
-	friend Singleton;
+	friend CSingleton;
 
 private:
-	CDevice(void);
-	~CDevice(void);
-
 	LPDIRECT3D9			m_pD3D;
 	LPDIRECT3DDEVICE9	m_pd3dDevice;
 
-	LPCWSTR				m_Name;
-	
+//getter
 public:
-	
-	VOID				SetProjectName(LPCWSTR _name);
+	LPDIRECT3DDEVICE9	GetDevice() const;
 
-	HRESULT				InitD3D( HWND hWnd );
-	
+public:
+	HRESULT Initialize(HWND hWnd);
+
+public:
+	HRESULT				CreateDevice( HWND hWnd );
+
 	VOID				LoadData();
 	VOID				LoadLevel(int _level);
 	VOID				Cleanup();
-	//VOID				Logic();
-	VOID				Input();
-	VOID				Render();
+	
+private:
+	CDevice(void);
+	~CDevice(void);
 };
-
-
-#define GetDevice() CDevice::GetInstance()
-#define _SINGLETON(T) T::GetInstance() 
