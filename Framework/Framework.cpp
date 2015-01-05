@@ -81,7 +81,7 @@ INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
 					
 			}
 			else
-				GetDevice()->Render();
+				_SINGLETON(CDevice)->Render();
 		}
     }
 

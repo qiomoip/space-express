@@ -35,3 +35,4 @@ public:
 
 
 #define GetDevice() CDevice::GetInstance()
+#define _SINGLETON(T) T::GetInstance() 
