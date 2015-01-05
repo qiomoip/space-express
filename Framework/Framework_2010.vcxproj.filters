@@ -29,6 +29,9 @@
     <Filter Include="Source">
       <UniqueIdentifier>{89847285-302f-4315-a84c-23376608ed0f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="App">
+      <UniqueIdentifier>{fcc4865f-4f8f-48d7-98f1-f91daa844ffe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXUT\Optional\directx.ico">
@@ -48,6 +51,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="App.cpp">
+      <Filter>App</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -64,6 +70,9 @@
     </ClInclude>
     <ClInclude Include="define.h">
       <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="App.h">
+      <Filter>App</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

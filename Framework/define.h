@@ -31,3 +31,13 @@
 using namespace std;
 
 #define _SINGLE(T)	T::GetInstance()
+
+template <typename T>
+void SAFE_DELETE(T& p)
+{
+	if(p)
+	{
+		delete	p;
+		p	= NULL;
+	}
+}
