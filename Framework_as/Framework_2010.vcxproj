@@ -379,8 +379,10 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
@@ -389,10 +391,12 @@
     <ClInclude Include="Device.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="ObjectManager.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="Texture.h" />
     <ResourceCompile Include="Framework.rc" />
   </ItemGroup>
   <ItemGroup>

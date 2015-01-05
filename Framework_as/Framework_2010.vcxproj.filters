@@ -35,6 +35,15 @@
     <Filter Include="Engine\Director\Manager\ResourceMgr">
       <UniqueIdentifier>{19d7a14d-5243-4f8a-b02b-a93da1528e4a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Resource">
+      <UniqueIdentifier>{bb8830cf-0399-4bde-9936-a23abb47e8c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Resource\Mesh">
+      <UniqueIdentifier>{6cb4049d-872d-4355-82b6-90787cd90544}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Resource\Texture">
+      <UniqueIdentifier>{a50356e8-7ed0-4b90-b5d7-ab35bd94d1b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXUT\Optional\directx.ico">
@@ -58,7 +67,15 @@
     <ClCompile Include="ObjectManager.cpp">
       <Filter>Engine\Director\Manager\ObjectMgr</Filter>
     </ClCompile>
-    <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Engine\Director\Manager\ResourceMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Engine\Resource\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Engine\Resource\Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -81,7 +98,15 @@
     <ClInclude Include="ObjectManager.h">
       <Filter>Engine\Director\Manager\ObjectMgr</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Engine\Director\Manager\ResourceMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Engine\Resource\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Engine\Resource\Texture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

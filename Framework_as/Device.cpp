@@ -8,8 +8,6 @@ CDevice::~CDevice(void)
 {
 }
 
-
-
 HRESULT CDevice::CreateDevice(HWND hWnd)
 {
 	// Create the D3D object, which is needed to create the D3DDevice.
