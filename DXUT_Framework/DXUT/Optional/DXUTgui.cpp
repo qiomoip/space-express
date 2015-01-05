@@ -39,9 +39,9 @@
 D3DCOLORVALUE D3DCOLOR_TO_D3DCOLORVALUE( D3DCOLOR c )
 {
     D3DCOLORVALUE cv = { ( ( c >> 16 ) & 0xFF ) / 255.0f,
-            ( ( c >> 8 ) & 0xFF ) / 255.0f,
-            ( c & 0xFF ) / 255.0f,
-            ( ( c >> 24 ) & 0xFF ) / 255.0f };
+                         ( ( c >> 8  ) & 0xFF ) / 255.0f,
+                         (   c         & 0xFF ) / 255.0f,
+                         ( ( c >> 24 ) & 0xFF ) / 255.0f };
     return cv;
 }
 
@@ -155,7 +155,7 @@ CHAR g_strUIEffectFile[] = \
     "        SetBlendState( NoBlending, float4( 0.0f, 0.0f, 0.0f, 0.0f ), 0xFFFFFFFF );"\
     "    }"\
     "}";
-const UINT              g_uUIEffectFileSize = sizeof( g_strUIEffectFile );
+const UINT g_uUIEffectFileSize = sizeof(g_strUIEffectFile);
 
 
 // DXUT_MAX_EDITBOXLENGTH is the maximum string length allowed in edit boxes,
@@ -167,9 +167,9 @@ const UINT              g_uUIEffectFileSize = sizeof( g_strUIEffectFile );
 #define DXUT_MAX_EDITBOXLENGTH 0xFFFF
 
 
-double                  CDXUTDialog::s_fTimeRefresh = 0.0f;
-CDXUTControl*           CDXUTDialog::s_pControlFocus = NULL;        // The control which has focus
-CDXUTControl*           CDXUTDialog::s_pControlPressed = NULL;      // The control currently pressed
+double        CDXUTDialog::s_fTimeRefresh = 0.0f;
+CDXUTControl* CDXUTDialog::s_pControlFocus = NULL;        // The control which has focus
+CDXUTControl* CDXUTDialog::s_pControlPressed = NULL;      // The control currently pressed
 
 
 struct DXUT_SCREEN_VERTEX
@@ -180,7 +180,7 @@ struct DXUT_SCREEN_VERTEX
 
     static DWORD FVF;
 };
-DWORD                   DXUT_SCREEN_VERTEX::FVF = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
+DWORD DXUT_SCREEN_VERTEX::FVF = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 
 
 struct DXUT_SCREEN_VERTEX_UNTEX
@@ -190,7 +190,7 @@ struct DXUT_SCREEN_VERTEX_UNTEX
 
     static DWORD FVF;
 };
-DWORD                   DXUT_SCREEN_VERTEX_UNTEX::FVF = D3DFVF_XYZRHW | D3DFVF_DIFFUSE;
+DWORD DXUT_SCREEN_VERTEX_UNTEX::FVF = D3DFVF_XYZRHW | D3DFVF_DIFFUSE;
 
 
 struct DXUT_SCREEN_VERTEX_10
@@ -201,14 +201,8 @@ struct DXUT_SCREEN_VERTEX_10
 };
 
 
-inline int RectWidth( RECT& rc )
-{
-    return ( ( rc ).right - ( rc ).left );
-}
-inline int RectHeight( RECT& rc )
-{
-    return ( ( rc ).bottom - ( rc ).top );
-}
+inline int RectWidth( RECT &rc ) { return ( (rc).right - (rc).left ); }
+inline int RectHeight( RECT &rc ) { return ( (rc).bottom - (rc).top ); }
 
 
 
@@ -257,14 +251,14 @@ CDXUTDialog::CDXUTDialog()
 //--------------------------------------------------------------------------------------
 CDXUTDialog::~CDXUTDialog()
 {
-    int i = 0;
+    int i=0;
 
     RemoveAllControls();
 
     m_Fonts.RemoveAll();
     m_Textures.RemoveAll();
 
-    for( i = 0; i < m_DefaultElements.GetSize(); i++ )
+    for( i=0; i < m_DefaultElements.GetSize(); i++ )
     {
         DXUTElementHolder* pElementHolder = m_DefaultElements.GetAt( i );
         SAFE_DELETE( pElementHolder );
@@ -281,7 +275,7 @@ void CDXUTDialog::Init( CDXUTDialogResourceManager* pManager, bool bRegisterDial
     if( bRegisterDialog )
         pManager->RegisterDialog( this );
 
-    SetTexture( 0, MAKEINTRESOURCE( 0xFFFF ), ( HMODULE )0xFFFF );
+    SetTexture( 0, MAKEINTRESOURCE(0xFFFF), (HMODULE)0xFFFF );
     InitDefaultElements();
 }
 
@@ -298,13 +292,12 @@ void CDXUTDialog::Init( CDXUTDialogResourceManager* pManager, bool bRegisterDial
 
 
 //--------------------------------------------------------------------------------------
-void CDXUTDialog::Init( CDXUTDialogResourceManager* pManager, bool bRegisterDialog,
-                        LPCWSTR szControlTextureResourceName, HMODULE hControlTextureResourceModule )
+void CDXUTDialog::Init( CDXUTDialogResourceManager* pManager, bool bRegisterDialog, LPCWSTR szControlTextureResourceName, HMODULE hControlTextureResourceModule )
 {
     m_pManager = pManager;
     if( bRegisterDialog )
         pManager->RegisterDialog( this );
-
+    
     SetTexture( 0, szControlTextureResourceName, hControlTextureResourceModule );
     InitDefaultElements();
 }
@@ -317,17 +310,17 @@ void CDXUTDialog::SetCallback( PCALLBACKDXUTGUIEVENT pCallback, void* pUserConte
     // was made so that the DXUT's GUI could become seperate and optional from DXUT's core.  The 
     // creation and interfacing with CDXUTDialogResourceManager is now the responsibility 
     // of the application if it wishes to use DXUT's GUI.
-    assert( m_pManager != NULL && L"To fix call CDXUTDialog::Init() first.  See comments for details." );
+    assert( m_pManager != NULL && L"To fix call CDXUTDialog::Init() first.  See comments for details." ); 
 
-    m_pCallbackEvent = pCallback;
-    m_pCallbackEventUserContext = pUserContext;
+    m_pCallbackEvent = pCallback; 
+    m_pCallbackEventUserContext = pUserContext; 
 }
 
 
 //--------------------------------------------------------------------------------------
 void CDXUTDialog::RemoveControl( int ID )
 {
-    for( int i = 0; i < m_Controls.GetSize(); i++ )
+    for( int i=0; i < m_Controls.GetSize(); i++ )
     {
         CDXUTControl* pControl = m_Controls.GetAt( i );
         if( pControl->GetID() == ID )
@@ -361,7 +354,7 @@ void CDXUTDialog::RemoveAllControls()
         s_pControlPressed = NULL;
     m_pControlMouseOver = NULL;
 
-    for( int i = 0; i < m_Controls.GetSize(); i++ )
+    for( int i=0; i < m_Controls.GetSize(); i++ )
     {
         CDXUTControl* pControl = m_Controls.GetAt( i );
         SAFE_DELETE( pControl );
@@ -400,14 +393,14 @@ CDXUTDialogResourceManager::CDXUTDialogResourceManager()
 CDXUTDialogResourceManager::~CDXUTDialogResourceManager()
 {
     int i;
-    for( i = 0; i < m_FontCache.GetSize(); i++ )
+    for( i=0; i < m_FontCache.GetSize(); i++ )
     {
         DXUTFontNode* pFontNode = m_FontCache.GetAt( i );
         SAFE_DELETE( pFontNode );
     }
     m_FontCache.RemoveAll();
 
-    for( i = 0; i < m_TextureCache.GetSize(); i++ )
+    for( i=0; i < m_TextureCache.GetSize(); i++ )
     {
         DXUTTextureNode* pTextureNode = m_TextureCache.GetAt( i );
         SAFE_DELETE( pTextureNode );
@@ -422,26 +415,26 @@ CDXUTDialogResourceManager::~CDXUTDialogResourceManager()
 HRESULT CDXUTDialogResourceManager::OnD3D9CreateDevice( LPDIRECT3DDEVICE9 pd3dDevice )
 {
     HRESULT hr = S_OK;
-    int i = 0;
+    int i=0;
 
     m_pd3d9Device = pd3dDevice;
-
-    for( i = 0; i < m_FontCache.GetSize(); i++ )
+    
+    for( i=0; i < m_FontCache.GetSize(); i++ )
     {
         hr = CreateFont9( i );
-        if( FAILED( hr ) )
+        if( FAILED(hr) )
             return hr;
     }
-
-    for( i = 0; i < m_TextureCache.GetSize(); i++ )
+    
+    for( i=0; i < m_TextureCache.GetSize(); i++ )
     {
         hr = CreateTexture9( i );
-        if( FAILED( hr ) )
+        if( FAILED(hr) )
             return hr;
     }
 
     hr = D3DXCreateSprite( pd3dDevice, &m_pSprite );
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return DXUT_ERR( L"D3DXCreateSprite", hr );
 
     return S_OK;
@@ -453,7 +446,7 @@ HRESULT CDXUTDialogResourceManager::OnD3D9ResetDevice()
 {
     HRESULT hr = S_OK;
 
-    for( int i = 0; i < m_FontCache.GetSize(); i++ )
+    for( int i=0; i < m_FontCache.GetSize(); i++ )
     {
         DXUTFontNode* pFontNode = m_FontCache.GetAt( i );
 
@@ -479,7 +472,7 @@ bool CDXUTDialogResourceManager::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, L
 //--------------------------------------------------------------------------------------
 void CDXUTDialogResourceManager::OnD3D9LostDevice()
 {
-    for( int i = 0; i < m_FontCache.GetSize(); i++ )
+    for( int i=0; i < m_FontCache.GetSize(); i++ )
     {
         DXUTFontNode* pFontNode = m_FontCache.GetAt( i );
 
@@ -493,23 +486,23 @@ void CDXUTDialogResourceManager::OnD3D9LostDevice()
     SAFE_RELEASE( m_pStateBlock );
 }
 
-
+    
 //--------------------------------------------------------------------------------------
 void CDXUTDialogResourceManager::OnD3D9DestroyDevice()
 {
-    int i = 0;
+    int i=0; 
 
     m_pd3d9Device = NULL;
 
     // Release the resources but don't clear the cache, as these will need to be
     // recreated if the device is recreated
-    for( i = 0; i < m_FontCache.GetSize(); i++ )
+    for( i=0; i < m_FontCache.GetSize(); i++ )
     {
         DXUTFontNode* pFontNode = m_FontCache.GetAt( i );
         SAFE_RELEASE( pFontNode->pFont9 );
     }
-
-    for( i = 0; i < m_TextureCache.GetSize(); i++ )
+    
+    for( i=0; i < m_TextureCache.GetSize(); i++ )
     {
         DXUTTextureNode* pTextureNode = m_TextureCache.GetAt( i );
         SAFE_RELEASE( pTextureNode->pTexture9 );
@@ -520,7 +513,7 @@ void CDXUTDialogResourceManager::OnD3D9DestroyDevice()
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTDialogResourceManager::OnD3D10CreateDevice( ID3D10Device* pd3dDevice )
+HRESULT CDXUTDialogResourceManager::OnD3D10CreateDevice( ID3D10Device *pd3dDevice )
 {
     m_pd3d10Device = pd3dDevice;
 
@@ -528,7 +521,7 @@ HRESULT CDXUTDialogResourceManager::OnD3D10CreateDevice( ID3D10Device* pd3dDevic
 
     // Create the UI effect object
     V_RETURN( D3DX10CreateEffectFromMemory( g_strUIEffectFile, g_uUIEffectFileSize, NULL, NULL,
-                                            NULL, "fx_4_0", D3D10_SHADER_ENABLE_STRICTNESS, 0,
+                                            NULL, "fx_4_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, 
                                             pd3dDevice, NULL, NULL, &m_pEffect10, NULL, NULL ) );
 
     m_pTechRenderUI10 = m_pEffect10->GetTechniqueByName( "RenderUI" );
@@ -536,34 +529,32 @@ HRESULT CDXUTDialogResourceManager::OnD3D10CreateDevice( ID3D10Device* pd3dDevic
     m_pFxTexture10 = m_pEffect10->GetVariableByName( "g_Texture" )->AsShaderResource();
 
     // Create the font and texture objects in the cache arrays.
-    int i = 0;
-    for( i = 0; i < m_FontCache.GetSize(); i++ )
+    int i=0;
+    for( i=0; i < m_FontCache.GetSize(); i++ )
     {
         hr = CreateFont10( i );
-        if( FAILED( hr ) )
+        if( FAILED(hr) )
             return hr;
     }
 
-    for( i = 0; i < m_TextureCache.GetSize(); i++ )
+    for( i=0; i < m_TextureCache.GetSize(); i++ )
     {
         hr = CreateTexture10( i );
-        if( FAILED( hr ) )
+        if( FAILED(hr) )
             return hr;
     }
 
     // Create input layout
     const D3D10_INPUT_ELEMENT_DESC layout[] =
-        {
-            { "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT,    0, 0,  D3D10_INPUT_PER_VERTEX_DATA, 0 },
-            { "COLOR",     0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D10_INPUT_PER_VERTEX_DATA, 0 },
-            { "TEXCOORD",  0, DXGI_FORMAT_R32G32_FLOAT,       0, 28, D3D10_INPUT_PER_VERTEX_DATA, 0 },
-        };
+    {
+        { "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT,    0, 0,  D3D10_INPUT_PER_VERTEX_DATA, 0 },
+        { "COLOR",     0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D10_INPUT_PER_VERTEX_DATA, 0 },
+        { "TEXCOORD",  0, DXGI_FORMAT_R32G32_FLOAT,       0, 28, D3D10_INPUT_PER_VERTEX_DATA, 0 },
+    };
 
     D3D10_PASS_DESC PassDesc;
     V_RETURN( m_pTechRenderUI10->GetPassByIndex( 0 )->GetDesc( &PassDesc ) );
-    V_RETURN( pd3dDevice->CreateInputLayout( layout, 3, PassDesc.pIAInputSignature,
-                                             PassDesc.IAInputSignatureSize, &m_pInputLayout10 ) );
-    DXUT_SetDebugName( m_pInputLayout10, "CDXUTDialogResourceManager" );
+    V_RETURN( pd3dDevice->CreateInputLayout( layout, 3, PassDesc.pIAInputSignature, PassDesc.IAInputSignatureSize, &m_pInputLayout10 ) );
 
     // Create a vertex buffer quad for rendering later
     D3D10_BUFFER_DESC BufDesc;
@@ -573,15 +564,13 @@ HRESULT CDXUTDialogResourceManager::OnD3D10CreateDevice( ID3D10Device* pd3dDevic
     BufDesc.CPUAccessFlags = D3D10_CPU_ACCESS_WRITE;
     BufDesc.MiscFlags = 0;
     V_RETURN( pd3dDevice->CreateBuffer( &BufDesc, NULL, &m_pVBScreenQuad10 ) );
-    DXUT_SetDebugName( m_pVBScreenQuad10, "CDXUTDialogResourceManager" );
 
     return S_OK;
 }
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTDialogResourceManager::OnD3D10ResizedSwapChain( ID3D10Device* pd3dDevice,
-                                                             const DXGI_SURFACE_DESC* pBackBufferSurfaceDesc )
+HRESULT CDXUTDialogResourceManager::OnD3D10ResizedSwapChain( ID3D10Device *pd3dDevice, const DXGI_SURFACE_DESC* pBackBufferSurfaceDesc )
 {
     HRESULT hr = S_OK;
 
@@ -589,7 +578,7 @@ HRESULT CDXUTDialogResourceManager::OnD3D10ResizedSwapChain( ID3D10Device* pd3dD
     m_nBackBufferHeight = pBackBufferSurfaceDesc->Height;
 
     hr = D3DX10CreateSprite( pd3dDevice, DXUT_MAX_GUI_SPRITES, &m_pSprite10 );
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return DXUT_ERR( L"D3DX10CreateSprite", hr );
 
     D3D10_STATE_BLOCK_MASK StateBlockMask;
@@ -618,13 +607,13 @@ void CDXUTDialogResourceManager::OnD3D10DestroyDevice()
 
     // Release the resources but don't clear the cache, as these will need to be
     // recreated if the device is recreated
-    for( i = 0; i < m_FontCache.GetSize(); i++ )
+    for( i=0; i < m_FontCache.GetSize(); i++ )
     {
         DXUTFontNode* pFontNode = m_FontCache.GetAt( i );
         SAFE_RELEASE( pFontNode->pFont10 );
     }
-
-    for( i = 0; i < m_TextureCache.GetSize(); i++ )
+    
+    for( i=0; i < m_TextureCache.GetSize(); i++ )
     {
         DXUTTextureNode* pTextureNode = m_TextureCache.GetAt( i );
         SAFE_RELEASE( pTextureNode->pTexResView );
@@ -640,7 +629,7 @@ void CDXUTDialogResourceManager::OnD3D10DestroyDevice()
 
 
 //--------------------------------------------------------------------------------------
-bool CDXUTDialogResourceManager::RegisterDialog( CDXUTDialog* pDialog )
+bool CDXUTDialogResourceManager::RegisterDialog( CDXUTDialog *pDialog )
 {
     // Check that the dialog isn't already registered.
     for( int i = 0; i < m_Dialogs.GetSize(); ++i )
@@ -661,7 +650,7 @@ bool CDXUTDialogResourceManager::RegisterDialog( CDXUTDialog* pDialog )
 
 
 //--------------------------------------------------------------------------------------
-void CDXUTDialogResourceManager::UnregisterDialog( CDXUTDialog* pDialog )
+void CDXUTDialogResourceManager::UnregisterDialog( CDXUTDialog *pDialog )
 {
     // Search for the dialog in the list.
     for( int i = 0; i < m_Dialogs.GetSize(); ++i )
@@ -711,9 +700,9 @@ void CDXUTDialog::Refresh()
     s_pControlPressed = NULL;
     m_pControlMouseOver = NULL;
 
-    for( int i = 0; i < m_Controls.GetSize(); i++ )
+    for( int i=0; i < m_Controls.GetSize(); i++ )
     {
-        CDXUTControl* pControl = m_Controls.GetAt( i );
+        CDXUTControl* pControl = m_Controls.GetAt(i);
         pControl->Refresh();
     }
 
@@ -724,8 +713,8 @@ void CDXUTDialog::Refresh()
 
 //--------------------------------------------------------------------------------------
 HRESULT CDXUTDialog::OnRender( float fElapsedTime )
-{
-    if( m_pManager->GetD3D9Device() )
+{   
+    if( m_pManager->GetD3D9Device()  )
         return OnRender9( fElapsedTime );
     else
         return OnRender10( fElapsedTime );
@@ -734,11 +723,10 @@ HRESULT CDXUTDialog::OnRender( float fElapsedTime )
 
 //--------------------------------------------------------------------------------------
 HRESULT CDXUTDialog::OnRender9( float fElapsedTime )
-{
+{   
     // If this assert triggers, you need to call CDXUTDialogResourceManager::On*Device() from inside
     // the application's device callbacks.  See the SDK samples for an example of how to do this.
-    assert( m_pManager->GetD3D9Device() && m_pManager->m_pStateBlock &&
-            L"To fix hook up CDXUTDialogResourceManager to device callbacks.  See comments for details" );
+    assert( m_pManager->GetD3D9Device() && m_pManager->m_pStateBlock && L"To fix hook up CDXUTDialogResourceManager to device callbacks.  See comments for details" );
 
     // See if the dialog needs to be refreshed
     if( m_fTimeLastRefresh < s_fTimeRefresh )
@@ -763,8 +751,7 @@ HRESULT CDXUTDialog::OnRender9( float fElapsedTime )
     pd3dDevice->SetRenderState( D3DRS_ALPHATESTENABLE, FALSE );
     pd3dDevice->SetRenderState( D3DRS_SEPARATEALPHABLENDENABLE, FALSE );
     pd3dDevice->SetRenderState( D3DRS_BLENDOP, D3DBLENDOP_ADD );
-    pd3dDevice->SetRenderState( D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA | D3DCOLORWRITEENABLE_BLUE |
-                                D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_RED );
+    pd3dDevice->SetRenderState( D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED );
     pd3dDevice->SetRenderState( D3DRS_SHADEMODE, D3DSHADE_GOURAUD );
     pd3dDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
     pd3dDevice->SetRenderState( D3DRS_ZWRITEENABLE, FALSE );
@@ -779,17 +766,16 @@ HRESULT CDXUTDialog::OnRender9( float fElapsedTime )
     pd3dDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
     pd3dDevice->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
 
-    BOOL bBackgroundIsVisible = ( m_colorTopLeft | m_colorTopRight | m_colorBottomRight | m_colorBottomLeft ) &
-        0xff000000;
+    BOOL bBackgroundIsVisible = ( m_colorTopLeft | m_colorTopRight | m_colorBottomRight | m_colorBottomLeft ) & 0xff000000;
     if( !m_bMinimized && bBackgroundIsVisible )
     {
         DXUT_SCREEN_VERTEX_UNTEX vertices[4] =
-            {
-                ( float )m_x,           ( float )m_y,            0.5f, 1.0f, m_colorTopLeft,
-                ( float )m_x + m_width, ( float )m_y,            0.5f, 1.0f, m_colorTopRight,
-                ( float )m_x + m_width, ( float )m_y + m_height, 0.5f, 1.0f, m_colorBottomRight,
-                ( float )m_x,           ( float )m_y + m_height, 0.5f, 1.0f, m_colorBottomLeft,
-            };
+        {
+            (float)m_x,           (float)m_y,            0.5f, 1.0f, m_colorTopLeft,
+            (float)m_x + m_width, (float)m_y,            0.5f, 1.0f, m_colorTopRight,
+            (float)m_x + m_width, (float)m_y + m_height, 0.5f, 1.0f, m_colorBottomRight,
+            (float)m_x,           (float)m_y + m_height, 0.5f, 1.0f, m_colorBottomLeft,
+        };
 
         pd3dDevice->SetVertexShader( NULL );
         pd3dDevice->SetPixelShader( NULL );
@@ -797,13 +783,13 @@ HRESULT CDXUTDialog::OnRender9( float fElapsedTime )
         pd3dDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
 
         pd3dDevice->SetFVF( DXUT_SCREEN_VERTEX_UNTEX::FVF );
-        pd3dDevice->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, vertices, sizeof( DXUT_SCREEN_VERTEX_UNTEX ) );
+        pd3dDevice->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, vertices, sizeof(DXUT_SCREEN_VERTEX_UNTEX) );
     }
 
     pd3dDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
     pd3dDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
     pd3dDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-
+    
     pd3dDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
     pd3dDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
     pd3dDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
@@ -825,9 +811,9 @@ HRESULT CDXUTDialog::OnRender9( float fElapsedTime )
         DrawSprite9( &m_CapElement, &rc );
         rc.left += 5; // Make a left margin
         WCHAR wszOutput[256];
-        wcscpy_s( wszOutput, 256, m_wszCaption );
+        StringCchCopy( wszOutput, 256, m_wszCaption );
         if( m_bMinimized )
-            wcscat_s( wszOutput, 256, L" (Minimized)" );
+            StringCchCat( wszOutput, 256, L" (Minimized)" );
         DrawText9( wszOutput, &m_CapElement, &rc, true );
     }
 
@@ -835,9 +821,9 @@ HRESULT CDXUTDialog::OnRender9( float fElapsedTime )
     // its controls.
     if( !m_bMinimized )
     {
-        for( int i = 0; i < m_Controls.GetSize(); i++ )
+        for( int i=0; i < m_Controls.GetSize(); i++ )
         {
-            CDXUTControl* pControl = m_Controls.GetAt( i );
+            CDXUTControl* pControl = m_Controls.GetAt(i);   
 
             // Focused control is drawn last
             if( pControl == s_pControlFocus )
@@ -863,8 +849,7 @@ HRESULT CDXUTDialog::OnRender10( float fElapsedTime )
 {
     // If this assert triggers, you need to call CDXUTDialogResourceManager::On*Device() from inside
     // the application's device callbacks.  See the SDK samples for an example of how to do this.
-    assert( m_pManager->GetD3D10Device() &&
-            L"To fix hook up CDXUTDialogResourceManager to device callbacks.  See comments for details" );
+    assert( m_pManager->GetD3D10Device() && L"To fix hook up CDXUTDialogResourceManager to device callbacks.  See comments for details" );
 
     // See if the dialog needs to be refreshed
     if( m_fTimeLastRefresh < s_fTimeRefresh )
@@ -883,8 +868,7 @@ HRESULT CDXUTDialog::OnRender10( float fElapsedTime )
     // Set up a state block here and restore it when finished drawing all the controls
     m_pManager->m_pStateBlock10->Capture();
 
-    BOOL bBackgroundIsVisible = ( m_colorTopLeft | m_colorTopRight | m_colorBottomRight | m_colorBottomLeft ) &
-        0xff000000;
+    BOOL bBackgroundIsVisible = ( m_colorTopLeft | m_colorTopRight | m_colorBottomRight | m_colorBottomLeft ) & 0xff000000;
     if( !m_bMinimized && bBackgroundIsVisible )
     {
         // Convert the draw rectangle from screen coordinates to clip space coordinates.
@@ -895,15 +879,15 @@ HRESULT CDXUTDialog::OnRender10( float fElapsedTime )
         Bottom = 1.0f - ( m_y + m_height ) * 2.0f / m_pManager->m_nBackBufferHeight;
 
         DXUT_SCREEN_VERTEX_10 vertices[4] =
-            {
-                Left,  Top,    0.5f, D3DCOLOR_TO_D3DCOLORVALUE( m_colorTopLeft ), 0.0f, 0.0f,
-                Right, Top,    0.5f, D3DCOLOR_TO_D3DCOLORVALUE( m_colorTopRight ), 1.0f, 0.0f,
-                Left,  Bottom, 0.5f, D3DCOLOR_TO_D3DCOLORVALUE( m_colorBottomLeft ), 0.0f, 1.0f,
-                Right, Bottom, 0.5f, D3DCOLOR_TO_D3DCOLORVALUE( m_colorBottomRight ), 1.0f, 1.0f,
-            };
+        {
+            Left,  Top,    0.5f, D3DCOLOR_TO_D3DCOLORVALUE( m_colorTopLeft ), 0.0f, 0.0f,
+            Right, Top,    0.5f, D3DCOLOR_TO_D3DCOLORVALUE( m_colorTopRight ), 1.0f, 0.0f,
+            Left,  Bottom, 0.5f, D3DCOLOR_TO_D3DCOLORVALUE( m_colorBottomLeft ), 0.0f, 1.0f,
+            Right, Bottom, 0.5f, D3DCOLOR_TO_D3DCOLORVALUE( m_colorBottomRight ), 1.0f, 1.0f,
+        };
 
-        DXUT_SCREEN_VERTEX_10* pVB;
-        if( SUCCEEDED( m_pManager->m_pVBScreenQuad10->Map( D3D10_MAP_WRITE_DISCARD, 0, ( LPVOID* )&pVB ) ) )
+        DXUT_SCREEN_VERTEX_10 *pVB;
+        if( SUCCEEDED( m_pManager->m_pVBScreenQuad10->Map( D3D10_MAP_WRITE_DISCARD, 0, (LPVOID*)&pVB ) ) )
         {
             CopyMemory( pVB, vertices, sizeof( vertices ) );
             m_pManager->m_pVBScreenQuad10->Unmap();
@@ -921,7 +905,7 @@ HRESULT CDXUTDialog::OnRender10( float fElapsedTime )
         m_pManager->m_pTechRenderUIUntex10->GetDesc( &techDesc );
         for( UINT p = 0; p < techDesc.Passes; ++p )
         {
-            m_pManager->m_pTechRenderUIUntex10->GetPassByIndex( p )->Apply( 0 );
+            m_pManager->m_pTechRenderUIUntex10->GetPassByIndex( p )->Apply(0);
             pd3dDevice->Draw( 4, 0 );
         }
     }
@@ -932,7 +916,7 @@ HRESULT CDXUTDialog::OnRender10( float fElapsedTime )
     // Sort depth back to front
     m_pManager->m_pSprite10->Begin( 0 );
 
-    m_pManager->m_pTechRenderUI10->GetPassByIndex( 0 )->Apply( 0 );
+    m_pManager->m_pTechRenderUI10->GetPassByIndex( 0 )->Apply(0);
 
     // Render the caption if it's enabled.
     if( m_bCaption )
@@ -944,9 +928,9 @@ HRESULT CDXUTDialog::OnRender10( float fElapsedTime )
         DrawSprite10( &m_CapElement, &rc, 0.99f );
         rc.left += 5; // Make a left margin
         WCHAR wszOutput[256];
-        wcscpy_s( wszOutput, 256, m_wszCaption );
+        StringCchCopy( wszOutput, 256, m_wszCaption );
         if( m_bMinimized )
-            wcscat_s( wszOutput, 256, L" (Minimized)" );
+            StringCchCat( wszOutput, 256, L" (Minimized)" );
         DrawText10( wszOutput, &m_CapElement, &rc, true );
     }
 
@@ -954,9 +938,9 @@ HRESULT CDXUTDialog::OnRender10( float fElapsedTime )
     // its controls.
     if( !m_bMinimized )
     {
-        for( int i = 0; i < m_Controls.GetSize(); i++ )
+        for( int i=0; i < m_Controls.GetSize(); i++ )
         {
-            CDXUTControl* pControl = m_Controls.GetAt( i );
+            CDXUTControl* pControl = m_Controls.GetAt(i);   
 
             // Focused control is drawn last
             if( pControl == s_pControlFocus )
@@ -973,7 +957,7 @@ HRESULT CDXUTDialog::OnRender10( float fElapsedTime )
 
     m_pManager->m_pStateBlock10->Apply();
     // Restore depth stencil state
-    m_pManager->m_pEffect10->GetTechniqueByName( "RestoreState" )->GetPassByIndex( 0 )->Apply( 0 );
+    m_pManager->m_pEffect10->GetTechniqueByName("RestoreState")->GetPassByIndex( 0 )->Apply(0);
 
     return S_OK;
 }
@@ -998,11 +982,11 @@ VOID CDXUTDialog::SendEvent( UINT nEvent, bool bTriggeredByUser, CDXUTControl* p
 int CDXUTDialogResourceManager::AddFont( LPCWSTR strFaceName, LONG height, LONG weight )
 {
     // See if this font already exists
-    for( int i = 0; i < m_FontCache.GetSize(); i++ )
+    for( int i=0; i < m_FontCache.GetSize(); i++ )
     {
-        DXUTFontNode* pFontNode = m_FontCache.GetAt( i );
+        DXUTFontNode* pFontNode = m_FontCache.GetAt(i);
         size_t nLen = 0;
-        nLen = wcslen( strFaceName );
+        StringCchLength( strFaceName, MAX_PATH, &nLen );        
         if( 0 == _wcsnicmp( pFontNode->strFace, strFaceName, nLen ) &&
             pFontNode->nHeight == height &&
             pFontNode->nWeight == weight )
@@ -1016,13 +1000,13 @@ int CDXUTDialogResourceManager::AddFont( LPCWSTR strFaceName, LONG height, LONG 
     if( pNewFontNode == NULL )
         return -1;
 
-    ZeroMemory( pNewFontNode, sizeof( DXUTFontNode ) );
-    wcscpy_s( pNewFontNode->strFace, MAX_PATH, strFaceName );
+    ZeroMemory( pNewFontNode, sizeof(DXUTFontNode) );
+    StringCchCopy( pNewFontNode->strFace, MAX_PATH, strFaceName );
     pNewFontNode->nHeight = height;
     pNewFontNode->nWeight = weight;
     m_FontCache.Add( pNewFontNode );
-
-    int iFont = m_FontCache.GetSize() - 1;
+    
+    int iFont = m_FontCache.GetSize()-1;
 
     // If a device is available, try to create immediately
     if( m_pd3d9Device )
@@ -1041,11 +1025,11 @@ HRESULT CDXUTDialog::SetFont( UINT index, LPCWSTR strFaceName, LONG height, LONG
     // was made so that the DXUT's GUI could become seperate and optional from DXUT's core.  The 
     // creation and interfacing with CDXUTDialogResourceManager is now the responsibility 
     // of the application if it wishes to use DXUT's GUI.
-    assert( m_pManager != NULL && L"To fix call CDXUTDialog::Init() first.  See comments for details." );
+    assert( m_pManager != NULL && L"To fix call CDXUTDialog::Init() first.  See comments for details." ); 
 
     // Make sure the list is at least as large as the index being set
     UINT i;
-    for( i = m_Fonts.GetSize(); i <= index; i++ )
+    for( i=m_Fonts.GetSize(); i <= index; i++ )
     {
         m_Fonts.Add( -1 );
     }
@@ -1070,11 +1054,11 @@ DXUTFontNode* CDXUTDialog::GetFont( UINT index )
 int CDXUTDialogResourceManager::AddTexture( LPCWSTR strFilename )
 {
     // See if this texture already exists
-    for( int i = 0; i < m_TextureCache.GetSize(); i++ )
+    for( int i=0; i < m_TextureCache.GetSize(); i++ )
     {
-        DXUTTextureNode* pTextureNode = m_TextureCache.GetAt( i );
+        DXUTTextureNode* pTextureNode = m_TextureCache.GetAt(i);
         size_t nLen = 0;
-        nLen = wcslen( strFilename );
+        StringCchLength( strFilename, MAX_PATH, &nLen );        
         if( pTextureNode->bFileSource &&  // Sources must match
             0 == _wcsnicmp( pTextureNode->strFilename, strFilename, nLen ) )
         {
@@ -1087,13 +1071,13 @@ int CDXUTDialogResourceManager::AddTexture( LPCWSTR strFilename )
     if( pNewTextureNode == NULL )
         return -1;
 
-    ZeroMemory( pNewTextureNode, sizeof( DXUTTextureNode ) );
+    ZeroMemory( pNewTextureNode, sizeof(DXUTTextureNode) );
     pNewTextureNode->bFileSource = true;
-    wcscpy_s( pNewTextureNode->strFilename, MAX_PATH, strFilename );
+    StringCchCopy( pNewTextureNode->strFilename, MAX_PATH, strFilename );
 
     m_TextureCache.Add( pNewTextureNode );
-
-    int iTexture = m_TextureCache.GetSize() - 1;
+    
+    int iTexture = m_TextureCache.GetSize()-1;
 
     // If a device is available, try to create immediately
     if( m_pd3d9Device )
@@ -1107,23 +1091,23 @@ int CDXUTDialogResourceManager::AddTexture( LPCWSTR strFilename )
 int CDXUTDialogResourceManager::AddTexture( LPCWSTR strResourceName, HMODULE hResourceModule )
 {
     // See if this texture already exists
-    for( int i = 0; i < m_TextureCache.GetSize(); i++ )
+    for( int i=0; i < m_TextureCache.GetSize(); i++ )
     {
-        DXUTTextureNode* pTextureNode = m_TextureCache.GetAt( i );
+        DXUTTextureNode* pTextureNode = m_TextureCache.GetAt(i);
         if( !pTextureNode->bFileSource &&      // Sources must match
             pTextureNode->hResourceModule == hResourceModule ) // Module handles must match
         {
             if( IS_INTRESOURCE( strResourceName ) )
             {
                 // Integer-based ID
-                if( ( INT_PTR )strResourceName == pTextureNode->nResourceID )
+                if( (INT_PTR)strResourceName == pTextureNode->nResourceID )
                     return i;
             }
             else
             {
                 // String-based ID
                 size_t nLen = 0;
-                nLen = wcslen( strResourceName );
+                StringCchLength( strResourceName, MAX_PATH, &nLen );        
                 if( 0 == _wcsnicmp( pTextureNode->strFilename, strResourceName, nLen ) )
                     return i;
             }
@@ -1135,21 +1119,21 @@ int CDXUTDialogResourceManager::AddTexture( LPCWSTR strResourceName, HMODULE hRe
     if( pNewTextureNode == NULL )
         return -1;
 
-    ZeroMemory( pNewTextureNode, sizeof( DXUTTextureNode ) );
+    ZeroMemory( pNewTextureNode, sizeof(DXUTTextureNode) );
     pNewTextureNode->hResourceModule = hResourceModule;
     if( IS_INTRESOURCE( strResourceName ) )
     {
-        pNewTextureNode->nResourceID = ( int )( size_t )strResourceName;
+        pNewTextureNode->nResourceID = (int)(size_t)strResourceName;
     }
     else
     {
         pNewTextureNode->nResourceID = 0;
-        wcscpy_s( pNewTextureNode->strFilename, MAX_PATH, strResourceName );
+        StringCchCopy( pNewTextureNode->strFilename, MAX_PATH, strResourceName );
     }
 
     m_TextureCache.Add( pNewTextureNode );
-
-    int iTexture = m_TextureCache.GetSize() - 1;
+    
+    int iTexture = m_TextureCache.GetSize()-1;
 
     // If a device is available, try to create immediately
     if( m_pd3d9Device )
@@ -1166,10 +1150,10 @@ HRESULT CDXUTDialog::SetTexture( UINT index, LPCWSTR strFilename )
     // was made so that the DXUT's GUI could become seperate and optional from DXUT's core.  The 
     // creation and interfacing with CDXUTDialogResourceManager is now the responsibility 
     // of the application if it wishes to use DXUT's GUI.
-    assert( m_pManager != NULL && L"To fix this, call CDXUTDialog::Init() first.  See comments for details." );
+    assert( m_pManager != NULL && L"To fix this, call CDXUTDialog::Init() first.  See comments for details." ); 
 
     // Make sure the list is at least as large as the index being set
-    for( UINT i = m_Textures.GetSize(); i <= index; i++ )
+    for( UINT i=m_Textures.GetSize(); i <= index; i++ )
     {
         m_Textures.Add( -1 );
     }
@@ -1188,10 +1172,10 @@ HRESULT CDXUTDialog::SetTexture( UINT index, LPCWSTR strResourceName, HMODULE hR
     // was made so that the DXUT's GUI could become seperate and optional from DXUT's core.  The 
     // creation and interfacing with CDXUTDialogResourceManager is now the responsibility 
     // of the application if it wishes to use DXUT's GUI.
-    assert( m_pManager != NULL && L"To fix this, call CDXUTDialog::Init() first.  See comments for details." );
+    assert( m_pManager != NULL && L"To fix this, call CDXUTDialog::Init() first.  See comments for details." ); 
 
     // Make sure the list is at least as large as the index being set
-    for( UINT i = m_Textures.GetSize(); i <= index; i++ )
+    for( UINT i=m_Textures.GetSize(); i <= index; i++ )
     {
         m_Textures.Add( -1 );
     }
@@ -1235,7 +1219,7 @@ bool CDXUTDialog::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
     {
         if( uMsg == WM_LBUTTONDOWN || uMsg == WM_LBUTTONDBLCLK )
         {
-            POINT mousePoint = { short( LOWORD( lParam ) ), short( HIWORD( lParam ) ) };
+            POINT mousePoint = { short(LOWORD(lParam)), short(HIWORD(lParam)) };
 
             if( mousePoint.x >= m_x && mousePoint.x < m_x + m_width &&
                 mousePoint.y >= m_y && mousePoint.y < m_y + m_nCaptionHeight )
@@ -1244,10 +1228,10 @@ bool CDXUTDialog::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
                 SetCapture( DXUTGetHWND() );
                 return true;
             }
-        }
-        else if( uMsg == WM_LBUTTONUP && m_bDrag )
+        } else
+        if( uMsg == WM_LBUTTONUP && m_bDrag )
         {
-            POINT mousePoint = { short( LOWORD( lParam ) ), short( HIWORD( lParam ) ) };
+            POINT mousePoint = { short(LOWORD(lParam)), short(HIWORD(lParam)) };
 
             if( mousePoint.x >= m_x && mousePoint.x < m_x + m_width &&
                 mousePoint.y >= m_y && mousePoint.y < m_y + m_nCaptionHeight )
@@ -1266,8 +1250,8 @@ bool CDXUTDialog::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 
     // If a control is in focus, it belongs to this dialog, and it's enabled, then give
     // it the first chance at handling the message.
-    if( s_pControlFocus &&
-        s_pControlFocus->m_pDialog == this &&
+    if( s_pControlFocus && 
+        s_pControlFocus->m_pDialog == this && 
         s_pControlFocus->GetEnabled() )
     {
         // If the control MsgProc handles it, then we don't.
@@ -1279,21 +1263,21 @@ bool CDXUTDialog::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
     {
         case WM_SIZE:
         case WM_MOVE:
-            {
-                // Handle sizing and moving messages so that in case the mouse cursor is moved out
-                // of an UI control because of the window adjustment, we can properly
-                // unhighlight the highlighted control.
-                POINT pt = { -1, -1 };
-                OnMouseMove( pt );
-                break;
-            }
+        {
+            // Handle sizing and moving messages so that in case the mouse cursor is moved out
+            // of an UI control because of the window adjustment, we can properly
+            // unhighlight the highlighted control.
+            POINT pt = { -1, -1 };
+            OnMouseMove( pt );
+            break;
+        }
 
         case WM_ACTIVATEAPP:
             // Call OnFocusIn()/OnFocusOut() of the control that currently has the focus
             // as the application is activated/deactivated.  This matches the Windows
             // behavior.
-            if( s_pControlFocus &&
-                s_pControlFocus->m_pDialog == this &&
+            if( s_pControlFocus && 
+                s_pControlFocus->m_pDialog == this && 
                 s_pControlFocus->GetEnabled() )
             {
                 if( wParam )
@@ -1303,78 +1287,78 @@ bool CDXUTDialog::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
             }
             break;
 
-            // Keyboard messages
+        // Keyboard messages
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
         case WM_KEYUP:
         case WM_SYSKEYUP:
+        {
+            // If a control is in focus, it belongs to this dialog, and it's enabled, then give
+            // it the first chance at handling the message.
+            if( s_pControlFocus && 
+                s_pControlFocus->m_pDialog == this && 
+                s_pControlFocus->GetEnabled() )
             {
-                // If a control is in focus, it belongs to this dialog, and it's enabled, then give
-                // it the first chance at handling the message.
-                if( s_pControlFocus &&
-                    s_pControlFocus->m_pDialog == this &&
-                    s_pControlFocus->GetEnabled() )
-                {
-                    if( s_pControlFocus->HandleKeyboard( uMsg, wParam, lParam ) )
-                        return true;
-                }
-
-                // Not yet handled, see if this matches a control's hotkey
-                // Activate the hotkey if the focus doesn't belong to an
-                // edit box.
-                if( uMsg == WM_KEYDOWN && ( !s_pControlFocus ||
-                                            ( s_pControlFocus->GetType() != DXUT_CONTROL_EDITBOX
-                                              && s_pControlFocus->GetType() != DXUT_CONTROL_IMEEDITBOX ) ) )
-                {
-                    for( int i = 0; i < m_Controls.GetSize(); i++ )
-                    {
-                        CDXUTControl* pControl = m_Controls.GetAt( i );
-                        if( pControl->GetHotkey() == wParam )
-                        {
-                            pControl->OnHotkey();
-                            return true;
-                        }
-                    }
-                }
-
-                // Not yet handled, check for focus messages
-                if( uMsg == WM_KEYDOWN )
-                {
-                    // If keyboard input is not enabled, this message should be ignored
-                    if( !m_bKeyboardInput )
-                        return false;
-
-                    switch( wParam )
-                    {
-                        case VK_RIGHT:
-                        case VK_DOWN:
-                            if( s_pControlFocus != NULL )
-                            {
-                                return OnCycleFocus( true );
-                            }
-                            break;
-
-                        case VK_LEFT:
-                        case VK_UP:
-                            if( s_pControlFocus != NULL )
-                            {
-                                return OnCycleFocus( false );
-                            }
-                            break;
-
-                        case VK_TAB:
-                        {
-                            bool bShiftDown = ( ( GetKeyState( VK_SHIFT ) & 0x8000 ) != 0 );
-                            return OnCycleFocus( !bShiftDown );
-                        }
-                    }
-                }
-
-                break;
+                if( s_pControlFocus->HandleKeyboard( uMsg, wParam, lParam ) )
+                    return true;
             }
 
+            // Not yet handled, see if this matches a control's hotkey
+            // Activate the hotkey if the focus doesn't belong to an
+            // edit box.
+            if( uMsg == WM_KEYDOWN && ( !s_pControlFocus ||
+                                      ( s_pControlFocus->GetType() != DXUT_CONTROL_EDITBOX
+                                     && s_pControlFocus->GetType() != DXUT_CONTROL_IMEEDITBOX ) ) )
+            {
+                for( int i=0; i < m_Controls.GetSize(); i++ )
+                {
+                    CDXUTControl* pControl = m_Controls.GetAt( i );
+                    if( pControl->GetHotkey() == wParam )
+                    {
+                        pControl->OnHotkey();
+                        return true;
+                    }
+                }
+            }
 
-            // Mouse messages
+            // Not yet handled, check for focus messages
+            if( uMsg == WM_KEYDOWN )
+            {
+                // If keyboard input is not enabled, this message should be ignored
+                if( !m_bKeyboardInput )
+                    return false;
+
+                switch( wParam )
+                {
+                    case VK_RIGHT:
+                    case VK_DOWN:
+                        if( s_pControlFocus != NULL )
+                        {
+                            return OnCycleFocus( true );
+                        }
+                        break;
+
+                    case VK_LEFT:
+                    case VK_UP:
+                        if( s_pControlFocus != NULL )
+                        {
+                            return OnCycleFocus( false );
+                        }
+                        break;
+
+                    case VK_TAB: 
+                    {
+                        bool bShiftDown = ((GetKeyState( VK_SHIFT ) & 0x8000) != 0);
+                        return OnCycleFocus( !bShiftDown );
+                    }
+                }
+            }
+
+            break;
+        }
+
+
+        // Mouse messages
         case WM_MOUSEMOVE:
         case WM_LBUTTONDOWN:
         case WM_LBUTTONUP:
@@ -1389,62 +1373,62 @@ bool CDXUTDialog::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
         case WM_RBUTTONDBLCLK:
         case WM_XBUTTONDBLCLK:
         case WM_MOUSEWHEEL:
+        {
+            // If not accepting mouse input, return false to indicate the message should still 
+            // be handled by the application (usually to move the camera).
+            if( !m_bMouseInput )
+                return false;
+
+            POINT mousePoint = { short(LOWORD(lParam)), short(HIWORD(lParam)) };
+            mousePoint.x -= m_x;
+            mousePoint.y -= m_y;
+
+            // If caption is enabled, offset the Y coordinate by the negative of its height.
+            if( m_bCaption )
+                mousePoint.y -= m_nCaptionHeight;
+
+            // If a control is in focus, it belongs to this dialog, and it's enabled, then give
+            // it the first chance at handling the message.
+            if( s_pControlFocus && 
+                s_pControlFocus->m_pDialog == this && 
+                s_pControlFocus->GetEnabled() )
             {
-                // If not accepting mouse input, return false to indicate the message should still 
-                // be handled by the application (usually to move the camera).
-                if( !m_bMouseInput )
-                    return false;
-
-                POINT mousePoint = { short( LOWORD( lParam ) ), short( HIWORD( lParam ) ) };
-                mousePoint.x -= m_x;
-                mousePoint.y -= m_y;
-
-                // If caption is enabled, offset the Y coordinate by the negative of its height.
-                if( m_bCaption )
-                    mousePoint.y -= m_nCaptionHeight;
-
-                // If a control is in focus, it belongs to this dialog, and it's enabled, then give
-                // it the first chance at handling the message.
-                if( s_pControlFocus &&
-                    s_pControlFocus->m_pDialog == this &&
-                    s_pControlFocus->GetEnabled() )
-                {
-                    if( s_pControlFocus->HandleMouse( uMsg, mousePoint, wParam, lParam ) )
-                        return true;
-                }
-
-                // Not yet handled, see if the mouse is over any controls
-                CDXUTControl* pControl = GetControlAtPoint( mousePoint );
-                if( pControl != NULL && pControl->GetEnabled() )
-                {
-                    bHandled = pControl->HandleMouse( uMsg, mousePoint, wParam, lParam );
-                    if( bHandled )
-                        return true;
-                }
-                else
-                {
-                    // Mouse not over any controls in this dialog, if there was a control
-                    // which had focus it just lost it
-                    if( uMsg == WM_LBUTTONDOWN &&
-                        s_pControlFocus &&
-                        s_pControlFocus->m_pDialog == this )
-                    {
-                        s_pControlFocus->OnFocusOut();
-                        s_pControlFocus = NULL;
-                    }
-                }
-
-                // Still not handled, hand this off to the dialog. Return false to indicate the
-                // message should still be handled by the application (usually to move the camera).
-                switch( uMsg )
-                {
-                    case WM_MOUSEMOVE:
-                        OnMouseMove( mousePoint );
-                        return false;
-                }
-
-                break;
+                if( s_pControlFocus->HandleMouse( uMsg, mousePoint, wParam, lParam ) )
+                    return true;
             }
+
+            // Not yet handled, see if the mouse is over any controls
+            CDXUTControl* pControl = GetControlAtPoint( mousePoint );
+            if( pControl != NULL && pControl->GetEnabled() )
+            {
+                bHandled = pControl->HandleMouse( uMsg, mousePoint, wParam, lParam );
+                if( bHandled )
+                    return true;
+            }
+            else
+            {
+                // Mouse not over any controls in this dialog, if there was a control
+                // which had focus it just lost it
+                if( uMsg == WM_LBUTTONDOWN && 
+                    s_pControlFocus && 
+                    s_pControlFocus->m_pDialog == this )
+                {
+                    s_pControlFocus->OnFocusOut();
+                    s_pControlFocus = NULL;
+                }
+            }
+
+            // Still not handled, hand this off to the dialog. Return false to indicate the
+            // message should still be handled by the application (usually to move the camera).
+            switch( uMsg )
+            {
+                case WM_MOUSEMOVE:
+                    OnMouseMove( mousePoint );
+                    return false;
+            }
+
+            break;
+        }
 
         case WM_CAPTURECHANGED:
         {
@@ -1453,7 +1437,7 @@ bool CDXUTDialog::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
             // a WM_MOUSEUP when capture changed. Reset
             // m_bDrag so that the dialog does not mistakenly
             // think the mouse button is still held down.
-            if( ( HWND )lParam != hWnd )
+            if( (HWND)lParam != hWnd )
                 m_bDrag = false;
         }
     }
@@ -1466,9 +1450,9 @@ CDXUTControl* CDXUTDialog::GetControlAtPoint( POINT pt )
 {
     // Search through all child controls for the first one which
     // contains the mouse point
-    for( int i = 0; i < m_Controls.GetSize(); i++ )
+    for( int i=0; i < m_Controls.GetSize(); i++ )
     {
-        CDXUTControl* pControl = m_Controls.GetAt( i );
+        CDXUTControl* pControl = m_Controls.GetAt(i);
 
         if( pControl == NULL )
         {
@@ -1544,10 +1528,10 @@ void CDXUTDialog::OnMouseMove( POINT pt )
 HRESULT CDXUTDialog::SetDefaultElement( UINT nControlType, UINT iElement, CDXUTElement* pElement )
 {
     // If this Element type already exist in the list, simply update the stored Element
-    for( int i = 0; i < m_DefaultElements.GetSize(); i++ )
+    for( int i=0; i < m_DefaultElements.GetSize(); i++ )
     {
         DXUTElementHolder* pElementHolder = m_DefaultElements.GetAt( i );
-
+        
         if( pElementHolder->nControlType == nControlType &&
             pElementHolder->iElement == iElement )
         {
@@ -1578,25 +1562,24 @@ HRESULT CDXUTDialog::SetDefaultElement( UINT nControlType, UINT iElement, CDXUTE
 //--------------------------------------------------------------------------------------
 CDXUTElement* CDXUTDialog::GetDefaultElement( UINT nControlType, UINT iElement )
 {
-    for( int i = 0; i < m_DefaultElements.GetSize(); i++ )
+    for( int i=0; i < m_DefaultElements.GetSize(); i++ )
     {
         DXUTElementHolder* pElementHolder = m_DefaultElements.GetAt( i );
-
+        
         if( pElementHolder->nControlType == nControlType &&
             pElementHolder->iElement == iElement )
         {
             return &pElementHolder->Element;
         }
     }
-
+    
     return NULL;
 }
 
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTDialog::AddStatic( int ID, LPCWSTR strText, int x, int y, int width, int height, bool bIsDefault,
-                                CDXUTStatic** ppCreated )
+HRESULT CDXUTDialog::AddStatic( int ID, LPCWSTR strText, int x, int y, int width, int height, bool bIsDefault, CDXUTStatic** ppCreated )
 {
     HRESULT hr = S_OK;
 
@@ -1609,11 +1592,11 @@ HRESULT CDXUTDialog::AddStatic( int ID, LPCWSTR strText, int x, int y, int width
         return E_OUTOFMEMORY;
 
     hr = AddControl( pStatic );
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return hr;
 
     // Set the ID and list index
-    pStatic->SetID( ID );
+    pStatic->SetID( ID ); 
     pStatic->SetText( strText );
     pStatic->SetLocation( x, y );
     pStatic->SetSize( width, height );
@@ -1624,8 +1607,7 @@ HRESULT CDXUTDialog::AddStatic( int ID, LPCWSTR strText, int x, int y, int width
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTDialog::AddButton( int ID, LPCWSTR strText, int x, int y, int width, int height, UINT nHotkey,
-                                bool bIsDefault, CDXUTButton** ppCreated )
+HRESULT CDXUTDialog::AddButton( int ID, LPCWSTR strText, int x, int y, int width, int height, UINT nHotkey, bool bIsDefault, CDXUTButton** ppCreated )
 {
     HRESULT hr = S_OK;
 
@@ -1638,11 +1620,11 @@ HRESULT CDXUTDialog::AddButton( int ID, LPCWSTR strText, int x, int y, int width
         return E_OUTOFMEMORY;
 
     hr = AddControl( pButton );
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return hr;
 
     // Set the ID and list index
-    pButton->SetID( ID );
+    pButton->SetID( ID ); 
     pButton->SetText( strText );
     pButton->SetLocation( x, y );
     pButton->SetSize( width, height );
@@ -1654,8 +1636,7 @@ HRESULT CDXUTDialog::AddButton( int ID, LPCWSTR strText, int x, int y, int width
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTDialog::AddCheckBox( int ID, LPCWSTR strText, int x, int y, int width, int height, bool bChecked,
-                                  UINT nHotkey, bool bIsDefault, CDXUTCheckBox** ppCreated )
+HRESULT CDXUTDialog::AddCheckBox( int ID, LPCWSTR strText, int x, int y, int width, int height, bool bChecked, UINT nHotkey, bool bIsDefault, CDXUTCheckBox** ppCreated )
 {
     HRESULT hr = S_OK;
 
@@ -1668,26 +1649,25 @@ HRESULT CDXUTDialog::AddCheckBox( int ID, LPCWSTR strText, int x, int y, int wid
         return E_OUTOFMEMORY;
 
     hr = AddControl( pCheckBox );
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return hr;
 
     // Set the ID and list index
-    pCheckBox->SetID( ID );
+    pCheckBox->SetID( ID ); 
     pCheckBox->SetText( strText );
     pCheckBox->SetLocation( x, y );
     pCheckBox->SetSize( width, height );
     pCheckBox->SetHotkey( nHotkey );
     pCheckBox->m_bIsDefault = bIsDefault;
     pCheckBox->SetChecked( bChecked );
-
+    
     return S_OK;
 }
 
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTDialog::AddRadioButton( int ID, UINT nButtonGroup, LPCWSTR strText, int x, int y, int width, int height,
-                                     bool bChecked, UINT nHotkey, bool bIsDefault, CDXUTRadioButton** ppCreated )
+HRESULT CDXUTDialog::AddRadioButton( int ID, UINT nButtonGroup, LPCWSTR strText, int x, int y, int width, int height, bool bChecked, UINT nHotkey, bool bIsDefault, CDXUTRadioButton** ppCreated )
 {
     HRESULT hr = S_OK;
 
@@ -1700,11 +1680,11 @@ HRESULT CDXUTDialog::AddRadioButton( int ID, UINT nButtonGroup, LPCWSTR strText,
         return E_OUTOFMEMORY;
 
     hr = AddControl( pRadioButton );
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return hr;
 
     // Set the ID and list index
-    pRadioButton->SetID( ID );
+    pRadioButton->SetID( ID ); 
     pRadioButton->SetText( strText );
     pRadioButton->SetButtonGroup( nButtonGroup );
     pRadioButton->SetLocation( x, y );
@@ -1721,8 +1701,7 @@ HRESULT CDXUTDialog::AddRadioButton( int ID, UINT nButtonGroup, LPCWSTR strText,
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTDialog::AddComboBox( int ID, int x, int y, int width, int height, UINT nHotkey, bool bIsDefault,
-                                  CDXUTComboBox** ppCreated )
+HRESULT CDXUTDialog::AddComboBox( int ID, int x, int y, int width, int height, UINT nHotkey, bool bIsDefault, CDXUTComboBox** ppCreated )
 {
     HRESULT hr = S_OK;
 
@@ -1735,11 +1714,11 @@ HRESULT CDXUTDialog::AddComboBox( int ID, int x, int y, int width, int height, U
         return E_OUTOFMEMORY;
 
     hr = AddControl( pComboBox );
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return hr;
 
     // Set the ID and list index
-    pComboBox->SetID( ID );
+    pComboBox->SetID( ID ); 
     pComboBox->SetLocation( x, y );
     pComboBox->SetSize( width, height );
     pComboBox->SetHotkey( nHotkey );
@@ -1751,8 +1730,7 @@ HRESULT CDXUTDialog::AddComboBox( int ID, int x, int y, int width, int height, U
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTDialog::AddSlider( int ID, int x, int y, int width, int height, int min, int max, int value,
-                                bool bIsDefault, CDXUTSlider** ppCreated )
+HRESULT CDXUTDialog::AddSlider( int ID, int x, int y, int width, int height, int min, int max, int value, bool bIsDefault, CDXUTSlider** ppCreated )
 {
     HRESULT hr = S_OK;
 
@@ -1765,11 +1743,11 @@ HRESULT CDXUTDialog::AddSlider( int ID, int x, int y, int width, int height, int
         return E_OUTOFMEMORY;
 
     hr = AddControl( pSlider );
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return hr;
 
     // Set the ID and list index
-    pSlider->SetID( ID );
+    pSlider->SetID( ID ); 
     pSlider->SetLocation( x, y );
     pSlider->SetSize( width, height );
     pSlider->m_bIsDefault = bIsDefault;
@@ -1783,12 +1761,11 @@ HRESULT CDXUTDialog::AddSlider( int ID, int x, int y, int width, int height, int
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTDialog::AddEditBox( int ID, LPCWSTR strText, int x, int y, int width, int height, bool bIsDefault,
-                                 CDXUTEditBox** ppCreated )
+HRESULT CDXUTDialog::AddEditBox( int ID, LPCWSTR strText, int x, int y, int width, int height, bool bIsDefault, CDXUTEditBox** ppCreated )
 {
     HRESULT hr = S_OK;
 
-    CDXUTEditBox* pEditBox = new CDXUTEditBox( this );
+    CDXUTEditBox *pEditBox = new CDXUTEditBox( this );
 
     if( ppCreated != NULL )
         *ppCreated = pEditBox;
@@ -1797,11 +1774,11 @@ HRESULT CDXUTDialog::AddEditBox( int ID, LPCWSTR strText, int x, int y, int widt
         return E_OUTOFMEMORY;
 
     hr = AddControl( pEditBox );
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return hr;
 
     // Set the ID and position
-    pEditBox->SetID( ID );
+    pEditBox->SetID( ID ); 
     pEditBox->SetLocation( x, y );
     pEditBox->SetSize( width, height );
     pEditBox->m_bIsDefault = bIsDefault;
@@ -1817,7 +1794,7 @@ HRESULT CDXUTDialog::AddEditBox( int ID, LPCWSTR strText, int x, int y, int widt
 HRESULT CDXUTDialog::AddListBox( int ID, int x, int y, int width, int height, DWORD dwStyle, CDXUTListBox** ppCreated )
 {
     HRESULT hr = S_OK;
-    CDXUTListBox* pListBox = new CDXUTListBox( this );
+    CDXUTListBox *pListBox = new CDXUTListBox( this );
 
     if( ppCreated != NULL )
         *ppCreated = pListBox;
@@ -1826,7 +1803,7 @@ HRESULT CDXUTDialog::AddListBox( int ID, int x, int y, int width, int height, DW
         return E_OUTOFMEMORY;
 
     hr = AddControl( pListBox );
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return hr;
 
     // Set the ID and position
@@ -1849,9 +1826,9 @@ HRESULT CDXUTDialog::InitControl( CDXUTControl* pControl )
         return E_INVALIDARG;
 
     pControl->m_Index = m_Controls.GetSize();
-
+    
     // Look for a default Element entries
-    for( int i = 0; i < m_DefaultElements.GetSize(); i++ )
+    for( int i=0; i < m_DefaultElements.GetSize(); i++ )
     {
         DXUTElementHolder* pElementHolder = m_DefaultElements.GetAt( i );
         if( pElementHolder->nControlType == pControl->GetType() )
@@ -1871,12 +1848,12 @@ HRESULT CDXUTDialog::AddControl( CDXUTControl* pControl )
     HRESULT hr = S_OK;
 
     hr = InitControl( pControl );
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return DXTRACE_ERR( L"CDXUTDialog::InitControl", hr );
 
     // Add to the list
     hr = m_Controls.Add( pControl );
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
     {
         return DXTRACE_ERR( L"CGrowableArray::Add", hr );
     }
@@ -1889,7 +1866,7 @@ HRESULT CDXUTDialog::AddControl( CDXUTControl* pControl )
 CDXUTControl* CDXUTDialog::GetControl( int ID )
 {
     // Try to find the control with the given ID
-    for( int i = 0; i < m_Controls.GetSize(); i++ )
+    for( int i=0; i < m_Controls.GetSize(); i++ )
     {
         CDXUTControl* pControl = m_Controls.GetAt( i );
 
@@ -1909,7 +1886,7 @@ CDXUTControl* CDXUTDialog::GetControl( int ID )
 CDXUTControl* CDXUTDialog::GetControl( int ID, UINT nControlType )
 {
     // Try to find the control with the given ID
-    for( int i = 0; i < m_Controls.GetSize(); i++ )
+    for( int i=0; i < m_Controls.GetSize(); i++ )
     {
         CDXUTControl* pControl = m_Controls.GetAt( i );
 
@@ -1935,7 +1912,7 @@ CDXUTControl* CDXUTDialog::GetNextControl( CDXUTControl* pControl )
     // Cycle through dialogs in the loop to find the next control. Note
     // that if only one control exists in all looped dialogs it will
     // be the returned 'next' control.
-    while( index >= ( int )pDialog->m_Controls.GetSize() )
+    while( index >= (int) pDialog->m_Controls.GetSize() )
     {
         pDialog = pDialog->m_pNextDialog;
         index = 0;
@@ -1950,7 +1927,7 @@ CDXUTControl* CDXUTDialog::GetPrevControl( CDXUTControl* pControl )
     int index = pControl->m_Index - 1;
 
     CDXUTDialog* pDialog = pControl->m_pDialog;
-
+    
     // Cycle through dialogs in the loop to find the next control. Note
     // that if only one control exists in all looped dialogs it will
     // be the returned 'previous' control.
@@ -1962,8 +1939,8 @@ CDXUTControl* CDXUTDialog::GetPrevControl( CDXUTControl* pControl )
 
         index = pDialog->m_Controls.GetSize() - 1;
     }
-
-    return pDialog->m_Controls.GetAt( index );
+    
+    return pDialog->m_Controls.GetAt( index );    
 }
 
 
@@ -1971,13 +1948,13 @@ CDXUTControl* CDXUTDialog::GetPrevControl( CDXUTControl* pControl )
 void CDXUTDialog::ClearRadioButtonGroup( UINT nButtonGroup )
 {
     // Find all radio buttons with the given group number
-    for( int i = 0; i < m_Controls.GetSize(); i++ )
+    for( int i=0; i < m_Controls.GetSize(); i++ )
     {
         CDXUTControl* pControl = m_Controls.GetAt( i );
 
         if( pControl->GetType() == DXUT_CONTROL_RADIOBUTTON )
         {
-            CDXUTRadioButton* pRadioButton = ( CDXUTRadioButton* )pControl;
+            CDXUTRadioButton* pRadioButton = (CDXUTRadioButton*) pControl;
 
             if( pRadioButton->GetButtonGroup() == nButtonGroup )
                 pRadioButton->SetChecked( false, false );
@@ -2038,25 +2015,25 @@ HRESULT CDXUTDialog::DrawRect9( RECT* pRect, D3DCOLOR color )
         OffsetRect( &rcScreen, 0, m_nCaptionHeight );
 
     DXUT_SCREEN_VERTEX vertices[4] =
-        {
-            ( float )rcScreen.left - 0.5f,  ( float )rcScreen.top - 0.5f,    0.5f, 1.0f, color, 0, 0,
-            ( float )rcScreen.right - 0.5f, ( float )rcScreen.top - 0.5f,    0.5f, 1.0f, color, 0, 0,
-            ( float )rcScreen.right - 0.5f, ( float )rcScreen.bottom - 0.5f, 0.5f, 1.0f, color, 0, 0,
-            ( float )rcScreen.left - 0.5f,  ( float )rcScreen.bottom - 0.5f, 0.5f, 1.0f, color, 0, 0,
-        };
+    {
+        (float) rcScreen.left -0.5f,  (float) rcScreen.top -0.5f,    0.5f, 1.0f, color, 0, 0,
+        (float) rcScreen.right -0.5f, (float) rcScreen.top -0.5f,    0.5f, 1.0f, color, 0, 0, 
+        (float) rcScreen.right -0.5f, (float) rcScreen.bottom -0.5f, 0.5f, 1.0f, color, 0, 0, 
+        (float) rcScreen.left -0.5f,  (float) rcScreen.bottom -0.5f, 0.5f, 1.0f, color, 0, 0,
+    };
 
     IDirect3DDevice9* pd3dDevice = m_pManager->GetD3D9Device();
 
     // Since we're doing our own drawing here we need to flush the sprites
     m_pManager->m_pSprite->Flush();
-    IDirect3DVertexDeclaration9* pDecl = NULL;
+    IDirect3DVertexDeclaration9 *pDecl = NULL;
     pd3dDevice->GetVertexDeclaration( &pDecl );  // Preserve the sprite's current vertex decl
     pd3dDevice->SetFVF( DXUT_SCREEN_VERTEX::FVF );
 
     pd3dDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG2 );
     pd3dDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG2 );
 
-    pd3dDevice->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, vertices, sizeof( DXUT_SCREEN_VERTEX ) );
+    pd3dDevice->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, vertices, sizeof(DXUT_SCREEN_VERTEX) );
 
     pd3dDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
     pd3dDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
@@ -2088,16 +2065,16 @@ HRESULT CDXUTDialog::DrawRect10( RECT* pRect, D3DCOLOR color )
     Top = 1.0f - rcScreen.top * 2.0f / m_pManager->m_nBackBufferHeight;
     Bottom = 1.0f - rcScreen.bottom * 2.0f / m_pManager->m_nBackBufferHeight;
     DXUT_SCREEN_VERTEX_10 vertices[4] =
-        {
-            { Left,     Top, 0.5f, D3DCOLOR_TO_D3DCOLORVALUE( color ), 0.0f, 0.0f },
-            { Right,    Top, 0.5f, D3DCOLOR_TO_D3DCOLORVALUE( color ), 1.0f, 0.0f },
-            { Left,  Bottom, 0.5f, D3DCOLOR_TO_D3DCOLORVALUE( color ), 0.0f, 1.0f },
-            { Right, Bottom, 0.5f, D3DCOLOR_TO_D3DCOLORVALUE( color ), 1.0f, 1.0f },
-        };
-    DXUT_SCREEN_VERTEX_10* pVB;
-    if( SUCCEEDED( m_pManager->m_pVBScreenQuad10->Map( D3D10_MAP_WRITE_DISCARD, 0, ( LPVOID* )&pVB ) ) )
     {
-        CopyMemory( pVB, vertices, sizeof( vertices ) );
+        { Left,     Top, 0.5f, D3DCOLOR_TO_D3DCOLORVALUE( color ), 0.0f, 0.0f },
+        { Right,    Top, 0.5f, D3DCOLOR_TO_D3DCOLORVALUE( color ), 1.0f, 0.0f },
+        { Left,  Bottom, 0.5f, D3DCOLOR_TO_D3DCOLORVALUE( color ), 0.0f, 1.0f },
+        { Right, Bottom, 0.5f, D3DCOLOR_TO_D3DCOLORVALUE( color ), 1.0f, 1.0f },
+    };
+    DXUT_SCREEN_VERTEX_10 *pVB;
+    if( SUCCEEDED( m_pManager->m_pVBScreenQuad10->Map( D3D10_MAP_WRITE_DISCARD, 0, (LPVOID*)&pVB ) ) )
+    {
+        CopyMemory( pVB, vertices, sizeof(vertices) );
         m_pManager->m_pVBScreenQuad10->Unmap();
     }
 
@@ -2116,7 +2093,7 @@ HRESULT CDXUTDialog::DrawRect10( RECT* pRect, D3DCOLOR color )
     m_pManager->m_pTechRenderUI10->GetDesc( &techDesc );
     for( UINT p = 0; p < techDesc.Passes; ++p )
     {
-        m_pManager->m_pTechRenderUI10->GetPassByIndex( p )->Apply( 0 );
+        m_pManager->m_pTechRenderUI10->GetPassByIndex( p )->Apply(0);
         pd3dDevice->Draw( 4, 0 );
     }
 
@@ -2137,10 +2114,10 @@ HRESULT CDXUTDialog::DrawPolyLine( POINT* apPoints, UINT nNumPoints, D3DCOLOR co
 
     DXUT_SCREEN_VERTEX* pVertex = vertices;
     POINT* pt = apPoints;
-    for( UINT i = 0; i < nNumPoints; i++ )
+    for( UINT i=0; i < nNumPoints; i++ )
     {
-        pVertex->x = m_x + ( float )pt->x;
-        pVertex->y = m_y + ( float )pt->y;
+        pVertex->x = m_x + (float) pt->x;
+        pVertex->y = m_y + (float) pt->y;
         pVertex->z = 0.5f;
         pVertex->h = 1.0f;
         pVertex->color = color;
@@ -2155,14 +2132,14 @@ HRESULT CDXUTDialog::DrawPolyLine( POINT* apPoints, UINT nNumPoints, D3DCOLOR co
 
     // Since we're doing our own drawing here we need to flush the sprites
     m_pManager->m_pSprite->Flush();
-    IDirect3DVertexDeclaration9* pDecl = NULL;
+    IDirect3DVertexDeclaration9 *pDecl = NULL;
     pd3dDevice->GetVertexDeclaration( &pDecl );  // Preserve the sprite's current vertex decl
     pd3dDevice->SetFVF( DXUT_SCREEN_VERTEX::FVF );
 
     pd3dDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG2 );
     pd3dDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG2 );
 
-    pd3dDevice->DrawPrimitiveUP( D3DPT_LINESTRIP, nNumPoints - 1, vertices, sizeof( DXUT_SCREEN_VERTEX ) );
+    pd3dDevice->DrawPrimitiveUP( D3DPT_LINESTRIP, nNumPoints - 1, vertices, sizeof(DXUT_SCREEN_VERTEX) );
 
     pd3dDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
     pd3dDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
@@ -2174,7 +2151,7 @@ HRESULT CDXUTDialog::DrawPolyLine( POINT* apPoints, UINT nNumPoints, D3DCOLOR co
     SAFE_DELETE_ARRAY( vertices );
     return S_OK;
 }
-
+ 
 
 //--------------------------------------------------------------------------------------
 HRESULT CDXUTDialog::DrawSprite( CDXUTElement* pElement, RECT* prcDest, float fDepth )
@@ -2194,7 +2171,7 @@ HRESULT CDXUTDialog::DrawSprite9( CDXUTElement* pElement, RECT* prcDest )
         return S_OK;
 
     RECT rcTexture = pElement->rcTexture;
-
+    
     RECT rcScreen = *prcDest;
     OffsetRect( &rcScreen, m_x, m_y );
 
@@ -2205,22 +2182,21 @@ HRESULT CDXUTDialog::DrawSprite9( CDXUTElement* pElement, RECT* prcDest )
     DXUTTextureNode* pTextureNode = GetTexture( pElement->iTexture );
     if( pTextureNode == NULL )
         return E_FAIL;
-
-    float fScaleX = ( float )RectWidth( rcScreen ) / RectWidth( rcTexture );
-    float fScaleY = ( float )RectHeight( rcScreen ) / RectHeight( rcTexture );
+    
+    float fScaleX = (float) RectWidth( rcScreen ) / RectWidth( rcTexture );
+    float fScaleY = (float) RectHeight( rcScreen ) / RectHeight( rcTexture );
 
     D3DXMATRIXA16 matTransform;
     D3DXMatrixScaling( &matTransform, fScaleX, fScaleY, 1.0f );
 
     m_pManager->m_pSprite->SetTransform( &matTransform );
-
-    D3DXVECTOR3 vPos( ( float )rcScreen.left, ( float )rcScreen.top, 0.0f );
+    
+    D3DXVECTOR3 vPos( (float)rcScreen.left, (float)rcScreen.top, 0.0f );
 
     vPos.x /= fScaleX;
     vPos.y /= fScaleY;
 
-    return m_pManager->m_pSprite->Draw( pTextureNode->pTexture9, &rcTexture, NULL, &vPos,
-                                        pElement->TextureColor.Current );
+    return m_pManager->m_pSprite->Draw( pTextureNode->pTexture9, &rcTexture, NULL, &vPos, pElement->TextureColor.Current );
 }
 
 
@@ -2235,7 +2211,7 @@ HRESULT CDXUTDialog::DrawSprite10( CDXUTElement* pElement, RECT* prcDest, float 
 
     RECT rcScreen = *prcDest;
     OffsetRect( &rcScreen, m_x, m_y );
-    OffsetRect( &rcScreen, RectWidth( rcScreen ) / 2, RectHeight( rcScreen ) / 2 );
+    OffsetRect( &rcScreen, RectWidth( rcScreen )/2, RectHeight( rcScreen)/2 );
 
     // If caption is enabled, offset the Y position by its height.
     if( m_bCaption )
@@ -2244,33 +2220,33 @@ HRESULT CDXUTDialog::DrawSprite10( CDXUTElement* pElement, RECT* prcDest, float 
     DXUTTextureNode* pTextureNode = GetTexture( pElement->iTexture );
     if( pTextureNode == NULL )
         return E_FAIL;
+    
+    float fBBWidth = (float)m_pManager->m_nBackBufferWidth;
+    float fBBHeight = (float)m_pManager->m_nBackBufferHeight;
+    float fScaleX = (float) RectWidth( rcScreen );
+    float fScaleY = (float) RectHeight( rcScreen );
 
-    float fBBWidth = ( float )m_pManager->m_nBackBufferWidth;
-    float fBBHeight = ( float )m_pManager->m_nBackBufferHeight;
-    float fScaleX = ( float )RectWidth( rcScreen );
-    float fScaleY = ( float )RectHeight( rcScreen );
-
-    D3DXVECTOR3 vPos( ( float )rcScreen.left, ( float )rcScreen.top, fDepth );
+    D3DXVECTOR3 vPos( (float)rcScreen.left, (float)rcScreen.top, fDepth );
 
     D3DXMATRIXA16 matScaling;
     D3DXMATRIXA16 matTranslation;
     D3DXMatrixScaling( &matScaling, fScaleX, fScaleY, 1.0f );
-    D3DXMatrixTranslation( &matTranslation, vPos.x, fBBHeight - vPos.y, vPos.z );
+    D3DXMatrixTranslation( &matTranslation, vPos.x, fBBHeight-vPos.y, vPos.z );
 
     D3DXMATRIXA16 matProjection;
-    D3DXMatrixOrthoOffCenterLH( &matProjection, 0.0f, fBBWidth, 0.0f, fBBHeight, 0.1f, 10 );
-    m_pManager->m_pSprite10->SetProjectionTransform( &matProjection );
+    D3DXMatrixOrthoOffCenterLH(&matProjection, 0.0f, fBBWidth, 0.0f, fBBHeight, 0.1f, 10);
+    m_pManager->m_pSprite10->SetProjectionTransform(&matProjection);
 
     D3DX10_SPRITE Sprite;
-
-    Sprite.matWorld = matScaling * matTranslation;
+    
+    Sprite.matWorld = matScaling*matTranslation;
     Sprite.pTexture = pTextureNode->pTexResView;
-    float fTexWidth = ( float )pTextureNode->dwWidth;
-    float fTexHeight = ( float )pTextureNode->dwHeight;
-    Sprite.TexCoord.x = ( float )( rcTexture.left ) / fTexWidth;
-    Sprite.TexCoord.y = ( float )( rcTexture.top ) / fTexHeight;
-    Sprite.TexSize.x = ( float )( rcTexture.right - rcTexture.left ) / fTexWidth;
-    Sprite.TexSize.y = ( float )( rcTexture.bottom - rcTexture.top ) / fTexHeight;
+    float fTexWidth = (float)pTextureNode->dwWidth;
+    float fTexHeight = (float)pTextureNode->dwHeight;
+    Sprite.TexCoord.x = (float)(rcTexture.left) / fTexWidth;
+    Sprite.TexCoord.y = (float)(rcTexture.top) / fTexHeight;
+    Sprite.TexSize.x = (float)(rcTexture.right - rcTexture.left) / fTexWidth;
+    Sprite.TexSize.y = (float)(rcTexture.bottom - rcTexture.top) / fTexHeight;
     Sprite.TextureIndex = 0;
     Sprite.ColorModulate = pElement->TextureColor.Current;
 
@@ -2292,13 +2268,14 @@ HRESULT CDXUTDialog::CalcTextRect( LPCWSTR strText, CDXUTElement* pElement, RECT
     if( pFontNode->pFont10 )
     {
         hr = pFontNode->pFont10->DrawText( NULL, strText, nCount, prcDest, dwTextFormat, pElement->FontColor.Current );
-        if( FAILED( hr ) )
+        if( FAILED(hr) )
             return hr;
     }
-    else if( pFontNode->pFont9 )
+    else
+    if( pFontNode->pFont9 )
     {
         hr = pFontNode->pFont9->DrawText( NULL, strText, nCount, prcDest, dwTextFormat, pElement->FontColor.Current );
-        if( FAILED( hr ) )
+        if( FAILED(hr) )
             return hr;
     }
 
@@ -2337,20 +2314,18 @@ HRESULT CDXUTDialog::DrawText9( LPCWSTR strText, CDXUTElement* pElement, RECT* p
     m_pManager->m_pSprite->SetTransform( &matTransform );
 
     DXUTFontNode* pFontNode = GetFont( pElement->iFont );
-
+    
     if( bShadow )
     {
         RECT rcShadow = rcScreen;
         OffsetRect( &rcShadow, 1, 1 );
-        hr = pFontNode->pFont9->DrawText( m_pManager->m_pSprite, strText, nCount, &rcShadow, pElement->dwTextFormat,
-                                          D3DCOLOR_ARGB( DWORD( pElement->FontColor.Current.a * 255 ), 0, 0, 0 ) );
-        if( FAILED( hr ) )
+        hr = pFontNode->pFont9->DrawText( m_pManager->m_pSprite, strText, nCount, &rcShadow, pElement->dwTextFormat, D3DCOLOR_ARGB(DWORD(pElement->FontColor.Current.a * 255), 0, 0, 0) );
+        if( FAILED(hr) )
             return hr;
     }
 
-    hr = pFontNode->pFont9->DrawText( m_pManager->m_pSprite, strText, nCount, &rcScreen, pElement->dwTextFormat,
-                                      pElement->FontColor.Current );
-    if( FAILED( hr ) )
+    hr = pFontNode->pFont9->DrawText( m_pManager->m_pSprite, strText, nCount, &rcScreen, pElement->dwTextFormat, pElement->FontColor.Current );
+    if( FAILED(hr) )
         return hr;
 
     return S_OK;
@@ -2373,28 +2348,26 @@ HRESULT CDXUTDialog::DrawText10( LPCWSTR strText, CDXUTElement* pElement, RECT* 
     if( m_bCaption )
         OffsetRect( &rcScreen, 0, m_nCaptionHeight );
 
-    float fBBWidth = ( float )m_pManager->m_nBackBufferWidth;
-    float fBBHeight = ( float )m_pManager->m_nBackBufferHeight;
+    float fBBWidth = (float)m_pManager->m_nBackBufferWidth;
+    float fBBHeight = (float)m_pManager->m_nBackBufferHeight;
 
     D3DXMATRIX matProjection;
-    D3DXMatrixOrthoOffCenterLH( &matProjection, 0.0f, fBBWidth, 0.0f, fBBHeight, 0.1f, 10 );
-    m_pManager->m_pSprite10->SetProjectionTransform( &matProjection );
+    D3DXMatrixOrthoOffCenterLH(&matProjection, 0.0f, fBBWidth, 0.0f, fBBHeight, 0.1f, 10);
+    m_pManager->m_pSprite10->SetProjectionTransform(&matProjection);
 
     DXUTFontNode* pFontNode = GetFont( pElement->iFont );
-
+    
     if( bShadow )
     {
         RECT rcShadow = rcScreen;
         OffsetRect( &rcShadow, 1, 1 );
-        hr = pFontNode->pFont10->DrawText( m_pManager->m_pSprite10, strText, nCount, &rcShadow, pElement->dwTextFormat,
-                                           D3DCOLOR_ARGB( DWORD( pElement->FontColor.Current.a * 255 ), 0, 0, 0 ) );
-        if( FAILED( hr ) )
+        hr = pFontNode->pFont10->DrawText( m_pManager->m_pSprite10, strText, nCount, &rcShadow, pElement->dwTextFormat, D3DCOLOR_ARGB(DWORD(pElement->FontColor.Current.a * 255), 0, 0, 0) );
+        if( FAILED(hr) )
             return hr;
     }
 
-    hr = pFontNode->pFont10->DrawText( m_pManager->m_pSprite10, strText, nCount, &rcScreen, pElement->dwTextFormat,
-                                       pElement->FontColor.Current );
-    if( FAILED( hr ) )
+    hr = pFontNode->pFont10->DrawText( m_pManager->m_pSprite10, strText, nCount, &rcScreen, pElement->dwTextFormat, pElement->FontColor.Current );
+    if( FAILED(hr) )
         return hr;
 
     return S_OK;
@@ -2402,8 +2375,7 @@ HRESULT CDXUTDialog::DrawText10( LPCWSTR strText, CDXUTElement* pElement, RECT* 
 
 
 //--------------------------------------------------------------------------------------
-void CDXUTDialog::SetBackgroundColors( D3DCOLOR colorTopLeft, D3DCOLOR colorTopRight, D3DCOLOR colorBottomLeft,
-                                       D3DCOLOR colorBottomRight )
+void CDXUTDialog::SetBackgroundColors( D3DCOLOR colorTopLeft, D3DCOLOR colorTopRight, D3DCOLOR colorBottomLeft, D3DCOLOR colorBottomRight )
 {
     m_colorTopLeft = colorTopLeft;
     m_colorTopRight = colorTopRight;
@@ -2414,10 +2386,10 @@ void CDXUTDialog::SetBackgroundColors( D3DCOLOR colorTopLeft, D3DCOLOR colorTopR
 
 //--------------------------------------------------------------------------------------
 void CDXUTDialog::SetNextDialog( CDXUTDialog* pNextDialog )
-{
+{ 
     if( pNextDialog == NULL )
         pNextDialog = this;
-
+    
     m_pNextDialog = pNextDialog;
     if( pNextDialog )
         m_pNextDialog->m_pPrevDialog = this;
@@ -2441,7 +2413,7 @@ void CDXUTDialog::ClearFocus()
 void CDXUTDialog::FocusDefaultControl()
 {
     // Check for default control in this dialog
-    for( int i = 0; i < m_Controls.GetSize(); i++ )
+    for( int i=0; i < m_Controls.GetSize(); i++ )
     {
         CDXUTControl* pControl = m_Controls.GetAt( i );
         if( pControl->m_bIsDefault )
@@ -2461,9 +2433,9 @@ void CDXUTDialog::FocusDefaultControl()
 //--------------------------------------------------------------------------------------
 bool CDXUTDialog::OnCycleFocus( bool bForward )
 {
-    CDXUTControl* pControl = NULL;
-    CDXUTDialog* pDialog = NULL; // pDialog and pLastDialog are used to track wrapping of
-    CDXUTDialog* pLastDialog;    // focus from first control to last or vice versa.
+    CDXUTControl *pControl = NULL;
+    CDXUTDialog *pDialog = NULL; // pDialog and pLastDialog are used to track wrapping of
+    CDXUTDialog *pLastDialog;    // focus from first control to last or vice versa.
 
     if( s_pControlFocus == NULL )
     {
@@ -2477,10 +2449,10 @@ bool CDXUTDialog::OnCycleFocus( bool bForward )
             // array.
             for( int d = 0; d < m_pManager->m_Dialogs.GetSize(); ++d )
             {
-                pDialog = pLastDialog = m_pManager->m_Dialogs.GetAt( d );
+                pDialog = pLastDialog = m_pManager->m_Dialogs.GetAt(d);
                 if( pDialog && pDialog->m_Controls.GetSize() > 0 )
                 {
-                    pControl = pDialog->m_Controls.GetAt( 0 );
+                    pControl = pDialog->m_Controls.GetAt(0);
                     break;
                 }
             }
@@ -2498,7 +2470,7 @@ bool CDXUTDialog::OnCycleFocus( bool bForward )
             // array.
             for( int d = m_pManager->m_Dialogs.GetSize() - 1; d >= 0; --d )
             {
-                pDialog = pLastDialog = m_pManager->m_Dialogs.GetAt( d );
+                pDialog = pLastDialog = m_pManager->m_Dialogs.GetAt(d);
                 if( pDialog && pDialog->m_Controls.GetSize() > 0 )
                 {
                     pControl = pDialog->m_Controls.GetAt( pDialog->m_Controls.GetSize() - 1 );
@@ -2514,7 +2486,8 @@ bool CDXUTDialog::OnCycleFocus( bool bForward )
             }
         }
     }
-    else if( s_pControlFocus->m_pDialog != this )
+    else
+    if( s_pControlFocus->m_pDialog != this )
     {
         // If a control belonging to another dialog has focus, let that other
         // dialog handle this event by returning false.
@@ -2526,11 +2499,11 @@ bool CDXUTDialog::OnCycleFocus( bool bForward )
         // Focused control belongs to this dialog. Cycle to the
         // next/previous control.
         pLastDialog = s_pControlFocus->m_pDialog;
-        pControl = ( bForward ) ? GetNextControl( s_pControlFocus ) : GetPrevControl( s_pControlFocus );
+        pControl = (bForward) ? GetNextControl( s_pControlFocus ) : GetPrevControl( s_pControlFocus );
         pDialog = pControl->m_pDialog;
     }
 
-    for( int i = 0; i < 0xffff; i++ )
+    for( int i=0; i < 0xffff; i++ )
     {
         // If we just wrapped from last control to first or vice versa,
         // set the focused control to NULL. This state, where no control
@@ -2562,7 +2535,7 @@ bool CDXUTDialog::OnCycleFocus( bool bForward )
         }
 
         pLastDialog = pDialog;
-        pControl = ( bForward ) ? GetNextControl( pControl ) : GetPrevControl( pControl );
+        pControl = (bForward) ? GetNextControl( pControl ) : GetPrevControl( pControl );
         pDialog = pControl->m_pDialog;
     }
 
@@ -2581,8 +2554,8 @@ HRESULT CDXUTDialogResourceManager::CreateFont9( UINT iFont )
 
     SAFE_RELEASE( pFontNode->pFont9 );
 
-    V_RETURN( D3DXCreateFont( m_pd3d9Device, pFontNode->nHeight, 0, pFontNode->nWeight, 1, FALSE, DEFAULT_CHARSET,
-                              OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE,
+    V_RETURN( D3DXCreateFont( m_pd3d9Device, pFontNode->nHeight, 0, pFontNode->nWeight, 1, FALSE, DEFAULT_CHARSET, 
+                              OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, 
                               pFontNode->strFace, &pFontNode->pFont9 ) );
 
     return S_OK;
@@ -2598,8 +2571,8 @@ HRESULT CDXUTDialogResourceManager::CreateFont10( UINT iFont )
 
     SAFE_RELEASE( pFontNode->pFont10 );
 
-    V_RETURN( D3DX10CreateFont( m_pd3d10Device, pFontNode->nHeight, 0, pFontNode->nWeight, 1, FALSE, DEFAULT_CHARSET,
-                                OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE,
+    V_RETURN( D3DX10CreateFont( m_pd3d10Device, pFontNode->nHeight, 0, pFontNode->nWeight, 1, FALSE, DEFAULT_CHARSET, 
+                                OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, 
                                 pFontNode->strFace, &pFontNode->pFont10 ) );
 
     return S_OK;
@@ -2612,31 +2585,28 @@ HRESULT CDXUTDialogResourceManager::CreateTexture9( UINT iTexture )
     HRESULT hr = S_OK;
 
     DXUTTextureNode* pTextureNode = m_TextureCache.GetAt( iTexture );
-
-
+    
+    
     D3DXIMAGE_INFO info;
 
     if( !pTextureNode->bFileSource )
     {
-        if( pTextureNode->nResourceID == 0xFFFF && pTextureNode->hResourceModule == ( HMODULE )0xFFFF )
+        if( pTextureNode->nResourceID == 0xFFFF && pTextureNode->hResourceModule == (HMODULE) 0xFFFF )
         {
             hr = DXUTCreateGUITextureFromInternalArray9( m_pd3d9Device, &pTextureNode->pTexture9, &info );
-            if( FAILED( hr ) )
+            if( FAILED(hr) )
                 return DXTRACE_ERR( L"D3DXCreateTextureFromFileInMemoryEx", hr );
-            DXUT_SetDebugName( pTextureNode->pTexture9, "DXUT GUI Texture" );
         }
         else
         {
-            LPCWSTR pID = pTextureNode->nResourceID ? ( LPCWSTR )( size_t )pTextureNode->nResourceID :
-                pTextureNode->strFilename;
+            LPCWSTR pID = pTextureNode->nResourceID ? (LPCWSTR)(size_t)pTextureNode->nResourceID : pTextureNode->strFilename;
 
             // Create texture from resource
-            hr = D3DXCreateTextureFromResourceEx( m_pd3d9Device, pTextureNode->hResourceModule, pID, D3DX_DEFAULT,
-                                                  D3DX_DEFAULT,
-                                                  1, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED,
-                                                  D3DX_DEFAULT, D3DX_DEFAULT, 0,
-                                                  &info, NULL, &pTextureNode->pTexture9 );
-            if( FAILED( hr ) )
+            hr =  D3DXCreateTextureFromResourceEx( m_pd3d9Device, pTextureNode->hResourceModule, pID, D3DX_DEFAULT, D3DX_DEFAULT, 
+                                       1, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, 
+                                       D3DX_DEFAULT, D3DX_DEFAULT, 0, 
+                                       &info, NULL, &pTextureNode->pTexture9 );
+            if( FAILED(hr) )
                 return DXTRACE_ERR( L"D3DXCreateTextureFromResourceEx", hr );
         }
     }
@@ -2647,11 +2617,11 @@ HRESULT CDXUTDialogResourceManager::CreateTexture9( UINT iTexture )
             return S_OK;
 
         // Create texture from file
-        hr = D3DXCreateTextureFromFileEx( m_pd3d9Device, pTextureNode->strFilename, D3DX_DEFAULT, D3DX_DEFAULT,
-                                          1, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED,
-                                          D3DX_DEFAULT, D3DX_DEFAULT, 0,
-                                          &info, NULL, &pTextureNode->pTexture9 );
-        if( FAILED( hr ) )
+        hr =  D3DXCreateTextureFromFileEx( m_pd3d9Device, pTextureNode->strFilename, D3DX_DEFAULT, D3DX_DEFAULT, 
+                                           1, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, 
+                                           D3DX_DEFAULT, D3DX_DEFAULT, 0, 
+                                           &info, NULL, &pTextureNode->pTexture9 );
+        if( FAILED(hr) )
         {
             return DXTRACE_ERR( L"D3DXCreateTextureFromFileEx", hr );
         }
@@ -2674,27 +2644,25 @@ HRESULT CDXUTDialogResourceManager::CreateTexture10( UINT iTexture )
 
     if( !pTextureNode->bFileSource )
     {
-        if( pTextureNode->nResourceID == 0xFFFF && pTextureNode->hResourceModule == ( HMODULE )0xFFFF )
+        if( pTextureNode->nResourceID == 0xFFFF && pTextureNode->hResourceModule == (HMODULE) 0xFFFF )
         {
             hr = DXUTCreateGUITextureFromInternalArray10( m_pd3d10Device, &pTextureNode->pTexture10, NULL );
-            if( FAILED( hr ) )
+            if( FAILED(hr) )
                 return DXTRACE_ERR( L"D3DX10CreateResourceFromFileInMemory", hr );
-            DXUT_SetDebugName( pTextureNode->pTexture10, "DXUT GUI Texture" );
         }
         else
         {
-            LPCWSTR pID = pTextureNode->nResourceID ? ( LPCWSTR )( size_t )pTextureNode->nResourceID :
-                pTextureNode->strFilename;
+            LPCWSTR pID = pTextureNode->nResourceID ? (LPCWSTR)(size_t)pTextureNode->nResourceID : pTextureNode->strFilename;
 
             D3DX10_IMAGE_INFO SrcInfo;
             D3DX10GetImageInfoFromResource( NULL, pID, NULL, &SrcInfo, NULL );
 
             // Create texture from resource
-            ID3D10Resource* pRes;
+            ID3D10Resource *pRes;
             D3DX10_IMAGE_LOAD_INFO loadInfo;
             loadInfo.Width = D3DX10_DEFAULT;
-            loadInfo.Height = D3DX10_DEFAULT;
-            loadInfo.Depth = D3DX10_DEFAULT;
+            loadInfo.Height  = D3DX10_DEFAULT;
+            loadInfo.Depth  = D3DX10_DEFAULT;
             loadInfo.FirstMipLevel = 0;
             loadInfo.MipLevels = 1;
             loadInfo.Usage = D3D10_USAGE_DEFAULT;
@@ -2706,12 +2674,10 @@ HRESULT CDXUTDialogResourceManager::CreateTexture10( UINT iTexture )
             loadInfo.MipFilter = D3DX10_FILTER_NONE;
             loadInfo.pSrcInfo = &SrcInfo;
 
-            hr = D3DX10CreateTextureFromResource( m_pd3d10Device, pTextureNode->hResourceModule, pID, &loadInfo,
-                                                  NULL, &pRes, NULL );
-            if( FAILED( hr ) )
+            hr = D3DX10CreateTextureFromResource( m_pd3d10Device, pTextureNode->hResourceModule, pID, &loadInfo, NULL, &pRes, NULL );
+            if( FAILED(hr) )
                 return DXTRACE_ERR( L"D3DX10CreateResourceFromResource", hr );
-            DXUT_SetDebugName( pRes, "DXUT GUI Texture" );
-            hr = pRes->QueryInterface( __uuidof( ID3D10Texture2D ), ( LPVOID* )&pTextureNode->pTexture10 );
+            hr = pRes->QueryInterface( __uuidof( ID3D10Texture2D ), (LPVOID*)&pTextureNode->pTexture10 );
             SAFE_RELEASE( pRes );
             if( FAILED( hr ) )
                 return hr;
@@ -2727,11 +2693,11 @@ HRESULT CDXUTDialogResourceManager::CreateTexture10( UINT iTexture )
         D3DX10GetImageInfoFromFile( pTextureNode->strFilename, NULL, &SrcInfo, NULL );
 
         // Create texture from file
-        ID3D10Resource* pRes;
+        ID3D10Resource *pRes;
         D3DX10_IMAGE_LOAD_INFO loadInfo;
         loadInfo.Width = D3DX10_DEFAULT;
-        loadInfo.Height = D3DX10_DEFAULT;
-        loadInfo.Depth = D3DX10_DEFAULT;
+        loadInfo.Height  = D3DX10_DEFAULT;
+        loadInfo.Depth  = D3DX10_DEFAULT;
         loadInfo.FirstMipLevel = 0;
         loadInfo.MipLevels = 1;
         loadInfo.Usage = D3D10_USAGE_DEFAULT;
@@ -2743,12 +2709,11 @@ HRESULT CDXUTDialogResourceManager::CreateTexture10( UINT iTexture )
         loadInfo.MipFilter = D3DX10_FILTER_NONE;
         loadInfo.pSrcInfo = &SrcInfo;
         hr = D3DX10CreateTextureFromFile( m_pd3d10Device, pTextureNode->strFilename, &loadInfo, NULL, &pRes, NULL );
-        if( FAILED( hr ) )
+        if( FAILED(hr) )
         {
             return DXTRACE_ERR( L"D3DX10CreateResourceFromFileEx", hr );
         }
-        DXUT_SetDebugName( pRes, "DXUT GUI Texture" );
-        hr = pRes->QueryInterface( __uuidof( ID3D10Texture2D ), ( LPVOID* )&pTextureNode->pTexture10 );
+        hr = pRes->QueryInterface( __uuidof( ID3D10Texture2D ), (LPVOID*)&pTextureNode->pTexture10 );
         SAFE_RELEASE( pRes );
         if( FAILED( hr ) )
             return hr;
@@ -2767,7 +2732,6 @@ HRESULT CDXUTDialogResourceManager::CreateTexture10( UINT iTexture )
     SRVDesc.Texture2D.MipLevels = 1;
     SRVDesc.Texture2D.MostDetailedMip = 0;
     hr = m_pd3d10Device->CreateShaderResourceView( pTextureNode->pTexture10, &SRVDesc, &pTextureNode->pTexResView );
-    DXUT_SetDebugName( pTextureNode->pTexResView, "DXUT GUI Texture" );
 
     return hr;
 }
@@ -2777,7 +2741,7 @@ HRESULT CDXUTDialogResourceManager::CreateTexture10( UINT iTexture )
 void CDXUTDialog::InitDefaultElements()
 {
     SetFont( 0, L"Arial", 14, FW_NORMAL );
-
+    
     CDXUTElement Element;
     RECT rcTexture;
 
@@ -2787,9 +2751,9 @@ void CDXUTDialog::InitDefaultElements()
     m_CapElement.SetFont( 0 );
     SetRect( &rcTexture, 17, 269, 241, 287 );
     m_CapElement.SetTexture( 0, &rcTexture );
-    m_CapElement.TextureColor.States[ DXUT_STATE_NORMAL ] = D3DCOLOR_ARGB( 255, 255, 255, 255 );
-    m_CapElement.FontColor.States[ DXUT_STATE_NORMAL ] = D3DCOLOR_ARGB( 255, 255, 255, 255 );
-    m_CapElement.SetFont( 0, D3DCOLOR_ARGB( 255, 255, 255, 255 ), DT_LEFT | DT_VCENTER );
+    m_CapElement.TextureColor.States[ DXUT_STATE_NORMAL ] = D3DCOLOR_ARGB(255, 255, 255, 255);
+    m_CapElement.FontColor.States[ DXUT_STATE_NORMAL ] = D3DCOLOR_ARGB(255, 255, 255, 255);
+    m_CapElement.SetFont( 0, D3DCOLOR_ARGB(255, 255, 255, 255), DT_LEFT | DT_VCENTER );
     // Pre-blend as we don't need to transition the state
     m_CapElement.TextureColor.Blend( DXUT_STATE_NORMAL, 10.0f );
     m_CapElement.FontColor.Blend( DXUT_STATE_NORMAL, 10.0f );
@@ -2802,7 +2766,7 @@ void CDXUTDialog::InitDefaultElements()
 
     // Assign the Element
     SetDefaultElement( DXUT_CONTROL_STATIC, 0, &Element );
-
+    
 
     //-------------------------------------
     // CDXUTButton - Button
@@ -2810,24 +2774,24 @@ void CDXUTDialog::InitDefaultElements()
     SetRect( &rcTexture, 0, 0, 136, 54 );
     Element.SetTexture( 0, &rcTexture );
     Element.SetFont( 0 );
-    Element.TextureColor.States[ DXUT_STATE_NORMAL ] = D3DCOLOR_ARGB( 150, 255, 255, 255 );
-    Element.TextureColor.States[ DXUT_STATE_PRESSED ] = D3DCOLOR_ARGB( 200, 255, 255, 255 );
-    Element.FontColor.States[ DXUT_STATE_MOUSEOVER ] = D3DCOLOR_ARGB( 255, 0, 0, 0 );
-
+    Element.TextureColor.States[ DXUT_STATE_NORMAL ] = D3DCOLOR_ARGB(150, 255, 255, 255);
+    Element.TextureColor.States[ DXUT_STATE_PRESSED ] = D3DCOLOR_ARGB(200, 255, 255, 255);
+    Element.FontColor.States[ DXUT_STATE_MOUSEOVER ] = D3DCOLOR_ARGB(255, 0, 0, 0);
+    
     // Assign the Element
     SetDefaultElement( DXUT_CONTROL_BUTTON, 0, &Element );
-
+    
 
     //-------------------------------------
     // CDXUTButton - Fill layer
     //-------------------------------------
     SetRect( &rcTexture, 136, 0, 252, 54 );
-    Element.SetTexture( 0, &rcTexture, D3DCOLOR_ARGB( 0, 255, 255, 255 ) );
-    Element.TextureColor.States[ DXUT_STATE_MOUSEOVER ] = D3DCOLOR_ARGB( 160, 255, 255, 255 );
-    Element.TextureColor.States[ DXUT_STATE_PRESSED ] = D3DCOLOR_ARGB( 60, 0, 0, 0 );
-    Element.TextureColor.States[ DXUT_STATE_FOCUS ] = D3DCOLOR_ARGB( 30, 255, 255, 255 );
-
-
+    Element.SetTexture( 0, &rcTexture, D3DCOLOR_ARGB(0, 255, 255, 255) );
+    Element.TextureColor.States[ DXUT_STATE_MOUSEOVER ] = D3DCOLOR_ARGB(160, 255, 255, 255);
+    Element.TextureColor.States[ DXUT_STATE_PRESSED ] = D3DCOLOR_ARGB(60, 0, 0, 0);
+    Element.TextureColor.States[ DXUT_STATE_FOCUS ] = D3DCOLOR_ARGB(30, 255, 255, 255);
+    
+    
     // Assign the Element
     SetDefaultElement( DXUT_CONTROL_BUTTON, 1, &Element );
 
@@ -2837,12 +2801,12 @@ void CDXUTDialog::InitDefaultElements()
     //-------------------------------------
     SetRect( &rcTexture, 0, 54, 27, 81 );
     Element.SetTexture( 0, &rcTexture );
-    Element.SetFont( 0, D3DCOLOR_ARGB( 255, 255, 255, 255 ), DT_LEFT | DT_VCENTER );
+    Element.SetFont( 0, D3DCOLOR_ARGB(255, 255, 255, 255), DT_LEFT | DT_VCENTER );
     Element.FontColor.States[ DXUT_STATE_DISABLED ] = D3DCOLOR_ARGB( 200, 200, 200, 200 );
-    Element.TextureColor.States[ DXUT_STATE_NORMAL ] = D3DCOLOR_ARGB( 150, 255, 255, 255 );
-    Element.TextureColor.States[ DXUT_STATE_FOCUS ] = D3DCOLOR_ARGB( 200, 255, 255, 255 );
-    Element.TextureColor.States[ DXUT_STATE_PRESSED ] = D3DCOLOR_ARGB( 255, 255, 255, 255 );
-
+    Element.TextureColor.States[ DXUT_STATE_NORMAL ] = D3DCOLOR_ARGB(150, 255, 255, 255);
+    Element.TextureColor.States[ DXUT_STATE_FOCUS ] = D3DCOLOR_ARGB(200, 255, 255, 255);
+    Element.TextureColor.States[ DXUT_STATE_PRESSED ] = D3DCOLOR_ARGB(255, 255, 255, 255);
+    
     // Assign the Element
     SetDefaultElement( DXUT_CONTROL_CHECKBOX, 0, &Element );
 
@@ -2852,7 +2816,7 @@ void CDXUTDialog::InitDefaultElements()
     //-------------------------------------
     SetRect( &rcTexture, 27, 54, 54, 81 );
     Element.SetTexture( 0, &rcTexture );
-
+    
     // Assign the Element
     SetDefaultElement( DXUT_CONTROL_CHECKBOX, 1, &Element );
 
@@ -2862,12 +2826,12 @@ void CDXUTDialog::InitDefaultElements()
     //-------------------------------------
     SetRect( &rcTexture, 54, 54, 81, 81 );
     Element.SetTexture( 0, &rcTexture );
-    Element.SetFont( 0, D3DCOLOR_ARGB( 255, 255, 255, 255 ), DT_LEFT | DT_VCENTER );
+    Element.SetFont( 0, D3DCOLOR_ARGB(255, 255, 255, 255), DT_LEFT | DT_VCENTER );
     Element.FontColor.States[ DXUT_STATE_DISABLED ] = D3DCOLOR_ARGB( 200, 200, 200, 200 );
-    Element.TextureColor.States[ DXUT_STATE_NORMAL ] = D3DCOLOR_ARGB( 150, 255, 255, 255 );
-    Element.TextureColor.States[ DXUT_STATE_FOCUS ] = D3DCOLOR_ARGB( 200, 255, 255, 255 );
-    Element.TextureColor.States[ DXUT_STATE_PRESSED ] = D3DCOLOR_ARGB( 255, 255, 255, 255 );
-
+    Element.TextureColor.States[ DXUT_STATE_NORMAL ] = D3DCOLOR_ARGB(150, 255, 255, 255);
+    Element.TextureColor.States[ DXUT_STATE_FOCUS ] = D3DCOLOR_ARGB(200, 255, 255, 255);
+    Element.TextureColor.States[ DXUT_STATE_PRESSED ] = D3DCOLOR_ARGB(255, 255, 255, 255);
+    
     // Assign the Element
     SetDefaultElement( DXUT_CONTROL_RADIOBUTTON, 0, &Element );
 
@@ -2877,7 +2841,7 @@ void CDXUTDialog::InitDefaultElements()
     //-------------------------------------
     SetRect( &rcTexture, 81, 54, 108, 81 );
     Element.SetTexture( 0, &rcTexture );
-
+    
     // Assign the Element
     SetDefaultElement( DXUT_CONTROL_RADIOBUTTON, 1, &Element );
 
@@ -2888,14 +2852,14 @@ void CDXUTDialog::InitDefaultElements()
     SetRect( &rcTexture, 7, 81, 247, 123 );
     Element.SetTexture( 0, &rcTexture );
     Element.SetFont( 0 );
-    Element.TextureColor.States[ DXUT_STATE_NORMAL ] = D3DCOLOR_ARGB( 150, 200, 200, 200 );
-    Element.TextureColor.States[ DXUT_STATE_FOCUS ] = D3DCOLOR_ARGB( 170, 230, 230, 230 );
-    Element.TextureColor.States[ DXUT_STATE_DISABLED ] = D3DCOLOR_ARGB( 70, 200, 200, 200 );
-    Element.FontColor.States[ DXUT_STATE_MOUSEOVER ] = D3DCOLOR_ARGB( 255, 0, 0, 0 );
-    Element.FontColor.States[ DXUT_STATE_PRESSED ] = D3DCOLOR_ARGB( 255, 0, 0, 0 );
-    Element.FontColor.States[ DXUT_STATE_DISABLED ] = D3DCOLOR_ARGB( 200, 200, 200, 200 );
-
-
+    Element.TextureColor.States[ DXUT_STATE_NORMAL ] = D3DCOLOR_ARGB(150, 200, 200, 200);
+    Element.TextureColor.States[ DXUT_STATE_FOCUS ] = D3DCOLOR_ARGB(170, 230, 230, 230);
+    Element.TextureColor.States[ DXUT_STATE_DISABLED ] = D3DCOLOR_ARGB(70, 200, 200, 200);
+    Element.FontColor.States[ DXUT_STATE_MOUSEOVER ] = D3DCOLOR_ARGB(255, 0, 0, 0);
+    Element.FontColor.States[ DXUT_STATE_PRESSED ] = D3DCOLOR_ARGB(255, 0, 0, 0);
+    Element.FontColor.States[ DXUT_STATE_DISABLED ] = D3DCOLOR_ARGB(200, 200, 200, 200);
+    
+    
     // Assign the Element
     SetDefaultElement( DXUT_CONTROL_COMBOBOX, 0, &Element );
 
@@ -2905,11 +2869,11 @@ void CDXUTDialog::InitDefaultElements()
     //-------------------------------------
     SetRect( &rcTexture, 98, 189, 151, 238 );
     Element.SetTexture( 0, &rcTexture );
-    Element.TextureColor.States[ DXUT_STATE_NORMAL ] = D3DCOLOR_ARGB( 150, 255, 255, 255 );
-    Element.TextureColor.States[ DXUT_STATE_PRESSED ] = D3DCOLOR_ARGB( 255, 150, 150, 150 );
-    Element.TextureColor.States[ DXUT_STATE_FOCUS ] = D3DCOLOR_ARGB( 200, 255, 255, 255 );
-    Element.TextureColor.States[ DXUT_STATE_DISABLED ] = D3DCOLOR_ARGB( 70, 255, 255, 255 );
-
+    Element.TextureColor.States[ DXUT_STATE_NORMAL ] = D3DCOLOR_ARGB(150, 255, 255, 255);
+    Element.TextureColor.States[ DXUT_STATE_PRESSED ] = D3DCOLOR_ARGB(255, 150, 150, 150);
+    Element.TextureColor.States[ DXUT_STATE_FOCUS ] = D3DCOLOR_ARGB(200, 255, 255, 255);
+    Element.TextureColor.States[ DXUT_STATE_DISABLED ] = D3DCOLOR_ARGB(70, 255, 255, 255);
+    
     // Assign the Element
     SetDefaultElement( DXUT_CONTROL_COMBOBOX, 1, &Element );
 
@@ -2919,8 +2883,8 @@ void CDXUTDialog::InitDefaultElements()
     //-------------------------------------
     SetRect( &rcTexture, 13, 123, 241, 160 );
     Element.SetTexture( 0, &rcTexture );
-    Element.SetFont( 0, D3DCOLOR_ARGB( 255, 0, 0, 0 ), DT_LEFT | DT_TOP );
-
+    Element.SetFont( 0, D3DCOLOR_ARGB(255, 0, 0, 0), DT_LEFT | DT_TOP );
+    
     // Assign the Element
     SetDefaultElement( DXUT_CONTROL_COMBOBOX, 2, &Element );
 
@@ -2930,8 +2894,8 @@ void CDXUTDialog::InitDefaultElements()
     //-------------------------------------
     SetRect( &rcTexture, 12, 163, 239, 183 );
     Element.SetTexture( 0, &rcTexture );
-    Element.SetFont( 0, D3DCOLOR_ARGB( 255, 255, 255, 255 ), DT_LEFT | DT_TOP );
-
+    Element.SetFont( 0, D3DCOLOR_ARGB(255, 255, 255, 255), DT_LEFT | DT_TOP );
+    
     // Assign the Element
     SetDefaultElement( DXUT_CONTROL_COMBOBOX, 3, &Element );
 
@@ -2941,10 +2905,10 @@ void CDXUTDialog::InitDefaultElements()
     //-------------------------------------
     SetRect( &rcTexture, 1, 187, 93, 228 );
     Element.SetTexture( 0, &rcTexture );
-    Element.TextureColor.States[ DXUT_STATE_NORMAL ] = D3DCOLOR_ARGB( 150, 255, 255, 255 );
-    Element.TextureColor.States[ DXUT_STATE_FOCUS ] = D3DCOLOR_ARGB( 200, 255, 255, 255 );
-    Element.TextureColor.States[ DXUT_STATE_DISABLED ] = D3DCOLOR_ARGB( 70, 255, 255, 255 );
-
+    Element.TextureColor.States[ DXUT_STATE_NORMAL ] = D3DCOLOR_ARGB(150, 255, 255, 255);
+    Element.TextureColor.States[ DXUT_STATE_FOCUS ] = D3DCOLOR_ARGB(200, 255, 255, 255);
+    Element.TextureColor.States[ DXUT_STATE_DISABLED ] = D3DCOLOR_ARGB(70, 255, 255, 255);
+    
     // Assign the Element
     SetDefaultElement( DXUT_CONTROL_SLIDER, 0, &Element );
 
@@ -2964,8 +2928,8 @@ void CDXUTDialog::InitDefaultElements()
     int nScrollBarStartY = 191;
     SetRect( &rcTexture, nScrollBarStartX + 0, nScrollBarStartY + 21, nScrollBarStartX + 22, nScrollBarStartY + 32 );
     Element.SetTexture( 0, &rcTexture );
-    Element.TextureColor.States[ DXUT_STATE_DISABLED ] = D3DCOLOR_ARGB( 255, 200, 200, 200 );
-
+    Element.TextureColor.States[ DXUT_STATE_DISABLED ] = D3DCOLOR_ARGB(255, 200, 200, 200);
+    
     // Assign the Element
     SetDefaultElement( DXUT_CONTROL_SCROLLBAR, 0, &Element );
 
@@ -2974,9 +2938,9 @@ void CDXUTDialog::InitDefaultElements()
     //-------------------------------------
     SetRect( &rcTexture, nScrollBarStartX + 0, nScrollBarStartY + 1, nScrollBarStartX + 22, nScrollBarStartY + 21 );
     Element.SetTexture( 0, &rcTexture );
-    Element.TextureColor.States[ DXUT_STATE_DISABLED ] = D3DCOLOR_ARGB( 255, 200, 200, 200 );
-
-
+    Element.TextureColor.States[ DXUT_STATE_DISABLED ] = D3DCOLOR_ARGB(255, 200, 200, 200);
+    
+    
     // Assign the Element
     SetDefaultElement( DXUT_CONTROL_SCROLLBAR, 1, &Element );
 
@@ -2985,9 +2949,9 @@ void CDXUTDialog::InitDefaultElements()
     //-------------------------------------
     SetRect( &rcTexture, nScrollBarStartX + 0, nScrollBarStartY + 32, nScrollBarStartX + 22, nScrollBarStartY + 53 );
     Element.SetTexture( 0, &rcTexture );
-    Element.TextureColor.States[ DXUT_STATE_DISABLED ] = D3DCOLOR_ARGB( 255, 200, 200, 200 );
-
-
+    Element.TextureColor.States[ DXUT_STATE_DISABLED ] = D3DCOLOR_ARGB(255, 200, 200, 200);
+    
+    
     // Assign the Element
     SetDefaultElement( DXUT_CONTROL_SCROLLBAR, 2, &Element );
 
@@ -2996,7 +2960,7 @@ void CDXUTDialog::InitDefaultElements()
     //-------------------------------------
     SetRect( &rcTexture, 220, 192, 238, 234 );
     Element.SetTexture( 0, &rcTexture );
-
+    
     // Assign the Element
     SetDefaultElement( DXUT_CONTROL_SCROLLBAR, 3, &Element );
 
@@ -3051,7 +3015,7 @@ void CDXUTDialog::InitDefaultElements()
     //-------------------------------------
     SetRect( &rcTexture, 13, 123, 241, 160 );
     Element.SetTexture( 0, &rcTexture );
-    Element.SetFont( 0, D3DCOLOR_ARGB( 255, 0, 0, 0 ), DT_LEFT | DT_TOP );
+    Element.SetFont( 0, D3DCOLOR_ARGB(255, 0, 0, 0), DT_LEFT | DT_TOP );
 
     // Assign the Element
     SetDefaultElement( DXUT_CONTROL_LISTBOX, 0, &Element );
@@ -3062,7 +3026,7 @@ void CDXUTDialog::InitDefaultElements()
 
     SetRect( &rcTexture, 16, 166, 240, 183 );
     Element.SetTexture( 0, &rcTexture );
-    Element.SetFont( 0, D3DCOLOR_ARGB( 255, 255, 255, 255 ), DT_LEFT | DT_TOP );
+    Element.SetFont( 0, D3DCOLOR_ARGB(255, 255, 255, 255), DT_LEFT | DT_TOP );
 
     // Assign the Element
     SetDefaultElement( DXUT_CONTROL_LISTBOX, 1, &Element );
@@ -3075,7 +3039,7 @@ void CDXUTDialog::InitDefaultElements()
 //--------------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------------
-CDXUTControl::CDXUTControl( CDXUTDialog* pDialog )
+CDXUTControl::CDXUTControl( CDXUTDialog *pDialog )
 {
     m_Type = DXUT_CONTROL_BUTTON;
     m_pDialog = pDialog;
@@ -3096,7 +3060,7 @@ CDXUTControl::CDXUTControl( CDXUTDialog* pDialog )
     m_width = 0;
     m_height = 0;
 
-    ZeroMemory( &m_rcBoundingBox, sizeof( m_rcBoundingBox ) );
+   ZeroMemory( &m_rcBoundingBox, sizeof( m_rcBoundingBox ) );
 }
 
 
@@ -3129,14 +3093,14 @@ HRESULT CDXUTControl::SetElement( UINT iElement, CDXUTElement* pElement )
         return E_INVALIDARG;
 
     // Make certain the array is this large
-    for( UINT i = m_Elements.GetSize(); i <= iElement; i++ )
+    for( UINT i=m_Elements.GetSize(); i <= iElement; i++ )
     {
         CDXUTElement* pNewElement = new CDXUTElement();
         if( pNewElement == NULL )
             return E_OUTOFMEMORY;
 
         hr = m_Elements.Add( pNewElement );
-        if( FAILED( hr ) )
+        if( FAILED(hr) )
         {
             SAFE_DELETE( pNewElement );
             return hr;
@@ -3146,7 +3110,7 @@ HRESULT CDXUTControl::SetElement( UINT iElement, CDXUTElement* pElement )
     // Update the data
     CDXUTElement* pCurElement = m_Elements.GetAt( iElement );
     *pCurElement = *pElement;
-
+    
     return S_OK;
 }
 
@@ -3157,7 +3121,7 @@ void CDXUTControl::Refresh()
     m_bMouseOver = false;
     m_bHasFocus = false;
 
-    for( int i = 0; i < m_Elements.GetSize(); i++ )
+    for( int i=0; i < m_Elements.GetSize(); i++ )
     {
         CDXUTElement* pElement = m_Elements.GetAt( i );
         pElement->Refresh();
@@ -3177,14 +3141,14 @@ void CDXUTControl::UpdateRects()
 //--------------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------------
-CDXUTStatic::CDXUTStatic( CDXUTDialog* pDialog )
+CDXUTStatic::CDXUTStatic( CDXUTDialog *pDialog )
 {
     m_Type = DXUT_CONTROL_STATIC;
     m_pDialog = pDialog;
 
-    ZeroMemory( &m_strText, sizeof( m_strText ) );
+    ZeroMemory( &m_strText, sizeof(m_strText) );  
 
-    for( int i = 0; i < m_Elements.GetSize(); i++ )
+    for( int i=0; i < m_Elements.GetSize(); i++ )
     {
         CDXUTElement* pElement = m_Elements.GetAt( i );
         SAFE_DELETE( pElement );
@@ -3214,8 +3178,7 @@ void CDXUTStatic::Render( float fElapsedTime )
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTStatic::GetTextCopy( __out_ecount(bufferCount) LPWSTR strDest, 
-                                  UINT bufferCount )
+HRESULT CDXUTStatic::GetTextCopy( LPWSTR strDest, UINT bufferCount )
 {
     // Validate incoming parameters
     if( strDest == NULL || bufferCount == 0 )
@@ -3224,7 +3187,7 @@ HRESULT CDXUTStatic::GetTextCopy( __out_ecount(bufferCount) LPWSTR strDest,
     }
 
     // Copy the window text
-    wcscpy_s( strDest, bufferCount, m_strText );
+    StringCchCopy( strDest, bufferCount, m_strText );
 
     return S_OK;
 }
@@ -3238,8 +3201,8 @@ HRESULT CDXUTStatic::SetText( LPCWSTR strText )
         m_strText[0] = 0;
         return S_OK;
     }
-
-    wcscpy_s( m_strText, MAX_PATH, strText );
+    
+    StringCchCopy( m_strText, MAX_PATH, strText); 
     return S_OK;
 }
 
@@ -3249,7 +3212,7 @@ HRESULT CDXUTStatic::SetText( LPCWSTR strText )
 //--------------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------------
-CDXUTButton::CDXUTButton( CDXUTDialog* pDialog )
+CDXUTButton::CDXUTButton( CDXUTDialog *pDialog )
 {
     m_Type = DXUT_CONTROL_BUTTON;
     m_pDialog = pDialog;
@@ -3304,21 +3267,21 @@ bool CDXUTButton::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM lParam
     {
         case WM_LBUTTONDOWN:
         case WM_LBUTTONDBLCLK:
+        {
+            if( ContainsPoint( pt ) )
             {
-                if( ContainsPoint( pt ) )
-                {
-                    // Pressed while inside the control
-                    m_bPressed = true;
-                    SetCapture( DXUTGetHWND() );
+                // Pressed while inside the control
+                m_bPressed = true;
+                SetCapture( DXUTGetHWND() );
 
-                    if( !m_bHasFocus )
-                        m_pDialog->RequestFocus( this );
+                if( !m_bHasFocus )
+                    m_pDialog->RequestFocus( this );
 
-                    return true;
-                }
-
-                break;
+                return true;
             }
+
+            break;
+        }
 
         case WM_LBUTTONUP:
         {
@@ -3340,7 +3303,7 @@ bool CDXUTButton::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM lParam
             break;
         }
     };
-
+    
     return false;
 }
 
@@ -3378,16 +3341,17 @@ void CDXUTButton::Render( float fElapsedTime )
     {
         iState = DXUT_STATE_FOCUS;
     }
-
+    
     // Background fill layer
+    //TODO: remove magic numbers
     CDXUTElement* pElement = m_Elements.GetAt( 0 );
-
+    
     float fBlendRate = ( iState == DXUT_STATE_PRESSED ) ? 0.0f : 0.8f;
 
     RECT rcWindow = m_rcBoundingBox;
     OffsetRect( &rcWindow, nOffsetX, nOffsetY );
 
-
+ 
     // Blend current color
     pElement->TextureColor.Blend( iState, fElapsedTime, fBlendRate );
     pElement->FontColor.Blend( iState, fElapsedTime, fBlendRate );
@@ -3413,14 +3377,14 @@ void CDXUTButton::Render( float fElapsedTime )
 //--------------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------------
-CDXUTCheckBox::CDXUTCheckBox( CDXUTDialog* pDialog )
+CDXUTCheckBox::CDXUTCheckBox( CDXUTDialog *pDialog )
 {
     m_Type = DXUT_CONTROL_CHECKBOX;
     m_pDialog = pDialog;
 
     m_bChecked = false;
 }
-
+    
 
 //--------------------------------------------------------------------------------------
 bool CDXUTCheckBox::HandleKeyboard( UINT uMsg, WPARAM wParam, LPARAM lParam )
@@ -3468,21 +3432,21 @@ bool CDXUTCheckBox::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM lPar
     {
         case WM_LBUTTONDOWN:
         case WM_LBUTTONDBLCLK:
+        {
+            if( ContainsPoint( pt ) )
             {
-                if( ContainsPoint( pt ) )
-                {
-                    // Pressed while inside the control
-                    m_bPressed = true;
-                    SetCapture( DXUTGetHWND() );
+                // Pressed while inside the control
+                m_bPressed = true;
+                SetCapture( DXUTGetHWND() );
 
-                    if( !m_bHasFocus )
-                        m_pDialog->RequestFocus( this );
+                if( !m_bHasFocus )
+                    m_pDialog->RequestFocus( this );
 
-                    return true;
-                }
-
-                break;
+                return true;
             }
+
+            break;
+        }
 
         case WM_LBUTTONUP:
         {
@@ -3494,32 +3458,32 @@ bool CDXUTCheckBox::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM lPar
                 // Button click
                 if( ContainsPoint( pt ) )
                     SetCheckedInternal( !m_bChecked, true );
-
+                
                 return true;
             }
 
             break;
         }
     };
-
+    
     return false;
 }
 
 
 //--------------------------------------------------------------------------------------
-void CDXUTCheckBox::SetCheckedInternal( bool bChecked, bool bFromInput )
-{
-    m_bChecked = bChecked;
+void CDXUTCheckBox::SetCheckedInternal( bool bChecked, bool bFromInput ) 
+{ 
+    m_bChecked = bChecked; 
 
-    m_pDialog->SendEvent( EVENT_CHECKBOX_CHANGED, bFromInput, this );
+    m_pDialog->SendEvent( EVENT_CHECKBOX_CHANGED, bFromInput, this ); 
 }
 
 
 //--------------------------------------------------------------------------------------
-BOOL CDXUTCheckBox::ContainsPoint( POINT pt )
-{
-    return ( PtInRect( &m_rcBoundingBox, pt ) ||
-             PtInRect( &m_rcButton, pt ) );
+BOOL CDXUTCheckBox::ContainsPoint( POINT pt ) 
+{ 
+    return ( PtInRect( &m_rcBoundingBox, pt ) || 
+             PtInRect( &m_rcButton, pt ) ); 
 }
 
 
@@ -3533,7 +3497,7 @@ void CDXUTCheckBox::UpdateRects()
     m_rcButton.right = m_rcButton.left + RectHeight( m_rcButton );
 
     m_rcText = m_rcBoundingBox;
-    m_rcText.left += ( int )( 1.25f * RectWidth( m_rcButton ) );
+    m_rcText.left += (int) ( 1.25f * RectWidth( m_rcButton ) );
 }
 
 
@@ -3581,7 +3545,7 @@ void CDXUTCheckBox::Render( float fElapsedTime )
 //--------------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------------
-CDXUTRadioButton::CDXUTRadioButton( CDXUTDialog* pDialog )
+CDXUTRadioButton::CDXUTRadioButton( CDXUTDialog *pDialog )
 {
     m_Type = DXUT_CONTROL_RADIOBUTTON;
     m_pDialog = pDialog;
@@ -3615,7 +3579,7 @@ bool CDXUTRadioButton::HandleKeyboard( UINT uMsg, WPARAM wParam, LPARAM lParam )
                     if( m_bPressed == true )
                     {
                         m_bPressed = false;
-
+                        
                         m_pDialog->ClearRadioButtonGroup( m_nButtonGroup );
                         m_bChecked = !m_bChecked;
 
@@ -3639,21 +3603,21 @@ bool CDXUTRadioButton::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM l
     {
         case WM_LBUTTONDOWN:
         case WM_LBUTTONDBLCLK:
+        {
+            if( ContainsPoint( pt ) )
             {
-                if( ContainsPoint( pt ) )
-                {
-                    // Pressed while inside the control
-                    m_bPressed = true;
-                    SetCapture( DXUTGetHWND() );
+                // Pressed while inside the control
+                m_bPressed = true;
+                SetCapture( DXUTGetHWND() );
 
-                    if( !m_bHasFocus )
-                        m_pDialog->RequestFocus( this );
+                if( !m_bHasFocus )
+                    m_pDialog->RequestFocus( this );
 
-                    return true;
-                }
-
-                break;
+                return true;
             }
+
+            break;
+        }
 
         case WM_LBUTTONUP:
         {
@@ -3677,7 +3641,7 @@ bool CDXUTRadioButton::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM l
             break;
         }
     };
-
+    
     return false;
 }
 
@@ -3699,7 +3663,8 @@ void CDXUTRadioButton::SetCheckedInternal( bool bChecked, bool bClearGroup, bool
 //--------------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------------
-CDXUTComboBox::CDXUTComboBox( CDXUTDialog* pDialog ) : m_ScrollBar( pDialog )
+CDXUTComboBox::CDXUTComboBox( CDXUTDialog *pDialog ) :
+    m_ScrollBar( pDialog )
 {
     m_Type = DXUT_CONTROL_COMBOBOX;
     m_pDialog = pDialog;
@@ -3738,7 +3703,7 @@ void CDXUTComboBox::SetTextColor( D3DCOLOR Color )
 //--------------------------------------------------------------------------------------
 void CDXUTComboBox::UpdateRects()
 {
-
+    
     CDXUTButton::UpdateRects();
 
     m_rcButton = m_rcBoundingBox;
@@ -3748,19 +3713,19 @@ void CDXUTComboBox::UpdateRects()
     m_rcText.right = m_rcButton.left;
 
     m_rcDropdown = m_rcText;
-    OffsetRect( &m_rcDropdown, 0, ( int )( 0.90f * RectHeight( m_rcText ) ) );
+    OffsetRect( &m_rcDropdown, 0, (int) (0.90f * RectHeight( m_rcText )) );
     m_rcDropdown.bottom += m_nDropHeight;
     m_rcDropdown.right -= m_nSBWidth;
 
     m_rcDropdownText = m_rcDropdown;
-    m_rcDropdownText.left += ( int )( 0.1f * RectWidth( m_rcDropdown ) );
-    m_rcDropdownText.right -= ( int )( 0.1f * RectWidth( m_rcDropdown ) );
-    m_rcDropdownText.top += ( int )( 0.1f * RectHeight( m_rcDropdown ) );
-    m_rcDropdownText.bottom -= ( int )( 0.1f * RectHeight( m_rcDropdown ) );
+    m_rcDropdownText.left += (int) (0.1f * RectWidth( m_rcDropdown ));
+    m_rcDropdownText.right -= (int) (0.1f * RectWidth( m_rcDropdown ));
+    m_rcDropdownText.top += (int) (0.1f * RectHeight( m_rcDropdown ));
+    m_rcDropdownText.bottom -= (int) (0.1f * RectHeight( m_rcDropdown ));
 
     // Update the scrollbar's rects
-    m_ScrollBar.SetLocation( m_rcDropdown.right, m_rcDropdown.top + 2 );
-    m_ScrollBar.SetSize( m_nSBWidth, RectHeight( m_rcDropdown ) - 2 );
+    m_ScrollBar.SetLocation( m_rcDropdown.right, m_rcDropdown.top+2 );
+    m_ScrollBar.SetSize( m_nSBWidth, RectHeight( m_rcDropdown )-2 );
     DXUTFontNode* pFontNode = m_pDialog->GetManager()->GetFontNode( m_Elements.GetAt( 2 )->iFont );
     if( pFontNode && pFontNode->nHeight )
     {
@@ -3785,7 +3750,7 @@ void CDXUTComboBox::OnFocusOut()
 //--------------------------------------------------------------------------------------
 bool CDXUTComboBox::HandleKeyboard( UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-    const DWORD REPEAT_MASK = ( 0x40000000 );
+    const DWORD REPEAT_MASK = (0x40000000);
 
     if( !m_bEnabled || !m_bVisible )
         return false;
@@ -3809,7 +3774,7 @@ bool CDXUTComboBox::HandleKeyboard( UINT uMsg, WPARAM wParam, LPARAM lParam )
                             m_pDialog->SendEvent( EVENT_COMBOBOX_SELECTION_CHANGED, true, this );
                         }
                         m_bOpened = false;
-
+                        
                         if( !m_pDialog->m_bKeyboardInput )
                             m_pDialog->ClearFocus();
 
@@ -3844,12 +3809,12 @@ bool CDXUTComboBox::HandleKeyboard( UINT uMsg, WPARAM wParam, LPARAM lParam )
                         if( !m_bOpened )
                             m_pDialog->SendEvent( EVENT_COMBOBOX_SELECTION_CHANGED, true, this );
                     }
-
+                    
                     return true;
 
                 case VK_RIGHT:
                 case VK_DOWN:
-                    if( m_iFocused + 1 < ( int )GetNumItems() )
+                    if( m_iFocused+1 < (int)GetNumItems() )
                     {
                         m_iFocused++;
                         m_iSelected = m_iFocused;
@@ -3885,10 +3850,10 @@ bool CDXUTComboBox::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM lPar
             if( m_bOpened && PtInRect( &m_rcDropdown, pt ) )
             {
                 // Determine which item has been selected
-                for( int i = 0; i < m_Items.GetSize(); i++ )
+                for( int i=0; i < m_Items.GetSize(); i++ )
                 {
                     DXUTComboBoxItem* pItem = m_Items.GetAt( i );
-                    if( pItem->bVisible &&
+                    if( pItem -> bVisible &&
                         PtInRect( &pItem->rcActive, pt ) )
                     {
                         m_iFocused = i;
@@ -3901,75 +3866,75 @@ bool CDXUTComboBox::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM lPar
 
         case WM_LBUTTONDOWN:
         case WM_LBUTTONDBLCLK:
+        {
+            if( ContainsPoint( pt ) )
             {
-                if( ContainsPoint( pt ) )
+                // Pressed while inside the control
+                m_bPressed = true;
+                SetCapture( DXUTGetHWND() );
+
+                if( !m_bHasFocus )
+                    m_pDialog->RequestFocus( this );
+
+                // Toggle dropdown
+                if( m_bHasFocus )
                 {
-                    // Pressed while inside the control
-                    m_bPressed = true;
-                    SetCapture( DXUTGetHWND() );
-
-                    if( !m_bHasFocus )
-                        m_pDialog->RequestFocus( this );
-
-                    // Toggle dropdown
-                    if( m_bHasFocus )
+                    m_bOpened = !m_bOpened;
+                
+                    if( !m_bOpened )
                     {
-                        m_bOpened = !m_bOpened;
-
-                        if( !m_bOpened )
-                        {
-                            if( !m_pDialog->m_bKeyboardInput )
-                                m_pDialog->ClearFocus();
-                        }
+                        if( !m_pDialog->m_bKeyboardInput )
+                            m_pDialog->ClearFocus();
                     }
-
-                    return true;
                 }
 
-                // Perhaps this click is within the dropdown
-                if( m_bOpened && PtInRect( &m_rcDropdown, pt ) )
-                {
-                    // Determine which item has been selected
-                    for( int i = m_ScrollBar.GetTrackPos(); i < m_Items.GetSize(); i++ )
-                    {
-                        DXUTComboBoxItem* pItem = m_Items.GetAt( i );
-                        if( pItem->bVisible &&
-                            PtInRect( &pItem->rcActive, pt ) )
-                        {
-                            m_iFocused = m_iSelected = i;
-                            m_pDialog->SendEvent( EVENT_COMBOBOX_SELECTION_CHANGED, true, this );
-                            m_bOpened = false;
-
-                            if( !m_pDialog->m_bKeyboardInput )
-                                m_pDialog->ClearFocus();
-
-                            break;
-                        }
-                    }
-
-                    return true;
-                }
-
-                // Mouse click not on main control or in dropdown, fire an event if needed
-                if( m_bOpened )
-                {
-                    m_iFocused = m_iSelected;
-
-                    m_pDialog->SendEvent( EVENT_COMBOBOX_SELECTION_CHANGED, true, this );
-                    m_bOpened = false;
-                }
-
-                // Make sure the control is no longer in a pressed state
-                m_bPressed = false;
-
-                // Release focus if appropriate
-                if( !m_pDialog->m_bKeyboardInput )
-                {
-                    m_pDialog->ClearFocus();
-                }
-
-                break;
+                return true;
             }
+
+            // Perhaps this click is within the dropdown
+            if( m_bOpened && PtInRect( &m_rcDropdown, pt ) )
+            {
+                // Determine which item has been selected
+                for( int i=m_ScrollBar.GetTrackPos(); i < m_Items.GetSize(); i++ )
+                {
+                    DXUTComboBoxItem* pItem = m_Items.GetAt( i );
+                    if( pItem -> bVisible &&
+                        PtInRect( &pItem->rcActive, pt ) )
+                    {
+                        m_iFocused = m_iSelected = i;
+                        m_pDialog->SendEvent( EVENT_COMBOBOX_SELECTION_CHANGED, true, this );
+                        m_bOpened = false;
+                        
+                        if( !m_pDialog->m_bKeyboardInput )
+                            m_pDialog->ClearFocus();
+
+                        break;
+                    }
+                }
+
+                return true;
+            }
+
+            // Mouse click not on main control or in dropdown, fire an event if needed
+            if( m_bOpened )
+            {
+                m_iFocused = m_iSelected;
+
+                m_pDialog->SendEvent( EVENT_COMBOBOX_SELECTION_CHANGED, true, this );
+                m_bOpened = false;
+            }
+
+            // Make sure the control is no longer in a pressed state
+            m_bPressed = false;
+
+            // Release focus if appropriate
+            if( !m_pDialog->m_bKeyboardInput )
+            {
+                m_pDialog->ClearFocus();
+            }
+
+            break;
+        }
 
         case WM_LBUTTONUP:
         {
@@ -3986,32 +3951,31 @@ bool CDXUTComboBox::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM lPar
 
         case WM_MOUSEWHEEL:
         {
-            int zDelta = ( short )HIWORD( wParam ) / WHEEL_DELTA;
+            int zDelta = (short) HIWORD(wParam) / WHEEL_DELTA;
             if( m_bOpened )
             {
                 UINT uLines;
                 SystemParametersInfo( SPI_GETWHEELSCROLLLINES, 0, &uLines, 0 );
                 m_ScrollBar.Scroll( -zDelta * uLines );
-            }
-            else
+            } else
             {
                 if( zDelta > 0 )
                 {
                     if( m_iFocused > 0 )
                     {
                         m_iFocused--;
-                        m_iSelected = m_iFocused;
-
+                        m_iSelected = m_iFocused;     
+                        
                         if( !m_bOpened )
                             m_pDialog->SendEvent( EVENT_COMBOBOX_SELECTION_CHANGED, true, this );
-                    }
+                    }          
                 }
                 else
                 {
-                    if( m_iFocused + 1 < ( int )GetNumItems() )
+                    if( m_iFocused+1 < (int)GetNumItems() )
                     {
                         m_iFocused++;
-                        m_iSelected = m_iFocused;
+                        m_iSelected = m_iFocused;   
 
                         if( !m_bOpened )
                             m_pDialog->SendEvent( EVENT_COMBOBOX_SELECTION_CHANGED, true, this );
@@ -4021,7 +3985,7 @@ bool CDXUTComboBox::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM lPar
             return true;
         }
     };
-
+    
     return false;
 }
 
@@ -4036,11 +4000,11 @@ void CDXUTComboBox::OnHotkey()
         return;
 
     if( m_pDialog->IsKeyboardInputEnabled() )
-        m_pDialog->RequestFocus( this );
+    m_pDialog->RequestFocus( this ); 
 
     m_iSelected++;
-
-    if( m_iSelected >= ( int )m_Items.GetSize() )
+    
+    if( m_iSelected >= (int) m_Items.GetSize() )
         m_iSelected = 0;
 
     m_iFocused = m_iSelected;
@@ -4052,7 +4016,7 @@ void CDXUTComboBox::OnHotkey()
 void CDXUTComboBox::Render( float fElapsedTime )
 {
     DXUT_CONTROL_STATE iState = DXUT_STATE_NORMAL;
-
+    
     if( !m_bOpened )
         iState = DXUT_STATE_HIDDEN;
 
@@ -4066,8 +4030,7 @@ void CDXUTComboBox::Render( float fElapsedTime )
     {
         // Update the page size of the scroll bar
         if( m_pDialog->GetManager()->GetFontNode( pElement->iFont )->nHeight )
-            m_ScrollBar.SetPageSize( RectHeight( m_rcDropdownText ) /
-                                     m_pDialog->GetManager()->GetFontNode( pElement->iFont )->nHeight );
+            m_ScrollBar.SetPageSize( RectHeight( m_rcDropdownText ) / m_pDialog->GetManager()->GetFontNode( pElement->iFont )->nHeight );
         else
             m_ScrollBar.SetPageSize( RectHeight( m_rcDropdownText ) );
         bSBInit = true;
@@ -4109,7 +4072,7 @@ void CDXUTComboBox::Render( float fElapsedTime )
 
             SetRect( &pItem->rcActive, m_rcDropdownText.left, curY, m_rcDropdownText.right, curY + pFont->nHeight );
             curY += pFont->nHeight;
-
+            
             //debug
             //int blue = 50 * i;
             //m_pDialog->DrawRect( &pItem->rcActive, 0xFFFF0000 | blue );
@@ -4118,11 +4081,10 @@ void CDXUTComboBox::Render( float fElapsedTime )
 
             if( m_bOpened )
             {
-                if( ( int )i == m_iFocused )
+                if( (int)i == m_iFocused )
                 {
                     RECT rc;
-                    SetRect( &rc, m_rcDropdown.left, pItem->rcActive.top - 2, m_rcDropdown.right,
-                             pItem->rcActive.bottom + 2 );
+                    SetRect( &rc, m_rcDropdown.left, pItem->rcActive.top-2, m_rcDropdown.right, pItem->rcActive.bottom+2 );
                     m_pDialog->DrawSprite( pSelectionElement, &rc, DXUT_NEAR_BUTTON_DEPTH );
                     m_pDialog->DrawText( pItem->strText, pSelectionElement, &pItem->rcActive );
                 }
@@ -4138,7 +4100,7 @@ void CDXUTComboBox::Render( float fElapsedTime )
     int nOffsetY = 0;
 
     iState = DXUT_STATE_NORMAL;
-
+    
     if( m_bVisible == false )
         iState = DXUT_STATE_HIDDEN;
     else if( m_bEnabled == false )
@@ -4161,13 +4123,13 @@ void CDXUTComboBox::Render( float fElapsedTime )
         iState = DXUT_STATE_FOCUS;
 
     float fBlendRate = ( iState == DXUT_STATE_PRESSED ) ? 0.0f : 0.8f;
-
+    
     // Button
     pElement = m_Elements.GetAt( 1 );
-
+    
     // Blend current color
     pElement->TextureColor.Blend( iState, fElapsedTime, fBlendRate );
-
+    
     RECT rcWindow = m_rcButton;
     OffsetRect( &rcWindow, nOffsetX, nOffsetY );
     m_pDialog->DrawSprite( pElement, &rcWindow, DXUT_FAR_BUTTON_DEPTH );
@@ -4176,21 +4138,22 @@ void CDXUTComboBox::Render( float fElapsedTime )
         iState = DXUT_STATE_PRESSED;
 
     // Main text box
+    //TODO: remove magic numbers
     pElement = m_Elements.GetAt( 0 );
-
+    
     // Blend current color
     pElement->TextureColor.Blend( iState, fElapsedTime, fBlendRate );
     pElement->FontColor.Blend( iState, fElapsedTime, fBlendRate );
 
-    m_pDialog->DrawSprite( pElement, &m_rcText, DXUT_NEAR_BUTTON_DEPTH );
-
-    if( m_iSelected >= 0 && m_iSelected < ( int )m_Items.GetSize() )
+    m_pDialog->DrawSprite( pElement, &m_rcText, DXUT_NEAR_BUTTON_DEPTH);
+    
+    if( m_iSelected >= 0 && m_iSelected < (int) m_Items.GetSize() )
     {
         DXUTComboBoxItem* pItem = m_Items.GetAt( m_iSelected );
         if( pItem != NULL )
         {
             m_pDialog->DrawText( pItem->strText, pElement, &m_rcText );
-
+        
         }
     }
 }
@@ -4200,20 +4163,20 @@ void CDXUTComboBox::Render( float fElapsedTime )
 HRESULT CDXUTComboBox::AddItem( const WCHAR* strText, void* pData )
 {
     // Validate parameters
-    if( strText == NULL )
+    if( strText== NULL )
     {
         return E_INVALIDARG;
     }
-
+    
     // Create a new item and set the data
     DXUTComboBoxItem* pItem = new DXUTComboBoxItem;
     if( pItem == NULL )
     {
         return DXTRACE_ERR_MSGBOX( L"new", E_OUTOFMEMORY );
     }
-
-    ZeroMemory( pItem, sizeof( DXUTComboBoxItem ) );
-    wcscpy_s( pItem->strText, 256, strText );
+    
+    ZeroMemory( pItem, sizeof(DXUTComboBoxItem) );
+    StringCchCopy( pItem->strText, 256, strText );
     pItem->pData = pData;
 
     m_Items.Add( pItem );
@@ -4248,7 +4211,7 @@ void CDXUTComboBox::RemoveItem( UINT index )
 //--------------------------------------------------------------------------------------
 void CDXUTComboBox::RemoveAllItems()
 {
-    for( int i = 0; i < m_Items.GetSize(); i++ )
+    for( int i=0; i < m_Items.GetSize(); i++ )
     {
         DXUTComboBoxItem* pItem = m_Items.GetAt( i );
         SAFE_DELETE( pItem );
@@ -4276,7 +4239,7 @@ int CDXUTComboBox::FindItem( const WCHAR* strText, UINT iStart )
 
     for( int i = iStart; i < m_Items.GetSize(); i++ )
     {
-        DXUTComboBoxItem* pItem = m_Items.GetAt( i );
+        DXUTComboBoxItem* pItem = m_Items.GetAt(i);
 
         if( 0 == wcscmp( pItem->strText, strText ) )
         {
@@ -4318,7 +4281,7 @@ void* CDXUTComboBox::GetItemData( const WCHAR* strText )
         return NULL;
     }
 
-    DXUTComboBoxItem* pItem = m_Items.GetAt( index );
+    DXUTComboBoxItem* pItem = m_Items.GetAt(index);
     if( pItem == NULL )
     {
         DXTRACE_ERR( L"CGrowableArray::GetAt", E_FAIL );
@@ -4374,9 +4337,9 @@ HRESULT CDXUTComboBox::SetSelectedByText( const WCHAR* strText )
 //--------------------------------------------------------------------------------------
 HRESULT CDXUTComboBox::SetSelectedByData( void* pData )
 {
-    for( int i = 0; i < m_Items.GetSize(); i++ )
+    for( int i=0; i < m_Items.GetSize(); i++ )
     {
-        DXUTComboBoxItem* pItem = m_Items.GetAt( i );
+        DXUTComboBoxItem* pItem = m_Items.GetAt(i);
 
         if( pItem->pData == pData )
         {
@@ -4392,7 +4355,7 @@ HRESULT CDXUTComboBox::SetSelectedByData( void* pData )
 
 
 //--------------------------------------------------------------------------------------
-CDXUTSlider::CDXUTSlider( CDXUTDialog* pDialog )
+CDXUTSlider::CDXUTSlider( CDXUTDialog *pDialog )
 {
     m_Type = DXUT_CONTROL_SLIDER;
     m_pDialog = pDialog;
@@ -4406,10 +4369,10 @@ CDXUTSlider::CDXUTSlider( CDXUTDialog* pDialog )
 
 
 //--------------------------------------------------------------------------------------
-BOOL CDXUTSlider::ContainsPoint( POINT pt )
-{
-    return ( PtInRect( &m_rcBoundingBox, pt ) ||
-             PtInRect( &m_rcButton, pt ) );
+BOOL CDXUTSlider::ContainsPoint( POINT pt ) 
+{ 
+    return ( PtInRect( &m_rcBoundingBox, pt ) || 
+             PtInRect( &m_rcButton, pt ) ); 
 }
 
 
@@ -4420,16 +4383,16 @@ void CDXUTSlider::UpdateRects()
 
     m_rcButton = m_rcBoundingBox;
     m_rcButton.right = m_rcButton.left + RectHeight( m_rcButton );
-    OffsetRect( &m_rcButton, -RectWidth( m_rcButton ) / 2, 0 );
+    OffsetRect( &m_rcButton, -RectWidth( m_rcButton )/2, 0 );
 
-    m_nButtonX = ( int )( ( m_nValue - m_nMin ) * ( float )RectWidth( m_rcBoundingBox ) / ( m_nMax - m_nMin ) );
+    m_nButtonX = (int) ( (m_nValue - m_nMin) * (float)RectWidth( m_rcBoundingBox ) / (m_nMax - m_nMin) );
     OffsetRect( &m_rcButton, m_nButtonX, 0 );
 }
 
 int CDXUTSlider::ValueFromPos( int x )
-{
-    float fValuePerPixel = ( float )( m_nMax - m_nMin ) / RectWidth( m_rcBoundingBox );
-    return ( int )( 0.5f + m_nMin + fValuePerPixel * ( x - m_rcBoundingBox.left ) );
+{ 
+    float fValuePerPixel = (float)(m_nMax - m_nMin) / RectWidth( m_rcBoundingBox );
+    return (int) (0.5f + m_nMin + fValuePerPixel * (x - m_rcBoundingBox.left)) ; 
 }
 
 //--------------------------------------------------------------------------------------
@@ -4463,19 +4426,17 @@ bool CDXUTSlider::HandleKeyboard( UINT uMsg, WPARAM wParam, LPARAM lParam )
                     return true;
 
                 case VK_NEXT:
-                    SetValueInternal( m_nValue - ( 10 > ( m_nMax - m_nMin ) / 10 ? 10 : ( m_nMax - m_nMin ) / 10 ),
-                                      true );
+                    SetValueInternal( m_nValue - ( 10 > (m_nMax - m_nMin) / 10 ? 10 : (m_nMax - m_nMin) / 10 ), true );
                     return true;
 
                 case VK_PRIOR:
-                    SetValueInternal( m_nValue + ( 10 > ( m_nMax - m_nMin ) / 10 ? 10 : ( m_nMax - m_nMin ) / 10 ),
-                                      true );
+                    SetValueInternal( m_nValue + ( 10 > (m_nMax - m_nMin) / 10 ? 10 : (m_nMax - m_nMin) / 10 ), true );
                     return true;
             }
             break;
         }
     }
-
+    
 
     return false;
 }
@@ -4491,49 +4452,49 @@ bool CDXUTSlider::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM lParam
     {
         case WM_LBUTTONDOWN:
         case WM_LBUTTONDBLCLK:
+        {
+            if( PtInRect( &m_rcButton, pt ) )
             {
-                if( PtInRect( &m_rcButton, pt ) )
+                // Pressed while inside the control
+                m_bPressed = true;
+                SetCapture( DXUTGetHWND() );
+
+                m_nDragX = pt.x;
+                //m_nDragY = pt.y;
+                m_nDragOffset = m_nButtonX - m_nDragX;
+
+                //m_nDragValue = m_nValue;
+
+                if( !m_bHasFocus )
+                    m_pDialog->RequestFocus( this );
+
+                return true;
+            }
+
+            if( PtInRect( &m_rcBoundingBox, pt ) )
+            {
+                m_nDragX = pt.x;
+                m_nDragOffset = 0;               
+                m_bPressed = true;
+                
+                if( !m_bHasFocus )
+                    m_pDialog->RequestFocus( this );
+
+                if( pt.x > m_nButtonX + m_x )
                 {
-                    // Pressed while inside the control
-                    m_bPressed = true;
-                    SetCapture( DXUTGetHWND() );
-
-                    m_nDragX = pt.x;
-                    //m_nDragY = pt.y;
-                    m_nDragOffset = m_nButtonX - m_nDragX;
-
-                    //m_nDragValue = m_nValue;
-
-                    if( !m_bHasFocus )
-                        m_pDialog->RequestFocus( this );
-
+                    SetValueInternal( m_nValue + 1, true );
                     return true;
                 }
 
-                if( PtInRect( &m_rcBoundingBox, pt ) )
+                if( pt.x < m_nButtonX + m_x )
                 {
-                    m_nDragX = pt.x;
-                    m_nDragOffset = 0;
-                    m_bPressed = true;
-
-                    if( !m_bHasFocus )
-                        m_pDialog->RequestFocus( this );
-
-                    if( pt.x > m_nButtonX + m_x )
-                    {
-                        SetValueInternal( m_nValue + 1, true );
-                        return true;
-                    }
-
-                    if( pt.x < m_nButtonX + m_x )
-                    {
-                        SetValueInternal( m_nValue - 1, true );
-                        return true;
-                    }
+                    SetValueInternal( m_nValue - 1, true );
+                    return true;
                 }
-
-                break;
             }
+
+            break;
+        }
 
         case WM_LBUTTONUP:
         {
@@ -4562,18 +4523,18 @@ bool CDXUTSlider::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM lParam
 
         case WM_MOUSEWHEEL:
         {
-            int nScrollAmount = int( ( short )HIWORD( wParam ) ) / WHEEL_DELTA;
+            int nScrollAmount = int((short)HIWORD(wParam)) / WHEEL_DELTA;
             SetValueInternal( m_nValue - nScrollAmount, true );
             return true;
         }
     };
-
+    
     return false;
 }
 
 
 //--------------------------------------------------------------------------------------
-void CDXUTSlider::SetRange( int nMin, int nMax )
+void CDXUTSlider::SetRange( int nMin, int nMax ) 
 {
     m_nMin = nMin;
     m_nMax = nMax;
@@ -4588,7 +4549,7 @@ void CDXUTSlider::SetValueInternal( int nValue, bool bFromInput )
     // Clamp to range
     nValue = __max( m_nMin, nValue );
     nValue = __min( m_nMax, nValue );
-
+    
     if( nValue == m_nValue )
         return;
 
@@ -4625,7 +4586,7 @@ void CDXUTSlider::Render( float fElapsedTime )
     else if( m_bMouseOver )
     {
         iState = DXUT_STATE_MOUSEOVER;
-
+        
         nOffsetX = -1;
         nOffsetY = -2;
     }
@@ -4637,13 +4598,14 @@ void CDXUTSlider::Render( float fElapsedTime )
     float fBlendRate = ( iState == DXUT_STATE_PRESSED ) ? 0.0f : 0.8f;
 
     CDXUTElement* pElement = m_Elements.GetAt( 0 );
-
+    
     // Blend current color
-    pElement->TextureColor.Blend( iState, fElapsedTime, fBlendRate );
+    pElement->TextureColor.Blend( iState, fElapsedTime, fBlendRate ); 
     m_pDialog->DrawSprite( pElement, &m_rcBoundingBox, DXUT_FAR_BUTTON_DEPTH );
 
+    //TODO: remove magic numbers
     pElement = m_Elements.GetAt( 1 );
-
+       
     // Blend current color
     pElement->TextureColor.Blend( iState, fElapsedTime, fBlendRate );
     m_pDialog->DrawSprite( pElement, &m_rcButton, DXUT_NEAR_BUTTON_DEPTH );
@@ -4655,7 +4617,7 @@ void CDXUTSlider::Render( float fElapsedTime )
 //--------------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------------
-CDXUTScrollBar::CDXUTScrollBar( CDXUTDialog* pDialog )
+CDXUTScrollBar::CDXUTScrollBar( CDXUTDialog *pDialog )
 {
     m_Type = DXUT_CONTROL_SCROLLBAR;
     m_pDialog = pDialog;
@@ -4690,11 +4652,11 @@ void CDXUTScrollBar::UpdateRects()
     // Make the buttons square
 
     SetRect( &m_rcUpButton, m_rcBoundingBox.left, m_rcBoundingBox.top,
-             m_rcBoundingBox.right, m_rcBoundingBox.top + RectWidth( m_rcBoundingBox ) );
+                            m_rcBoundingBox.right, m_rcBoundingBox.top + RectWidth( m_rcBoundingBox ) );
     SetRect( &m_rcDownButton, m_rcBoundingBox.left, m_rcBoundingBox.bottom - RectWidth( m_rcBoundingBox ),
-             m_rcBoundingBox.right, m_rcBoundingBox.bottom );
+                              m_rcBoundingBox.right, m_rcBoundingBox.bottom );
     SetRect( &m_rcTrack, m_rcUpButton.left, m_rcUpButton.bottom,
-             m_rcDownButton.right, m_rcDownButton.top );
+                         m_rcDownButton.right, m_rcDownButton.top );
     m_rcThumb.left = m_rcUpButton.left;
     m_rcThumb.right = m_rcUpButton.right;
 
@@ -4708,15 +4670,14 @@ void CDXUTScrollBar::UpdateThumbRect()
 {
     if( m_nEnd - m_nStart > m_nPageSize )
     {
-        int nThumbHeight = __max( RectHeight( m_rcTrack ) * m_nPageSize / ( m_nEnd - m_nStart ),
-                                  SCROLLBAR_MINTHUMBSIZE );
+        int nThumbHeight = __max( RectHeight( m_rcTrack ) * m_nPageSize / ( m_nEnd - m_nStart ), SCROLLBAR_MINTHUMBSIZE );
         int nMaxPosition = m_nEnd - m_nStart - m_nPageSize;
         m_rcThumb.top = m_rcTrack.top + ( m_nPosition - m_nStart ) * ( RectHeight( m_rcTrack ) - nThumbHeight )
-            / nMaxPosition;
+                        / nMaxPosition;
         m_rcThumb.bottom = m_rcThumb.top + nThumbHeight;
         m_bShowThumb = true;
 
-    }
+    } 
     else
     {
         // No content to scroll
@@ -4757,7 +4718,8 @@ void CDXUTScrollBar::ShowItem( int nIndex )
 
     if( m_nPosition > nIndex )
         m_nPosition = nIndex;
-    else if( m_nPosition + m_nPageSize <= nIndex )
+    else
+    if( m_nPosition + m_nPageSize <= nIndex )
         m_nPosition = nIndex - m_nPageSize + 1;
 
     UpdateThumbRect();
@@ -4781,65 +4743,65 @@ bool CDXUTScrollBar::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM lPa
     {
         case WM_LBUTTONDOWN:
         case WM_LBUTTONDBLCLK:
+        {
+            // Check for click on up button
+
+            if( PtInRect( &m_rcUpButton, pt ) )
             {
-                // Check for click on up button
-
-                if( PtInRect( &m_rcUpButton, pt ) )
-                {
-                    SetCapture( DXUTGetHWND() );
-                    if( m_nPosition > m_nStart )
-                        --m_nPosition;
-                    UpdateThumbRect();
-                    m_Arrow = CLICKED_UP;
-                    m_dArrowTS = DXUTGetTime();
-                    return true;
-                }
-
-                // Check for click on down button
-
-                if( PtInRect( &m_rcDownButton, pt ) )
-                {
-                    SetCapture( DXUTGetHWND() );
-                    if( m_nPosition + m_nPageSize <= m_nEnd )
-                        ++m_nPosition;
-                    UpdateThumbRect();
-                    m_Arrow = CLICKED_DOWN;
-                    m_dArrowTS = DXUTGetTime();
-                    return true;
-                }
-
-                // Check for click on thumb
-
-                if( PtInRect( &m_rcThumb, pt ) )
-                {
-                    SetCapture( DXUTGetHWND() );
-                    m_bDrag = true;
-                    ThumbOffsetY = pt.y - m_rcThumb.top;
-                    return true;
-                }
-
-                // Check for click on track
-
-                if( m_rcThumb.left <= pt.x &&
-                    m_rcThumb.right > pt.x )
-                {
-                    SetCapture( DXUTGetHWND() );
-                    if( m_rcThumb.top > pt.y &&
-                        m_rcTrack.top <= pt.y )
-                    {
-                        Scroll( -( m_nPageSize - 1 ) );
-                        return true;
-                    }
-                    else if( m_rcThumb.bottom <= pt.y &&
-                             m_rcTrack.bottom > pt.y )
-                    {
-                        Scroll( m_nPageSize - 1 );
-                        return true;
-                    }
-                }
-
-                break;
+                SetCapture( DXUTGetHWND() );
+                if( m_nPosition > m_nStart )
+                    --m_nPosition;
+                UpdateThumbRect();
+                m_Arrow = CLICKED_UP;
+                m_dArrowTS = DXUTGetTime();
+                return true;
             }
+
+            // Check for click on down button
+
+            if( PtInRect( &m_rcDownButton, pt ) )
+            {
+                SetCapture( DXUTGetHWND() );
+                if( m_nPosition + m_nPageSize < m_nEnd )
+                    ++m_nPosition;
+                UpdateThumbRect();
+                m_Arrow = CLICKED_DOWN;
+                m_dArrowTS = DXUTGetTime();
+                return true;
+            }
+
+            // Check for click on thumb
+
+            if( PtInRect( &m_rcThumb, pt ) )
+            {
+                SetCapture( DXUTGetHWND() );
+                m_bDrag = true;
+                ThumbOffsetY = pt.y - m_rcThumb.top;
+                return true;
+            }
+
+            // Check for click on track
+
+            if( m_rcThumb.left <= pt.x &&
+                m_rcThumb.right > pt.x )
+            {
+                SetCapture( DXUTGetHWND() );
+                if( m_rcThumb.top > pt.y &&
+                    m_rcTrack.top <= pt.y )
+                {
+                    Scroll( -( m_nPageSize - 1 ) );
+                    return true;
+                } else
+                if( m_rcThumb.bottom <= pt.y &&
+                    m_rcTrack.bottom > pt.y )
+                {
+                    Scroll( m_nPageSize - 1 );
+                    return true;
+                }
+            }
+
+            break;
+        }
 
         case WM_LBUTTONUP:
         {
@@ -4858,18 +4820,19 @@ bool CDXUTScrollBar::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM lPa
                 m_rcThumb.top = pt.y - ThumbOffsetY;
                 if( m_rcThumb.top < m_rcTrack.top )
                     OffsetRect( &m_rcThumb, 0, m_rcTrack.top - m_rcThumb.top );
-                else if( m_rcThumb.bottom > m_rcTrack.bottom )
+                else
+                if( m_rcThumb.bottom > m_rcTrack.bottom )
                     OffsetRect( &m_rcThumb, 0, m_rcTrack.bottom - m_rcThumb.bottom );
 
                 // Compute first item index based on thumb position
 
-                int nMaxFirstItem = m_nEnd - m_nStart - m_nPageSize + 1;  // Largest possible index for first item
+                int nMaxFirstItem = m_nEnd - m_nStart - m_nPageSize;  // Largest possible index for first item
                 int nMaxThumb = RectHeight( m_rcTrack ) - RectHeight( m_rcThumb );  // Largest possible thumb position from the top
 
                 m_nPosition = m_nStart +
-                    ( m_rcThumb.top - m_rcTrack.top +
-                      nMaxThumb / ( nMaxFirstItem * 2 ) ) * // Shift by half a row to avoid last row covered by only one pixel
-                    nMaxFirstItem / nMaxThumb;
+                              ( m_rcThumb.top - m_rcTrack.top +
+                                nMaxThumb / ( nMaxFirstItem * 2 ) ) * // Shift by half a row to avoid last row covered by only one pixel
+                              nMaxFirstItem  / nMaxThumb;
 
                 return true;
             }
@@ -4889,7 +4852,7 @@ bool CDXUTScrollBar::MsgProc( UINT uMsg, WPARAM wParam, LPARAM lParam )
     {
         // The application just lost mouse capture. We may not have gotten
         // the WM_MOUSEUP message, so reset m_bDrag here.
-        if( ( HWND )lParam != DXUTGetHWND() )
+        if( (HWND)lParam != DXUTGetHWND() )
             m_bDrag = false;
     }
 
@@ -4926,8 +4889,8 @@ void CDXUTScrollBar::Render( float fElapsedTime )
                     }
                     break;
             }
-        }
-        else if( PtInRect( &m_rcDownButton, m_LastMouse ) )
+        } else
+        if( PtInRect( &m_rcDownButton, m_LastMouse ) )
         {
             switch( m_Arrow )
             {
@@ -4966,32 +4929,32 @@ void CDXUTScrollBar::Render( float fElapsedTime )
 
     // Background track layer
     CDXUTElement* pElement = m_Elements.GetAt( 0 );
-
+    
     // Blend current color
     pElement->TextureColor.Blend( iState, fElapsedTime, fBlendRate );
     m_pDialog->DrawSprite( pElement, &m_rcTrack, DXUT_FAR_BUTTON_DEPTH );
 
     // Up Arrow
     pElement = m_Elements.GetAt( 1 );
-
+    
     // Blend current color
     pElement->TextureColor.Blend( iState, fElapsedTime, fBlendRate );
     m_pDialog->DrawSprite( pElement, &m_rcUpButton, DXUT_NEAR_BUTTON_DEPTH );
 
     // Down Arrow
     pElement = m_Elements.GetAt( 2 );
-
+    
     // Blend current color
     pElement->TextureColor.Blend( iState, fElapsedTime, fBlendRate );
     m_pDialog->DrawSprite( pElement, &m_rcDownButton, DXUT_NEAR_BUTTON_DEPTH );
 
     // Thumb button
     pElement = m_Elements.GetAt( 3 );
-
+    
     // Blend current color
     pElement->TextureColor.Blend( iState, fElapsedTime, fBlendRate );
     m_pDialog->DrawSprite( pElement, &m_rcThumb, DXUT_NEAR_BUTTON_DEPTH );
-
+ 
 }
 
 
@@ -5012,8 +4975,9 @@ void CDXUTScrollBar::Cap()  // Clips position at boundaries. Ensures it stays wi
     {
         m_nPosition = m_nStart;
     }
-    else if( m_nPosition + m_nPageSize > m_nEnd )
-        m_nPosition = m_nEnd - m_nPageSize + 1;
+    else
+    if( m_nPosition + m_nPageSize > m_nEnd )
+        m_nPosition = m_nEnd - m_nPageSize;
 }
 
 //--------------------------------------------------------------------------------------
@@ -5021,7 +4985,8 @@ void CDXUTScrollBar::Cap()  // Clips position at boundaries. Ensures it stays wi
 //--------------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------------
-CDXUTListBox::CDXUTListBox( CDXUTDialog* pDialog ) : m_ScrollBar( pDialog )
+CDXUTListBox::CDXUTListBox( CDXUTDialog *pDialog ) :
+    m_ScrollBar( pDialog )
 {
     m_Type = DXUT_CONTROL_LISTBOX;
     m_pDialog = pDialog;
@@ -5071,19 +5036,19 @@ void CDXUTListBox::UpdateRects()
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTListBox::AddItem( const WCHAR* wszText, void* pData )
+HRESULT CDXUTListBox::AddItem( const WCHAR *wszText, void *pData )
 {
-    DXUTListBoxItem* pNewItem = new DXUTListBoxItem;
+    DXUTListBoxItem *pNewItem = new DXUTListBoxItem;
     if( !pNewItem )
         return E_OUTOFMEMORY;
 
-    wcscpy_s( pNewItem->strText, 256, wszText );
+    StringCchCopy( pNewItem->strText, 256, wszText );
     pNewItem->pData = pData;
     SetRect( &pNewItem->rcActive, 0, 0, 0, 0 );
     pNewItem->bSelected = false;
 
     HRESULT hr = m_Items.Add( pNewItem );
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
     {
         SAFE_DELETE( pNewItem );
     }
@@ -5097,13 +5062,13 @@ HRESULT CDXUTListBox::AddItem( const WCHAR* wszText, void* pData )
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTListBox::InsertItem( int nIndex, const WCHAR* wszText, void* pData )
+HRESULT CDXUTListBox::InsertItem( int nIndex, const WCHAR *wszText, void *pData )
 {
-    DXUTListBoxItem* pNewItem = new DXUTListBoxItem;
+    DXUTListBoxItem *pNewItem = new DXUTListBoxItem;
     if( !pNewItem )
         return E_OUTOFMEMORY;
 
-    wcscpy_s( pNewItem->strText, 256, wszText );
+    StringCchCopy( pNewItem->strText, 256, wszText );
     pNewItem->pData = pData;
     SetRect( &pNewItem->rcActive, 0, 0, 0, 0 );
     pNewItem->bSelected = false;
@@ -5121,15 +5086,15 @@ HRESULT CDXUTListBox::InsertItem( int nIndex, const WCHAR* wszText, void* pData 
 //--------------------------------------------------------------------------------------
 void CDXUTListBox::RemoveItem( int nIndex )
 {
-    if( nIndex < 0 || nIndex >= ( int )m_Items.GetSize() )
+    if( nIndex < 0 || nIndex >= (int)m_Items.GetSize() )
         return;
 
-    DXUTListBoxItem* pItem = m_Items.GetAt( nIndex );
+    DXUTListBoxItem *pItem = m_Items.GetAt( nIndex );
 
     delete pItem;
     m_Items.Remove( nIndex );
     m_ScrollBar.SetTrackRange( 0, m_Items.GetSize() );
-    if( m_nSelected >= ( int )m_Items.GetSize() )
+    if( m_nSelected >= (int)m_Items.GetSize() )
         m_nSelected = m_Items.GetSize() - 1;
 
     m_pDialog->SendEvent( EVENT_LISTBOX_SELECTION, true, this );
@@ -5137,11 +5102,13 @@ void CDXUTListBox::RemoveItem( int nIndex )
 
 
 //--------------------------------------------------------------------------------------
-
+void CDXUTListBox::RemoveItemByText( WCHAR *wszText )
+{
+}
 
 
 //--------------------------------------------------------------------------------------
-void CDXUTListBox::RemoveItemByData( void* pData )
+void CDXUTListBox::RemoveItemByData( void *pData )
 {
 }
 
@@ -5151,7 +5118,7 @@ void CDXUTListBox::RemoveAllItems()
 {
     for( int i = 0; i < m_Items.GetSize(); ++i )
     {
-        DXUTListBoxItem* pItem = m_Items.GetAt( i );
+        DXUTListBoxItem *pItem = m_Items.GetAt( i );
         delete pItem;
     }
 
@@ -5161,9 +5128,9 @@ void CDXUTListBox::RemoveAllItems()
 
 
 //--------------------------------------------------------------------------------------
-DXUTListBoxItem* CDXUTListBox::GetItem( int nIndex )
+DXUTListBoxItem *CDXUTListBox::GetItem( int nIndex )
 {
-    if( nIndex < 0 || nIndex >= ( int )m_Items.GetSize() )
+    if( nIndex < 0 || nIndex >= (int)m_Items.GetSize() )
         return NULL;
 
     return m_Items[nIndex];
@@ -5185,9 +5152,9 @@ int CDXUTListBox::GetSelectedIndex( int nPreviousSelected )
     if( m_dwStyle & MULTISELECTION )
     {
         // Multiple selection enabled. Search for the next item with the selected flag.
-        for( int i = nPreviousSelected + 1; i < ( int )m_Items.GetSize(); ++i )
+        for( int i = nPreviousSelected + 1; i < (int)m_Items.GetSize(); ++i )
         {
-            DXUTListBoxItem* pItem = m_Items.GetAt( i );
+            DXUTListBoxItem *pItem = m_Items.GetAt( i );
 
             if( pItem->bSelected )
                 return i;
@@ -5218,7 +5185,7 @@ void CDXUTListBox::SelectItem( int nNewIndex )
     // Perform capping
     if( m_nSelected < 0 )
         m_nSelected = 0;
-    if( m_nSelected >= ( int )m_Items.GetSize() )
+    if( m_nSelected >= (int)m_Items.GetSize() )
         m_nSelected = m_Items.GetSize() - 1;
 
     if( nOldSelected != m_nSelected )
@@ -5260,82 +5227,75 @@ bool CDXUTListBox::HandleKeyboard( UINT uMsg, WPARAM wParam, LPARAM lParam )
                 case VK_PRIOR:
                 case VK_HOME:
                 case VK_END:
-                    {
-                        // If no item exists, do nothing.
-                        if( m_Items.GetSize() == 0 )
-                            return true;
-
-                        int nOldSelected = m_nSelected;
-
-                        // Adjust m_nSelected
-                        switch( wParam )
-                        {
-                            case VK_UP:
-                                --m_nSelected; break;
-                            case VK_DOWN:
-                                ++m_nSelected; break;
-                            case VK_NEXT:
-                                m_nSelected += m_ScrollBar.GetPageSize() - 1; break;
-                            case VK_PRIOR:
-                                m_nSelected -= m_ScrollBar.GetPageSize() - 1; break;
-                            case VK_HOME:
-                                m_nSelected = 0; break;
-                            case VK_END:
-                                m_nSelected = m_Items.GetSize() - 1; break;
-                        }
-
-                        // Perform capping
-                        if( m_nSelected < 0 )
-                            m_nSelected = 0;
-                        if( m_nSelected >= ( int )m_Items.GetSize() )
-                            m_nSelected = m_Items.GetSize() - 1;
-
-                        if( nOldSelected != m_nSelected )
-                        {
-                            if( m_dwStyle & MULTISELECTION )
-                            {
-                                // Multiple selection
-
-                                // Clear all selection
-                                for( int i = 0; i < ( int )m_Items.GetSize(); ++i )
-                                {
-                                    DXUTListBoxItem* pItem = m_Items[i];
-                                    pItem->bSelected = false;
-                                }
-
-                                if( GetKeyState( VK_SHIFT ) < 0 )
-                                {
-                                    // Select all items from m_nSelStart to
-                                    // m_nSelected
-                                    int nEnd = __max( m_nSelStart, m_nSelected );
-
-                                    for( int n = __min( m_nSelStart, m_nSelected ); n <= nEnd; ++n )
-                                        m_Items[n]->bSelected = true;
-                                }
-                                else
-                                {
-                                    m_Items[m_nSelected]->bSelected = true;
-
-                                    // Update selection start
-                                    m_nSelStart = m_nSelected;
-                                }
-                            }
-                            else
-                                m_nSelStart = m_nSelected;
-
-                            // Adjust scroll bar
-
-                            m_ScrollBar.ShowItem( m_nSelected );
-
-                            // Send notification
-
-                            m_pDialog->SendEvent( EVENT_LISTBOX_SELECTION, true, this );
-                        }
+                {
+                    // If no item exists, do nothing.
+                    if( m_Items.GetSize() == 0 )
                         return true;
+
+                    int nOldSelected = m_nSelected;
+
+                    // Adjust m_nSelected
+                    switch( wParam )
+                    {
+                        case VK_UP: --m_nSelected; break;
+                        case VK_DOWN: ++m_nSelected; break;
+                        case VK_NEXT: m_nSelected += m_ScrollBar.GetPageSize() - 1; break;
+                        case VK_PRIOR: m_nSelected -= m_ScrollBar.GetPageSize() - 1; break;
+                        case VK_HOME: m_nSelected = 0; break;
+                        case VK_END: m_nSelected = m_Items.GetSize() - 1; break;
                     }
 
-                    // Space is the hotkey for double-clicking an item.
-                    //
+                    // Perform capping
+                    if( m_nSelected < 0 )
+                        m_nSelected = 0;
+                    if( m_nSelected >= (int)m_Items.GetSize() )
+                        m_nSelected = m_Items.GetSize() - 1;
+
+                    if( nOldSelected != m_nSelected )
+                    {
+                        if( m_dwStyle & MULTISELECTION )
+                        {
+                            // Multiple selection
+
+                            // Clear all selection
+                            for( int i = 0; i < (int)m_Items.GetSize(); ++i )
+                            {
+                                DXUTListBoxItem *pItem = m_Items[i];
+                                pItem->bSelected = false;
+                            }
+
+                            if( GetKeyState( VK_SHIFT ) < 0 )
+                            {
+                                // Select all items from m_nSelStart to
+                                // m_nSelected
+                                int nEnd = __max( m_nSelStart, m_nSelected );
+
+                                for( int n = __min( m_nSelStart, m_nSelected ); n <= nEnd; ++n )
+                                    m_Items[n]->bSelected = true;
+                            }
+                            else
+                            {
+                                m_Items[m_nSelected]->bSelected = true;
+
+                                // Update selection start
+                                m_nSelStart = m_nSelected;
+                            }
+                        } else
+                            m_nSelStart = m_nSelected;
+
+                        // Adjust scroll bar
+
+                        m_ScrollBar.ShowItem( m_nSelected );
+
+                        // Send notification
+
+                        m_pDialog->SendEvent( EVENT_LISTBOX_SELECTION, true, this );
+                    }
+                    return true;
+                }
+
+                // Space is the hotkey for double-clicking an item.
+                //
                 case VK_SPACE:
                     m_pDialog->SendEvent( EVENT_LISTBOX_ITEM_DBLCLK, true, this );
                     return true;
@@ -5380,7 +5340,7 @@ bool CDXUTListBox::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM lPara
                 // Only proceed if the click falls on top of an item.
 
                 if( nClicked >= m_ScrollBar.GetTrackPos() &&
-                    nClicked < ( int )m_Items.GetSize() &&
+                    nClicked < (int)m_Items.GetSize() &&
                     nClicked < m_ScrollBar.GetTrackPos() + m_ScrollBar.GetPageSize() )
                 {
                     SetCapture( DXUTGetHWND() );
@@ -5406,14 +5366,14 @@ bool CDXUTListBox::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM lPara
                     {
                         // Determine behavior based on the state of Shift and Ctrl
 
-                        DXUTListBoxItem* pSelItem = m_Items.GetAt( m_nSelected );
-                        if( ( wParam & ( MK_SHIFT | MK_CONTROL ) ) == MK_CONTROL )
+                        DXUTListBoxItem *pSelItem = m_Items.GetAt( m_nSelected );
+                        if( ( wParam & (MK_SHIFT|MK_CONTROL) ) == MK_CONTROL )
                         {
                             // Control click. Reverse the selection of this item.
 
                             pSelItem->bSelected = !pSelItem->bSelected;
-                        }
-                        else if( ( wParam & ( MK_SHIFT | MK_CONTROL ) ) == MK_SHIFT )
+                        } else
+                        if( ( wParam & (MK_SHIFT|MK_CONTROL) ) == MK_SHIFT )
                         {
                             // Shift click. Set the selection for all items
                             // from last selected item to the current item.
@@ -5424,23 +5384,23 @@ bool CDXUTListBox::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM lPara
 
                             for( int i = 0; i < nBegin; ++i )
                             {
-                                DXUTListBoxItem* pItem = m_Items.GetAt( i );
+                                DXUTListBoxItem *pItem = m_Items.GetAt( i );
                                 pItem->bSelected = false;
                             }
 
-                            for( int i = nEnd + 1; i < ( int )m_Items.GetSize(); ++i )
+                            for( int i = nEnd + 1; i < (int)m_Items.GetSize(); ++i )
                             {
-                                DXUTListBoxItem* pItem = m_Items.GetAt( i );
+                                DXUTListBoxItem *pItem = m_Items.GetAt( i );
                                 pItem->bSelected = false;
                             }
 
                             for( int i = nBegin; i <= nEnd; ++i )
                             {
-                                DXUTListBoxItem* pItem = m_Items.GetAt( i );
+                                DXUTListBoxItem *pItem = m_Items.GetAt( i );
                                 pItem->bSelected = true;
                             }
-                        }
-                        else if( ( wParam & ( MK_SHIFT | MK_CONTROL ) ) == ( MK_SHIFT | MK_CONTROL ) )
+                        } else
+                        if( ( wParam & (MK_SHIFT|MK_CONTROL) ) == ( MK_SHIFT|MK_CONTROL ) )
                         {
                             // Control-Shift-click.
 
@@ -5457,7 +5417,7 @@ bool CDXUTListBox::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM lPara
                             bool bLastSelected = m_Items.GetAt( m_nSelStart )->bSelected;
                             for( int i = nBegin + 1; i < nEnd; ++i )
                             {
-                                DXUTListBoxItem* pItem = m_Items.GetAt( i );
+                                DXUTListBoxItem *pItem = m_Items.GetAt( i );
                                 pItem->bSelected = bLastSelected;
                             }
 
@@ -5467,16 +5427,15 @@ bool CDXUTListBox::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM lPara
                             // This matches the Windows behavior
 
                             m_nSelected = m_nSelStart;
-                        }
-                        else
+                        } else
                         {
                             // Simple click.  Clear all items and select the clicked
                             // item.
 
 
-                            for( int i = 0; i < ( int )m_Items.GetSize(); ++i )
+                            for( int i = 0; i < (int)m_Items.GetSize(); ++i )
                             {
-                                DXUTListBoxItem* pItem = m_Items.GetAt( i );
+                                DXUTListBoxItem *pItem = m_Items.GetAt( i );
                                 pItem->bSelected = false;
                             }
 
@@ -5530,26 +5489,25 @@ bool CDXUTListBox::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM lPara
 
                 // Only proceed if the cursor is on top of an item.
 
-                if( nItem >= ( int )m_ScrollBar.GetTrackPos() &&
-                    nItem < ( int )m_Items.GetSize() &&
+                if( nItem >= (int)m_ScrollBar.GetTrackPos() &&
+                    nItem < (int)m_Items.GetSize() &&
                     nItem < m_ScrollBar.GetTrackPos() + m_ScrollBar.GetPageSize() )
                 {
                     m_nSelected = nItem;
                     m_pDialog->SendEvent( EVENT_LISTBOX_SELECTION, true, this );
-                }
-                else if( nItem < ( int )m_ScrollBar.GetTrackPos() )
+                } else
+                if( nItem < (int)m_ScrollBar.GetTrackPos() )
                 {
                     // User drags the mouse above window top
                     m_ScrollBar.Scroll( -1 );
                     m_nSelected = m_ScrollBar.GetTrackPos();
                     m_pDialog->SendEvent( EVENT_LISTBOX_SELECTION, true, this );
-                }
-                else if( nItem >= m_ScrollBar.GetTrackPos() + m_ScrollBar.GetPageSize() )
+                } else
+                if( nItem >= m_ScrollBar.GetTrackPos() + m_ScrollBar.GetPageSize() )
                 {
                     // User drags the mouse below window bottom
                     m_ScrollBar.Scroll( 1 );
-                    m_nSelected = __min( ( int )m_Items.GetSize(), m_ScrollBar.GetTrackPos() +
-                                         m_ScrollBar.GetPageSize() ) - 1;
+                    m_nSelected = __min( (int)m_Items.GetSize(), m_ScrollBar.GetTrackPos() + m_ScrollBar.GetPageSize() ) - 1;
                     m_pDialog->SendEvent( EVENT_LISTBOX_SELECTION, true, this );
                 }
             }
@@ -5559,7 +5517,7 @@ bool CDXUTListBox::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM lPara
         {
             UINT uLines;
             SystemParametersInfo( SPI_GETWHEELSCROLLLINES, 0, &uLines, 0 );
-            int nScrollAmount = int( ( short )HIWORD( wParam ) ) / WHEEL_DELTA * uLines;
+            int nScrollAmount = int((short)HIWORD(wParam)) / WHEEL_DELTA * uLines;
             m_ScrollBar.Scroll( -nScrollAmount );
             return true;
         }
@@ -5576,7 +5534,7 @@ bool CDXUTListBox::MsgProc( UINT uMsg, WPARAM wParam, LPARAM lParam )
     {
         // The application just lost mouse capture. We may not have gotten
         // the WM_MOUSEUP message, so reset m_bDrag here.
-        if( ( HWND )lParam != DXUTGetHWND() )
+        if( (HWND)lParam != DXUTGetHWND() )
             m_bDrag = false;
     }
 
@@ -5623,12 +5581,12 @@ void CDXUTListBox::Render( float fElapsedTime )
         }
 
         rc.right = m_rcText.right;
-        for( int i = m_ScrollBar.GetTrackPos(); i < ( int )m_Items.GetSize(); ++i )
+        for( int i = m_ScrollBar.GetTrackPos(); i < (int)m_Items.GetSize(); ++i )
         {
             if( rc.bottom > m_rcText.bottom )
                 break;
 
-            DXUTListBoxItem* pItem = m_Items.GetAt( i );
+            DXUTListBoxItem *pItem = m_Items.GetAt( i );
 
             // Determine if we need to render this item with the
             // selected element.
@@ -5636,13 +5594,15 @@ void CDXUTListBox::Render( float fElapsedTime )
 
             if( !( m_dwStyle & MULTISELECTION ) && i == m_nSelected )
                 bSelectedStyle = true;
-            else if( m_dwStyle & MULTISELECTION )
+            else
+            if( m_dwStyle & MULTISELECTION )
             {
                 if( m_bDrag &&
                     ( ( i >= m_nSelected && i < m_nSelStart ) ||
                       ( i <= m_nSelected && i > m_nSelStart ) ) )
                     bSelectedStyle = m_Items[m_nSelStart]->bSelected;
-                else if( pItem->bSelected )
+                else
+                if( pItem->bSelected )
                     bSelectedStyle = true;
             }
 
@@ -5666,20 +5626,15 @@ void CDXUTListBox::Render( float fElapsedTime )
 
 
 // Static member initialization
-HINSTANCE               CUniBuffer::s_hDll = NULL;
-HRESULT ( WINAPI*CUniBuffer::_ScriptApplyDigitSubstitution )( const SCRIPT_DIGITSUBSTITUTE*, SCRIPT_CONTROL*,
-                                                              SCRIPT_STATE* ) = Dummy_ScriptApplyDigitSubstitution;
-HRESULT ( WINAPI*CUniBuffer::_ScriptStringAnalyse )( HDC, const void*, int, int, int, DWORD, int, SCRIPT_CONTROL*,
-                                                     SCRIPT_STATE*, const int*, SCRIPT_TABDEF*, const BYTE*,
-                                                     SCRIPT_STRING_ANALYSIS* ) = Dummy_ScriptStringAnalyse;
-HRESULT ( WINAPI*CUniBuffer::_ScriptStringCPtoX )( SCRIPT_STRING_ANALYSIS, int, BOOL, int* ) = Dummy_ScriptStringCPtoX;
-HRESULT ( WINAPI*CUniBuffer::_ScriptStringXtoCP )( SCRIPT_STRING_ANALYSIS, int, int*, int* ) = Dummy_ScriptStringXtoCP;
-HRESULT ( WINAPI*CUniBuffer::_ScriptStringFree )( SCRIPT_STRING_ANALYSIS* ) = Dummy_ScriptStringFree;
-const SCRIPT_LOGATTR*   ( WINAPI*CUniBuffer::_ScriptString_pLogAttr )( SCRIPT_STRING_ANALYSIS ) =
-    Dummy_ScriptString_pLogAttr;
-const int*              ( WINAPI*CUniBuffer::_ScriptString_pcOutChars )( SCRIPT_STRING_ANALYSIS ) =
-    Dummy_ScriptString_pcOutChars;
-bool                    CDXUTEditBox::s_bHideCaret;   // If true, we don't render the caret.
+HINSTANCE CUniBuffer::s_hDll = NULL;
+HRESULT (WINAPI *CUniBuffer::_ScriptApplyDigitSubstitution)( const SCRIPT_DIGITSUBSTITUTE*, SCRIPT_CONTROL*, SCRIPT_STATE* ) = Dummy_ScriptApplyDigitSubstitution;
+HRESULT (WINAPI *CUniBuffer::_ScriptStringAnalyse)( HDC, const void *, int, int, int, DWORD, int, SCRIPT_CONTROL*, SCRIPT_STATE*, const int*, SCRIPT_TABDEF*, const BYTE*, SCRIPT_STRING_ANALYSIS* ) = Dummy_ScriptStringAnalyse;
+HRESULT (WINAPI *CUniBuffer::_ScriptStringCPtoX)( SCRIPT_STRING_ANALYSIS, int, BOOL, int* ) = Dummy_ScriptStringCPtoX;
+HRESULT (WINAPI *CUniBuffer::_ScriptStringXtoCP)( SCRIPT_STRING_ANALYSIS, int, int*, int* ) = Dummy_ScriptStringXtoCP;
+HRESULT (WINAPI *CUniBuffer::_ScriptStringFree)( SCRIPT_STRING_ANALYSIS* ) = Dummy_ScriptStringFree;
+const SCRIPT_LOGATTR* (WINAPI *CUniBuffer::_ScriptString_pLogAttr)( SCRIPT_STRING_ANALYSIS ) = Dummy_ScriptString_pLogAttr;
+const int* (WINAPI *CUniBuffer::_ScriptString_pcOutChars)( SCRIPT_STRING_ANALYSIS ) = Dummy_ScriptString_pcOutChars;
+bool CDXUTEditBox::s_bHideCaret;   // If true, we don't render the caret.
 
 
 
@@ -5692,7 +5647,7 @@ bool                    CDXUTEditBox::s_bHideCaret;   // If true, we don't rende
 #define EDITBOX_SCROLLEXTENT 4
 
 //--------------------------------------------------------------------------------------
-CDXUTEditBox::CDXUTEditBox( CDXUTDialog* pDialog )
+CDXUTEditBox::CDXUTEditBox( CDXUTDialog *pDialog )
 {
     m_Type = DXUT_CONTROL_EDITBOX;
     m_pDialog = pDialog;
@@ -5748,7 +5703,8 @@ void CDXUTEditBox::PlaceCaret( int nCP )
         // Simply make the first visible character the char at the new caret position.
         m_nFirstVisible = nCP;
     }
-    else // If the right of the character is bigger than the offset of the control's
+    else
+    // If the right of the character is bigger than the offset of the control's
     // right edge, we need to scroll right to this character.
     if( nX2 > nX1st + RectWidth( m_rcText ) )
     {
@@ -5796,12 +5752,11 @@ void CDXUTEditBox::SetText( LPCWSTR wszText, bool bSelected )
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTEditBox::GetTextCopy( __out_ecount(bufferCount) LPWSTR strDest, 
-                                   UINT bufferCount )
+HRESULT CDXUTEditBox::GetTextCopy( LPWSTR strDest, UINT bufferCount )
 {
     assert( strDest );
 
-    wcscpy_s( strDest, bufferCount, m_Buffer.GetBuffer() );
+    StringCchCopy( strDest, bufferCount, m_Buffer.GetBuffer() );
 
     return S_OK;
 }
@@ -5854,16 +5809,16 @@ void CDXUTEditBox::CopyToClipboard()
     {
         EmptyClipboard();
 
-        HGLOBAL hBlock = GlobalAlloc( GMEM_MOVEABLE, sizeof( WCHAR ) * ( m_Buffer.GetTextSize() + 1 ) );
+        HGLOBAL hBlock = GlobalAlloc( GMEM_MOVEABLE, sizeof(WCHAR) * ( m_Buffer.GetTextSize() + 1 ) );
         if( hBlock )
         {
-            WCHAR* pwszText = ( WCHAR* )GlobalLock( hBlock );
+            WCHAR *pwszText = (WCHAR*)GlobalLock( hBlock );
             if( pwszText )
             {
                 int nFirst = __min( m_nCaret, m_nSelStart );
                 int nLast = __max( m_nCaret, m_nSelStart );
                 if( nLast - nFirst > 0 )
-                    CopyMemory( pwszText, m_Buffer.GetBuffer() + nFirst, ( nLast - nFirst ) * sizeof( WCHAR ) );
+                    CopyMemory( pwszText, m_Buffer.GetBuffer() + nFirst, (nLast - nFirst) * sizeof(WCHAR) );
                 pwszText[nLast - nFirst] = L'\0';  // Terminate it
                 GlobalUnlock( hBlock );
             }
@@ -5888,7 +5843,7 @@ void CDXUTEditBox::PasteFromClipboard()
         {
             // Convert the ANSI string to Unicode, then
             // insert to our buffer.
-            WCHAR* pwszText = ( WCHAR* )GlobalLock( handle );
+            WCHAR *pwszText = (WCHAR*)GlobalLock( handle );
             if( pwszText )
             {
                 // Copy all characters up to null.
@@ -5947,13 +5902,12 @@ bool CDXUTEditBox::HandleKeyboard( UINT uMsg, WPARAM wParam, LPARAM lParam )
                     {
                         // Control Insert. Copy to clipboard
                         CopyToClipboard();
-                    }
-                    else if( GetKeyState( VK_SHIFT ) < 0 )
+                    } else
+                    if( GetKeyState( VK_SHIFT ) < 0 )
                     {
                         // Shift Insert. Paste from clipboard
                         PasteFromClipboard();
-                    }
-                    else
+                    } else
                     {
                         // Toggle caret insert mode
                         m_bInsertMode = !m_bInsertMode;
@@ -5985,7 +5939,8 @@ bool CDXUTEditBox::HandleKeyboard( UINT uMsg, WPARAM wParam, LPARAM lParam )
                         m_Buffer.GetPriorItemPos( m_nCaret, &m_nCaret );
                         PlaceCaret( m_nCaret );
                     }
-                    else if( m_nCaret > 0 )
+                    else
+                    if( m_nCaret > 0 )
                         PlaceCaret( m_nCaret - 1 );
                     if( GetKeyState( VK_SHIFT ) >= 0 )
                         // Shift is not down. Update selection
@@ -6003,7 +5958,8 @@ bool CDXUTEditBox::HandleKeyboard( UINT uMsg, WPARAM wParam, LPARAM lParam )
                         m_Buffer.GetNextItemPos( m_nCaret, &m_nCaret );
                         PlaceCaret( m_nCaret );
                     }
-                    else if( m_nCaret < m_Buffer.GetTextSize() )
+                    else
+                    if( m_nCaret < m_Buffer.GetTextSize() )
                         PlaceCaret( m_nCaret + 1 );
                     if( GetKeyState( VK_SHIFT ) >= 0 )
                         // Shift is not down. Update selection
@@ -6039,30 +5995,30 @@ bool CDXUTEditBox::HandleMouse( UINT uMsg, POINT pt, WPARAM wParam, LPARAM lPara
     {
         case WM_LBUTTONDOWN:
         case WM_LBUTTONDBLCLK:
+        {
+            if( !m_bHasFocus )
+                m_pDialog->RequestFocus( this );
+
+            if( !ContainsPoint( pt ) )
+                return false;
+
+            m_bMouseDrag = true;
+            SetCapture( DXUTGetHWND() );
+            // Determine the character corresponding to the coordinates.
+            int nCP, nTrail, nX1st;
+            m_Buffer.CPtoX( m_nFirstVisible, FALSE, &nX1st );  // X offset of the 1st visible char
+            if( SUCCEEDED( m_Buffer.XtoCP( pt.x - m_rcText.left + nX1st, &nCP, &nTrail ) ) )
             {
-                if( !m_bHasFocus )
-                    m_pDialog->RequestFocus( this );
-
-                if( !ContainsPoint( pt ) )
-                    return false;
-
-                m_bMouseDrag = true;
-                SetCapture( DXUTGetHWND() );
-                // Determine the character corresponding to the coordinates.
-                int nCP, nTrail, nX1st;
-                m_Buffer.CPtoX( m_nFirstVisible, FALSE, &nX1st );  // X offset of the 1st visible char
-                if( SUCCEEDED( m_Buffer.XtoCP( pt.x - m_rcText.left + nX1st, &nCP, &nTrail ) ) )
-                {
-                    // Cap at the NULL character.
-                    if( nTrail && nCP < m_Buffer.GetTextSize() )
-                        PlaceCaret( nCP + 1 );
-                    else
-                        PlaceCaret( nCP );
-                    m_nSelStart = m_nCaret;
-                    ResetCaretBlink();
-                }
-                return true;
+                // Cap at the NULL character.
+                if( nTrail && nCP < m_Buffer.GetTextSize() )
+                    PlaceCaret( nCP + 1 );
+                else
+                    PlaceCaret( nCP );
+                m_nSelStart = m_nCaret;
+                ResetCaretBlink();
             }
+            return true;
+        }
 
         case WM_LBUTTONUP:
             ReleaseCapture();
@@ -6108,17 +6064,17 @@ bool CDXUTEditBox::MsgProc( UINT uMsg, WPARAM wParam, LPARAM lParam )
 
     switch( uMsg )
     {
-            // Make sure that while editing, the keyup and keydown messages associated with 
-            // WM_CHAR messages don't go to any non-focused controls or cameras
+        // Make sure that while editing, the keyup and keydown messages associated with 
+        // WM_CHAR messages don't go to any non-focused controls or cameras
         case WM_KEYUP:
         case WM_KEYDOWN:
             return true;
 
         case WM_CHAR:
         {
-            switch( ( WCHAR )wParam )
+            switch( (WCHAR)wParam )
             {
-                    // Backspace
+                // Backspace
                 case VK_BACK:
                 {
                     // If there's a selection, treat this
@@ -6128,7 +6084,8 @@ bool CDXUTEditBox::MsgProc( UINT uMsg, WPARAM wParam, LPARAM lParam )
                         DeleteSelectionText();
                         m_pDialog->SendEvent( EVENT_EDITBOX_CHANGE, true, this );
                     }
-                    else if( m_nCaret > 0 )
+                    else
+                    if( m_nCaret > 0 )
                     {
                         // Move the caret, then delete the char.
                         PlaceCaret( m_nCaret - 1 );
@@ -6142,20 +6099,20 @@ bool CDXUTEditBox::MsgProc( UINT uMsg, WPARAM wParam, LPARAM lParam )
 
                 case 24:        // Ctrl-X Cut
                 case VK_CANCEL: // Ctrl-C Copy
+                {
+                    CopyToClipboard();
+
+                    // If the key is Ctrl-X, delete the selection too.
+                    if( (WCHAR)wParam == 24 )
                     {
-                        CopyToClipboard();
-
-                        // If the key is Ctrl-X, delete the selection too.
-                        if( ( WCHAR )wParam == 24 )
-                        {
-                            DeleteSelectionText();
-                            m_pDialog->SendEvent( EVENT_EDITBOX_CHANGE, true, this );
-                        }
-
-                        break;
+                        DeleteSelectionText();
+                        m_pDialog->SendEvent( EVENT_EDITBOX_CHANGE, true, this );
                     }
 
-                    // Ctrl-V Paste
+                    break;
+                }
+
+                // Ctrl-V Paste
                 case 22:
                 {
                     PasteFromClipboard();
@@ -6163,7 +6120,7 @@ bool CDXUTEditBox::MsgProc( UINT uMsg, WPARAM wParam, LPARAM lParam )
                     break;
                 }
 
-                    // Ctrl-A Select All
+                // Ctrl-A Select All
                 case 1:
                     if( m_nSelStart == m_nCaret )
                     {
@@ -6177,7 +6134,7 @@ bool CDXUTEditBox::MsgProc( UINT uMsg, WPARAM wParam, LPARAM lParam )
                     m_pDialog->SendEvent( EVENT_EDITBOX_STRING, true, this );
                     break;
 
-                    // Junk characters we don't want in the string
+                // Junk characters we don't want in the string
                 case 26:  // Ctrl Z
                 case 2:   // Ctrl B
                 case 14:  // Ctrl N
@@ -6216,14 +6173,13 @@ bool CDXUTEditBox::MsgProc( UINT uMsg, WPARAM wParam, LPARAM lParam )
                     // Otherwise, we insert the char as normal.
                     if( !m_bInsertMode && m_nCaret < m_Buffer.GetTextSize() )
                     {
-                        m_Buffer[m_nCaret] = ( WCHAR )wParam;
+                        m_Buffer[m_nCaret] = (WCHAR)wParam;
                         PlaceCaret( m_nCaret + 1 );
                         m_nSelStart = m_nCaret;
-                    }
-                    else
+                    } else
                     {
                         // Insert the char
-                        if( m_Buffer.InsertChar( m_nCaret, ( WCHAR )wParam ) )
+                        if( m_Buffer.InsertChar( m_nCaret, (WCHAR)wParam ) )
                         {
                             PlaceCaret( m_nCaret + 1 );
                             m_nSelStart = m_nCaret;
@@ -6254,7 +6210,7 @@ void CDXUTEditBox::Render( float fElapsedTime )
     {
         m_Buffer.SetFontNode( m_pDialog->GetFont( pElement->iFont ) );
         PlaceCaret( m_nCaret );  // Call PlaceCaret now that we have the font info (node),
-        // so that scrolling can be handled.
+                                 // so that scrolling can be handled.
     }
 
     // Render the control graphics
@@ -6290,9 +6246,7 @@ void CDXUTEditBox::Render( float fElapsedTime )
         int nSelLeftX = nCaretX, nSelRightX = nSelStartX;
         // Swap if left is bigger than right
         if( nSelLeftX > nSelRightX )
-        {
-            int nTemp = nSelLeftX; nSelLeftX = nSelRightX; nSelRightX = nTemp;
-        }
+            { int nTemp = nSelLeftX; nSelLeftX = nSelRightX; nSelRightX = nTemp; }
 
         SetRect( &rcSelection, nSelLeftX, m_rcText.top, nSelRightX, m_rcText.bottom );
         OffsetRect( &rcSelection, m_rcText.left - nXFirst, 0 );
@@ -6320,7 +6274,7 @@ void CDXUTEditBox::Render( float fElapsedTime )
         int nNumChatToRender = __max( m_nSelStart, m_nCaret ) - nFirstToRender;
         m_Elements.GetAt( 0 )->FontColor.Current = m_SelTextColor;
         m_pDialog->DrawText( m_Buffer.GetBuffer() + nFirstToRender,
-                             m_Elements.GetAt( 0 ), &rcSelection, false, nNumChatToRender );
+                              m_Elements.GetAt( 0 ), &rcSelection, false, nNumChatToRender );
     }
 
     //
@@ -6339,7 +6293,7 @@ void CDXUTEditBox::Render( float fElapsedTime )
     {
         // Start the rectangle with insert mode caret
         RECT rcCaret = { m_rcText.left - nXFirst + nCaretX - 1, m_rcText.top,
-                m_rcText.left - nXFirst + nCaretX + 1, m_rcText.bottom };
+                         m_rcText.left - nXFirst + nCaretX + 1, m_rcText.bottom };
 
         // If we are in overwrite mode, adjust the caret rectangle
         // to fill the entire character.
@@ -6359,10 +6313,10 @@ void CDXUTEditBox::Render( float fElapsedTime )
 #define IN_FLOAT_CHARSET( c ) \
     ( (c) == L'-' || (c) == L'.' || ( (c) >= L'0' && (c) <= L'9' ) )
 
-void CDXUTEditBox::ParseFloatArray( float* pNumbers, int nCount )
+void CDXUTEditBox::ParseFloatArray( float *pNumbers, int nCount )
 {
     int nWritten = 0;  // Number of floats written
-    const WCHAR* pToken, *pEnd;
+    const WCHAR *pToken, *pEnd;
     WCHAR wszToken[60];
 
     pToken = m_Buffer.GetBuffer();
@@ -6381,9 +6335,9 @@ void CDXUTEditBox::ParseFloatArray( float* pNumbers, int nCount )
             ++pEnd;
 
         // Copy the token to our buffer
-        int nTokenLen = __min( sizeof( wszToken ) / sizeof( wszToken[0] ) - 1, int( pEnd - pToken ) );
-        wcscpy_s( wszToken, nTokenLen, pToken );
-        *pNumbers = ( float )wcstod( wszToken, NULL );
+        int nTokenLen = __min( sizeof(wszToken) / sizeof(wszToken[0]) - 1, int(pEnd - pToken) );
+        StringCchCopy( wszToken, nTokenLen, pToken );
+        *pNumbers = (float)wcstod( wszToken, NULL );
         ++nWritten;
         ++pNumbers;
         pToken = pEnd;
@@ -6391,23 +6345,23 @@ void CDXUTEditBox::ParseFloatArray( float* pNumbers, int nCount )
 }
 
 
-void CDXUTEditBox::SetTextFloatArray( const float* pNumbers, int nCount )
+void CDXUTEditBox::SetTextFloatArray( const float *pNumbers, int nCount )
 {
     WCHAR wszBuffer[512] = {0};
     WCHAR wszTmp[64];
-
+    
     if( pNumbers == NULL )
         return;
-
+        
     for( int i = 0; i < nCount; ++i )
     {
-        swprintf_s( wszTmp, 64, L"%.4f ", pNumbers[i] );
-        wcscat_s( wszBuffer, 512, wszTmp );
+        StringCchPrintf( wszTmp, 64, L"%.4f ", pNumbers[i] );
+        StringCchCat( wszBuffer, 512, wszTmp );
     }
 
     // Don't want the last space
-    if( nCount > 0 && wcslen( wszBuffer ) > 0 )
-        wszBuffer[wcslen( wszBuffer ) - 1] = 0;
+    if( nCount > 0 && wcslen(wszBuffer) > 0 )
+        wszBuffer[wcslen(wszBuffer)-1] = 0;
 
     SetText( wszBuffer );
 }
@@ -6420,7 +6374,7 @@ void CUniBuffer::Initialize()
 {
     if( s_hDll ) // Only need to do once
         return;
-
+        
     s_hDll = LoadLibrary( UNISCRIBE_DLLNAME );
     if( s_hDll )
     {
@@ -6463,22 +6417,21 @@ bool CUniBuffer::SetBufferSize( int nNewSize )
     if( m_nBufferSize == DXUT_MAX_EDITBOXLENGTH )
         return false;
 
-    int nAllocateSize = ( nNewSize == -1 || nNewSize < m_nBufferSize * 2 ) ? ( m_nBufferSize ? m_nBufferSize *
-                                                                               2 : 256 ) : nNewSize * 2;
+    int nAllocateSize = ( nNewSize == -1 || nNewSize < m_nBufferSize * 2 ) ? ( m_nBufferSize ? m_nBufferSize * 2 : 256 ) : nNewSize * 2;
 
     // Cap the buffer size at the maximum allowed.
     if( nAllocateSize > DXUT_MAX_EDITBOXLENGTH )
         nAllocateSize = DXUT_MAX_EDITBOXLENGTH;
 
-    WCHAR* pTempBuffer = new WCHAR[nAllocateSize];
+    WCHAR *pTempBuffer = new WCHAR[nAllocateSize];
     if( !pTempBuffer )
         return false;
 
-    ZeroMemory( pTempBuffer, sizeof( WCHAR ) * nAllocateSize );
+    ZeroMemory( pTempBuffer, sizeof(WCHAR) * nAllocateSize );
 
     if( m_pwszBuffer )
     {
-        CopyMemory( pTempBuffer, m_pwszBuffer, m_nBufferSize * sizeof( WCHAR ) );
+        CopyMemory( pTempBuffer, m_pwszBuffer, m_nBufferSize * sizeof(WCHAR) );
         delete[] m_pwszBuffer;
     }
 
@@ -6497,16 +6450,16 @@ HRESULT CUniBuffer::Analyse()
         _ScriptStringFree( &m_Analysis );
 
     SCRIPT_CONTROL ScriptControl; // For uniscribe
-    SCRIPT_STATE ScriptState;   // For uniscribe
-    ZeroMemory( &ScriptControl, sizeof( ScriptControl ) );
-    ZeroMemory( &ScriptState, sizeof( ScriptState ) );
-    _ScriptApplyDigitSubstitution( NULL, &ScriptControl, &ScriptState );
+    SCRIPT_STATE   ScriptState;   // For uniscribe
+    ZeroMemory( &ScriptControl, sizeof(ScriptControl) );
+    ZeroMemory( &ScriptState, sizeof(ScriptState) );
+    _ScriptApplyDigitSubstitution ( NULL, &ScriptControl, &ScriptState );
 
     if( !m_pFontNode )
         return E_FAIL;
 
     HDC hDC = m_pFontNode->pFont10 ? m_pFontNode->pFont10->GetDC() :
-        ( m_pFontNode->pFont9 ? m_pFontNode->pFont9->GetDC() : NULL );
+              ( m_pFontNode->pFont9 ? m_pFontNode->pFont9->GetDC() : NULL );
     HRESULT hr = _ScriptStringAnalyse( hDC,
                                        m_pwszBuffer,
                                        lstrlenW( m_pwszBuffer ) + 1,  // NULL is also analyzed.
@@ -6536,7 +6489,7 @@ CUniBuffer::CUniBuffer( int nInitialSize )
     m_bAnalyseRequired = true;
     m_Analysis = NULL;
     m_pFontNode = NULL;
-
+    
     if( nInitialSize > 0 )
         SetBufferSize( nInitialSize );
 }
@@ -6594,7 +6547,7 @@ bool CUniBuffer::InsertChar( int nIndex, WCHAR wChar )
     assert( m_nBufferSize >= 2 );
 
     // Shift the characters after the index, start by copying the null terminator
-    WCHAR* dest = m_pwszBuffer + lstrlenW( m_pwszBuffer ) + 1;
+    WCHAR* dest = m_pwszBuffer + lstrlenW(m_pwszBuffer)+1;
     WCHAR* stop = m_pwszBuffer + nIndex;
     WCHAR* src = dest - 1;
 
@@ -6620,8 +6573,7 @@ bool CUniBuffer::RemoveChar( int nIndex )
     if( !lstrlenW( m_pwszBuffer ) || nIndex < 0 || nIndex >= lstrlenW( m_pwszBuffer ) )
         return false;  // Invalid index
 
-    MoveMemory( m_pwszBuffer + nIndex, m_pwszBuffer + nIndex + 1, sizeof( WCHAR ) *
-                ( lstrlenW( m_pwszBuffer ) - nIndex ) );
+    MoveMemory( m_pwszBuffer + nIndex, m_pwszBuffer + nIndex + 1, sizeof(WCHAR) * ( lstrlenW( m_pwszBuffer ) - nIndex ) );
     m_bAnalyseRequired = true;
     return true;
 }
@@ -6632,7 +6584,7 @@ bool CUniBuffer::RemoveChar( int nIndex )
 // If nCount == -1, the entire string is inserted.
 // If nIndex == -1, insert to the end.
 //--------------------------------------------------------------------------------------
-bool CUniBuffer::InsertString( int nIndex, const WCHAR* pStr, int nCount )
+bool CUniBuffer::InsertString( int nIndex, const WCHAR *pStr, int nCount )
 {
     assert( nIndex >= 0 );
     if( nIndex < 0 )
@@ -6654,9 +6606,8 @@ bool CUniBuffer::InsertString( int nIndex, const WCHAR* pStr, int nCount )
             return false;  // out of memory
     }
 
-    MoveMemory( m_pwszBuffer + nIndex + nCount, m_pwszBuffer + nIndex, sizeof( WCHAR ) *
-                ( lstrlenW( m_pwszBuffer ) - nIndex + 1 ) );
-    CopyMemory( m_pwszBuffer + nIndex, pStr, nCount * sizeof( WCHAR ) );
+    MoveMemory( m_pwszBuffer + nIndex + nCount, m_pwszBuffer + nIndex, sizeof(WCHAR) * ( lstrlenW( m_pwszBuffer ) - nIndex + 1 ) );
+    CopyMemory( m_pwszBuffer + nIndex, pStr, nCount * sizeof(WCHAR) );
     m_bAnalyseRequired = true;
 
     return true;
@@ -6668,7 +6619,7 @@ bool CUniBuffer::SetText( LPCWSTR wszText )
 {
     assert( wszText != NULL );
 
-    int nRequired = int( wcslen( wszText ) + 1 );
+    int nRequired = int(wcslen( wszText ) + 1);
 
     // Check for maximum length allowed
     if( nRequired >= DXUT_MAX_EDITBOXLENGTH )
@@ -6680,7 +6631,7 @@ bool CUniBuffer::SetText( LPCWSTR wszText )
     // Check again in case out of memory occurred inside while loop.
     if( GetBufferSize() >= nRequired )
     {
-        wcscpy_s( m_pwszBuffer, GetBufferSize(), wszText );
+        StringCchCopy( m_pwszBuffer, GetBufferSize(), wszText );
         m_bAnalyseRequired = true;
         return true;
     }
@@ -6690,7 +6641,7 @@ bool CUniBuffer::SetText( LPCWSTR wszText )
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CUniBuffer::CPtoX( int nCP, BOOL bTrail, int* pX )
+HRESULT CUniBuffer::CPtoX( int nCP, BOOL bTrail, int *pX )
 {
     assert( pX );
     *pX = 0;  // Default
@@ -6707,7 +6658,7 @@ HRESULT CUniBuffer::CPtoX( int nCP, BOOL bTrail, int* pX )
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CUniBuffer::XtoCP( int nX, int* pCP, int* pnTrail )
+HRESULT CUniBuffer::XtoCP( int nX, int *pCP, int *pnTrail )
 {
     assert( pCP && pnTrail );
     *pCP = 0; *pnTrail = FALSE;  // Default
@@ -6725,8 +6676,8 @@ HRESULT CUniBuffer::XtoCP( int nX, int* pCP, int* pnTrail )
     if( *pCP == -1 && *pnTrail == TRUE )
     {
         *pCP = 0; *pnTrail = FALSE;
-    }
-    else if( *pCP > lstrlenW( m_pwszBuffer ) && *pnTrail == FALSE )
+    } else
+    if( *pCP > lstrlenW( m_pwszBuffer ) && *pnTrail == FALSE )
     {
         *pCP = lstrlenW( m_pwszBuffer ); *pnTrail = TRUE;
     }
@@ -6736,7 +6687,7 @@ HRESULT CUniBuffer::XtoCP( int nX, int* pCP, int* pnTrail )
 
 
 //--------------------------------------------------------------------------------------
-void CUniBuffer::GetPriorItemPos( int nCP, int* pPrior )
+void CUniBuffer::GetPriorItemPos( int nCP, int *pPrior )
 {
     *pPrior = nCP;  // Default is the char itself
 
@@ -6744,7 +6695,7 @@ void CUniBuffer::GetPriorItemPos( int nCP, int* pPrior )
         if( FAILED( Analyse() ) )
             return;
 
-    const SCRIPT_LOGATTR* pLogAttr = _ScriptString_pLogAttr( m_Analysis );
+    const SCRIPT_LOGATTR *pLogAttr = _ScriptString_pLogAttr( m_Analysis );
     if( !pLogAttr )
         return;
 
@@ -6756,7 +6707,7 @@ void CUniBuffer::GetPriorItemPos( int nCP, int* pPrior )
     for( int i = nInitial; i > 0; --i )
         if( pLogAttr[i].fWordStop ||       // Either the fWordStop flag is set
             ( !pLogAttr[i].fWhiteSpace &&  // Or the previous char is whitespace but this isn't.
-              pLogAttr[i - 1].fWhiteSpace ) )
+                pLogAttr[i-1].fWhiteSpace ) )
         {
             *pPrior = i;
             return;
@@ -6764,10 +6715,10 @@ void CUniBuffer::GetPriorItemPos( int nCP, int* pPrior )
     // We have reached index 0.  0 is always a break point, so simply return it.
     *pPrior = 0;
 }
-
+    
 
 //--------------------------------------------------------------------------------------
-void CUniBuffer::GetNextItemPos( int nCP, int* pPrior )
+void CUniBuffer::GetNextItemPos( int nCP, int *pPrior )
 {
     *pPrior = nCP;  // Default is the char itself
 
@@ -6777,7 +6728,7 @@ void CUniBuffer::GetNextItemPos( int nCP, int* pPrior )
     if( FAILED( hr ) )
         return;
 
-    const SCRIPT_LOGATTR* pLogAttr = _ScriptString_pLogAttr( m_Analysis );
+    const SCRIPT_LOGATTR *pLogAttr = _ScriptString_pLogAttr( m_Analysis );
     if( !pLogAttr )
         return;
 
@@ -6787,8 +6738,8 @@ void CUniBuffer::GetNextItemPos( int nCP, int* pPrior )
     if( nCP + 1 < nInitial )
         nInitial = nCP + 1;
 
-    int i = nInitial;
-    int limit = *_ScriptString_pcOutChars( m_Analysis );
+    int i       = nInitial;
+    int limit   = *_ScriptString_pcOutChars( m_Analysis );
     while( limit > 0 && i < limit - 1 )
     {
         if( pLogAttr[i].fWordStop )      // Either the fWordStop flag is set
@@ -6796,10 +6747,11 @@ void CUniBuffer::GetNextItemPos( int nCP, int* pPrior )
             *pPrior = i;
             return;
         }
-        else if( pLogAttr[i].fWhiteSpace &&  // Or this whitespace but the next char isn't.
-                 !pLogAttr[i + 1].fWhiteSpace )
+        else
+        if( pLogAttr[i].fWhiteSpace &&  // Or this whitespace but the next char isn't.
+            !pLogAttr[i+1].fWhiteSpace )
         {
-            *pPrior = i + 1;  // The next char is a word stop
+            *pPrior = i+1;  // The next char is a word stop
             return;
         }
 
@@ -6822,7 +6774,7 @@ void CDXUTEditBox::ResetCaretBlink()
 //--------------------------------------------------------------------------------------
 void DXUTBlendColor::Init( D3DCOLOR defaultColor, D3DCOLOR disabledColor, D3DCOLOR hiddenColor )
 {
-    for( int i = 0; i < MAX_CONTROL_STATES; i++ )
+    for( int i=0; i < MAX_CONTROL_STATES; i++ )
     {
         States[ i ] = defaultColor;
     }
@@ -6846,15 +6798,15 @@ void DXUTBlendColor::Blend( UINT iState, float fElapsedTime, float fRate )
 void CDXUTElement::SetTexture( UINT iTexture, RECT* prcTexture, D3DCOLOR defaultTextureColor )
 {
     this->iTexture = iTexture;
-
+    
     if( prcTexture )
         rcTexture = *prcTexture;
     else
         SetRectEmpty( &rcTexture );
-
+    
     TextureColor.Init( defaultTextureColor );
 }
-
+    
 
 //--------------------------------------------------------------------------------------
 void CDXUTElement::SetFont( UINT iFont, D3DCOLOR defaultFontColor, DWORD dwTextFormat )
@@ -6873,4 +6825,4 @@ void CDXUTElement::Refresh()
     FontColor.Current = FontColor.States[ DXUT_STATE_HIDDEN ];
 }
 
-
+    

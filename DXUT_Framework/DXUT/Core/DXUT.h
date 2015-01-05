@@ -8,24 +8,34 @@
 #define DXUT_H
 
 #ifndef UNICODE
-#error "DXUT requires a Unicode build."
-#endif
-
-#include "dxsdkver.h"
-#if ( _DXSDK_PRODUCT_MAJOR < 9 || _DXSDK_BUILD_MAJOR < 1949 )
-#error The installed DXSDK is out of date.
+#error "DXUT requires a Unicode build. See the nearby comments for details"
+//
+// If you are using Microsoft Visual C++ .NET, under the General tab of the project 
+// properties change the Character Set to 'Use Unicode Character Set'.  
+//
+// Windows XP and later are native Unicode so Unicode applications will perform better.  
+// For Windows 98 and Windows Me support, consider using the Microsoft Layer for Unicode (MSLU).  
+//
+// To use MSLU, link against a set of libraries similar to this
+//      /nod:kernel32.lib /nod:advapi32.lib /nod:user32.lib /nod:gdi32.lib /nod:shell32.lib /nod:comdlg32.lib /nod:version.lib /nod:mpr.lib /nod:rasapi32.lib /nod:winmm.lib /nod:winspool.lib /nod:vfw32.lib /nod:secur32.lib /nod:oleacc.lib /nod:oledlg.lib /nod:sensapi.lib UnicoWS.lib kernel32.lib advapi32.lib user32.lib gdi32.lib shell32.lib comdlg32.lib version.lib mpr.lib rasapi32.lib winmm.lib winspool.lib vfw32.lib secur32.lib oleacc.lib oledlg.lib sensapi.lib dxerr.lib dxguid.lib d3dx9d.lib d3d9.lib comctl32.lib
+// and put the unicows.dll (available for download from msdn.microsoft.com) in the exe's folder.
+// 
+// For more details see the MSDN article titled:
+// "MSLU: Develop Unicode Applications for Windows 9x Platforms with the Microsoft Layer for Unicode"
+// at http://msdn.microsoft.com/msdnmag/issues/01/10/MSLU/default.aspx 
+//
 #endif
 
 #ifndef STRICT
 #define STRICT
 #endif
 
-// If app hasn't choosen, set to work with Windows XP and beyond
+// If app hasn't choosen, set to work with Windows 98, Windows Me, Windows 2000, Windows XP and beyond
 #ifndef WINVER
-#define WINVER         0x0501
+#define WINVER         0x0500
 #endif
 #ifndef _WIN32_WINDOWS
-#define _WIN32_WINDOWS 0x0501
+#define _WIN32_WINDOWS 0x0500 
 #endif
 #ifndef _WIN32_WINNT
 #define _WIN32_WINNT   0x0600
@@ -44,7 +54,6 @@
 #pragma comment( lib, "d3dx9.lib" )
 #pragma comment( lib, "d3dx10.lib" )
 #endif
-#pragma comment( lib, "d3dcompiler.lib" )
 #pragma comment( lib, "winmm.lib" )
 #pragma comment( lib, "comctl32.lib" )
 #endif
@@ -84,19 +93,33 @@
 #include <d3dx9.h>
 
 // Direct3D10 includes
-#include <d3dcommon.h>
 #include <dxgi.h>
 #include <d3d10_1.h>
 #include <d3d10.h>
-#include <d3dcompiler.h>
 #include <d3dx10.h>
 
 // XInput includes
 #include <xinput.h>
 
-// HRESULT translation for Direct3D and other APIs 
+// HRESULT translation for Direct3D10 and other APIs 
 #include <dxerr.h>
 
+// strsafe.h deprecates old unsecure string functions.  If you 
+// really do not want to it to (not recommended), then uncomment the next line 
+//#define STRSAFE_NO_DEPRECATE
+
+#ifndef STRSAFE_NO_DEPRECATE
+#pragma deprecated("strncpy")
+#pragma deprecated("wcsncpy")
+#pragma deprecated("_tcsncpy")
+#pragma deprecated("wcsncat")
+#pragma deprecated("strncat")
+#pragma deprecated("_tcsncat")
+#endif
+
+#pragma warning( disable : 4996 ) // disable deprecated warning 
+#include <strsafe.h>
+#pragma warning( default : 4996 ) 
 
 #if defined(DEBUG) || defined(_DEBUG)
 #ifndef V
@@ -233,15 +256,12 @@ void WINAPI DXUTSetCallbackD3D10DeviceDestroyed( LPDXUTCALLBACKD3D10DEVICEDESTRO
 //--------------------------------------------------------------------------------------
 // Initialization
 //--------------------------------------------------------------------------------------
-HRESULT WINAPI DXUTInit( bool bParseCommandLine = true, 
-                        bool bShowMsgBoxOnError = true, 
-                        __in_opt WCHAR* strExtraCommandLineParams = NULL, 
-                        bool bThreadSafeDXUT = false );
+HRESULT WINAPI DXUTInit( bool bParseCommandLine = true, bool bShowMsgBoxOnError = true, WCHAR* strExtraCommandLineParams = NULL, bool bThreadSafeDXUT = false );
 
 // Choose either DXUTCreateWindow or DXUTSetWindow.  If using DXUTSetWindow, consider using DXUTStaticWndProc
 HRESULT WINAPI DXUTCreateWindow( const WCHAR* strWindowTitle = L"Direct3D Window", 
-                                HINSTANCE hInstance = NULL, HICON hIcon = NULL, HMENU hMenu = NULL,
-                                int x = CW_USEDEFAULT, int y = CW_USEDEFAULT );
+                          HINSTANCE hInstance = NULL, HICON hIcon = NULL, HMENU hMenu = NULL,
+                          int x = CW_USEDEFAULT, int y = CW_USEDEFAULT );
 HRESULT WINAPI DXUTSetWindow( HWND hWndFocus, HWND hWndDeviceFullScreen, HWND hWndDeviceWindowed, bool bHandleMessages = true );
 LRESULT CALLBACK DXUTStaticWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
@@ -263,7 +283,6 @@ void WINAPI DXUTRender3DEnvironment();
 //--------------------------------------------------------------------------------------
 HRESULT WINAPI DXUTToggleFullScreen();
 HRESULT WINAPI DXUTToggleREF();
-HRESULT WINAPI DXUTToggleWARP();
 void    WINAPI DXUTPause( bool bPauseTime, bool bPauseRendering );
 void    WINAPI DXUTSetConstantFrameTime( bool bConstantFrameTime, float fTimePerFrame = 0.0333f );
 void    WINAPI DXUTSetCursorSettings( bool bShowCursorWhenFullScreen = false, bool bClipCursorWhenFullScreen = false );

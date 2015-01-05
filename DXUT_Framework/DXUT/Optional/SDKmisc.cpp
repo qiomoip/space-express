@@ -25,17 +25,9 @@ CDXUTResourceCache& WINAPI DXUTGetGlobalResourceCache()
 //--------------------------------------------------------------------------------------
 // Internal functions forward declarations
 //--------------------------------------------------------------------------------------
-bool DXUTFindMediaSearchTypicalDirs( __out_ecount(cchSearch) WCHAR* strSearchPath, 
-                                     __in int cchSearch, 
-                                     __in LPCWSTR strLeaf, 
-                                     __in WCHAR* strExePath,
-                                     __in WCHAR* strExeName );
-bool DXUTFindMediaSearchParentDirs( __out_ecount(cchSearch) WCHAR* strSearchPath, 
-                                    __in int cchSearch, 
-                                    __in WCHAR* strStartAt, 
-                                    __in WCHAR* strLeafName );
-
-INT_PTR CALLBACK DisplaySwitchToREFWarningProc( HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam );
+bool DXUTFindMediaSearchTypicalDirs( WCHAR* strSearchPath, int cchSearch, LPCWSTR strLeaf, WCHAR* strExePath, WCHAR* strExeName );
+bool DXUTFindMediaSearchParentDirs( WCHAR* strSearchPath, int cchSearch, WCHAR* strStartAt, WCHAR* strLeafName );
+INT_PTR CALLBACK DisplaySwitchToREFWarningProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 
 //--------------------------------------------------------------------------------------
@@ -51,11 +43,10 @@ void WINAPI DXUTDisplaySwitchingToREFWarning( DXUTDeviceVersion ver )
         // Read previous user settings
         WCHAR strPath[MAX_PATH];
         SHGetFolderPath( DXUTGetHWND(), CSIDL_LOCAL_APPDATA, NULL, SHGFP_TYPE_CURRENT, strPath );
-        wcscat_s( strPath, MAX_PATH, L"\\DXUT\\SkipRefWarning.dat" );
-        if( ( hFile = CreateFile( strPath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0,
-                                  NULL ) ) != INVALID_HANDLE_VALUE )
+        StringCchCat( strPath, MAX_PATH, L"\\DXUT\\SkipRefWarning.dat" );
+        if( (hFile = CreateFile( strPath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL )) != INVALID_HANDLE_VALUE )
         {
-            ReadFile( hFile, &dwSkipWarning, sizeof( DWORD ), &dwRead, NULL );
+            ReadFile( hFile, &dwSkipWarning, sizeof(DWORD), &dwRead, NULL );
             CloseHandle( hFile );
         }
 
@@ -65,64 +56,39 @@ void WINAPI DXUTDisplaySwitchingToREFWarning( DXUTDeviceVersion ver )
             // If this dialog were in a .rc file, this would be a lot simpler but every sample calling this function would
             // need a copy of the dialog in its own .rc file. Also MessageBox API could be used here instead, but 
             // the MessageBox API is simpler to call but it can't provide a "Don't show again" checkbox
-            typedef struct
-            {
-                DLGITEMTEMPLATE a;
-                WORD b;
-                WORD c;
-                WORD d;
-                WORD e;
-                WORD f;
-            } DXUT_DLG_ITEM;
-            typedef struct
-            {
-                DLGTEMPLATE a;
-                WORD b;
-                WORD c;
-                WCHAR   d[2];
-                WORD e;
-                WCHAR   f[16];
-                DXUT_DLG_ITEM i1;
-                DXUT_DLG_ITEM i2;
-                DXUT_DLG_ITEM i3;
-                DXUT_DLG_ITEM i4;
-                DXUT_DLG_ITEM i5;
-            } DXUT_DLG_DATA;
+            typedef struct { DLGITEMTEMPLATE a; WORD b; WORD c; WORD d; WORD e; WORD f; } DXUT_DLG_ITEM; 
+            typedef struct { DLGTEMPLATE a; WORD b; WORD c; WCHAR d[2]; WORD e; WCHAR f[16]; DXUT_DLG_ITEM i1; DXUT_DLG_ITEM i2; DXUT_DLG_ITEM i3; DXUT_DLG_ITEM i4; DXUT_DLG_ITEM i5; } DXUT_DLG_DATA; 
 
-            DXUT_DLG_DATA dtp =
-                {
-                    {WS_CAPTION | WS_POPUP | WS_VISIBLE | WS_SYSMENU | DS_ABSALIGN | DS_3DLOOK | DS_SETFONT |
-                        DS_MODALFRAME | DS_CENTER,0,5,0,0,269,82},0,0,L" ",8,L"MS Shell Dlg 2",
-                    { {WS_CHILD | WS_VISIBLE | SS_ICON | SS_CENTERIMAGE,0,7,7,24,24,0x100},0xFFFF,0x0082,0,0,0}, // icon
-                    { {WS_CHILD | WS_VISIBLE,0,40,7,230,25,0x101},0xFFFF,0x0082,0,0,0}, // static text
-                    { {WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_DEFPUSHBUTTON,0,80,39,50,14,IDYES},0xFFFF,0x0080,0,0,0}, // Yes button
-                    { {WS_CHILD | WS_VISIBLE | WS_TABSTOP,0,133,39,50,14,IDNO},0xFFFF,0x0080,0,0,0}, // No button
-                    { {WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_CHECKBOX,0,7,59,70,16,IDIGNORE},0xFFFF,0x0080,0,0,0}, // checkbox
-                };
+            DXUT_DLG_DATA dtp = 
+            {                                                                                                                                                  
+                {WS_CAPTION|WS_POPUP|WS_VISIBLE|WS_SYSMENU|DS_ABSALIGN|DS_3DLOOK|DS_SETFONT|DS_MODALFRAME|DS_CENTER,0,5,0,0,269,82},0,0,L" ",8,L"MS Shell Dlg 2", 
+                {{WS_CHILD|WS_VISIBLE|SS_ICON|SS_CENTERIMAGE,0,7,7,24,24,0x100},0xFFFF,0x0082,0,0,0}, // icon
+                {{WS_CHILD|WS_VISIBLE,0,40,7,230,25,0x101},0xFFFF,0x0082,0,0,0}, // static text
+                {{WS_CHILD|WS_VISIBLE|WS_TABSTOP|BS_DEFPUSHBUTTON,0,80,39,50,14,IDYES},0xFFFF,0x0080,0,0,0}, // Yes button
+                {{WS_CHILD|WS_VISIBLE|WS_TABSTOP,0,133,39,50,14,IDNO},0xFFFF,0x0080,0,0,0}, // No button
+                {{WS_CHILD|WS_VISIBLE|WS_TABSTOP|BS_CHECKBOX,0,7,59,70,16,IDIGNORE},0xFFFF,0x0080,0,0,0}, // checkbox
+            }; 
 
-            int nResult = ( int )DialogBoxIndirectParam( DXUTGetHINSTANCE(), ( DLGTEMPLATE* )&dtp, DXUTGetHWND(),
-                                                         DisplaySwitchToREFWarningProc, ( LPARAM )
-                                                         ( ver == DXUT_D3D9_DEVICE ) ? 9 : 10 );
+            int nResult = (int) DialogBoxIndirectParam( DXUTGetHINSTANCE(), (DLGTEMPLATE*)&dtp, DXUTGetHWND(), DisplaySwitchToREFWarningProc, (LPARAM) (ver==DXUT_D3D9_DEVICE) ? 9 : 10 );
 
-            if( ( nResult & 0x80 ) == 0x80 ) // "Don't show again" checkbox was checked
+            if( (nResult & 0x80) == 0x80 ) // "Don't show again" checkbox was checked
             {
                 // Save user settings
                 dwSkipWarning = 1;
                 SHGetFolderPath( DXUTGetHWND(), CSIDL_LOCAL_APPDATA, NULL, SHGFP_TYPE_CURRENT, strPath );
-                wcscat_s( strPath, MAX_PATH, L"\\DXUT" );
+                StringCchCat( strPath, MAX_PATH, L"\\DXUT" );
                 CreateDirectory( strPath, NULL );
-                wcscat_s( strPath, MAX_PATH, L"\\SkipRefWarning.dat" );
-                if( ( hFile = CreateFile( strPath, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0,
-                                          NULL ) ) != INVALID_HANDLE_VALUE )
+                StringCchCat( strPath, MAX_PATH, L"\\SkipRefWarning.dat" );
+                if( (hFile = CreateFile( strPath, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL )) != INVALID_HANDLE_VALUE )
                 {
-                    WriteFile( hFile, &dwSkipWarning, sizeof( DWORD ), &dwWritten, NULL );
+                    WriteFile( hFile, &dwSkipWarning, sizeof(DWORD), &dwWritten, NULL );
                     CloseHandle( hFile );
                 }
             }
 
             // User choose not to continue
-            if( ( nResult & 0x0F ) == IDNO )
-                DXUTShutdown( 1 );
+            if( (nResult & 0x0F) == IDNO )
+                DXUTShutdown(1);
         }
     }
 }
@@ -131,44 +97,33 @@ void WINAPI DXUTDisplaySwitchingToREFWarning( DXUTDeviceVersion ver )
 //--------------------------------------------------------------------------------------
 // MsgProc for DXUTDisplaySwitchingToREFWarning() dialog box
 //--------------------------------------------------------------------------------------
-INT_PTR CALLBACK DisplaySwitchToREFWarningProc( HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam )
-{
-    switch( message )
-    {
+INT_PTR CALLBACK DisplaySwitchToREFWarningProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) 
+{ 
+    switch (message) 
+    { 
         case WM_INITDIALOG:
             // Easier to set text here than in the DLGITEMTEMPLATE
             SetWindowText( hDlg, DXUTGetWindowTitle() );
-            SendMessage( GetDlgItem( hDlg, 0x100 ), STM_SETIMAGE, IMAGE_ICON, ( LPARAM )LoadIcon( 0, IDI_QUESTION ) );
-            WCHAR sz[512];
-            swprintf_s( sz, 512,
-                             L"This program needs to use the Direct3D %d reference device.  This device implements the entire Direct3D %d feature set, but runs very slowly.  Do you wish to continue?", lParam, lParam );
-            SetDlgItemText( hDlg, 0x101, sz );
+            SendMessage( GetDlgItem(hDlg, 0x100), STM_SETIMAGE, IMAGE_ICON, (LPARAM)LoadIcon(0, IDI_QUESTION));
+            WCHAR sz[512]; StringCchPrintf( sz, 512, L"This program needs to use the Direct3D %d reference device.  This device implements the entire Direct3D %d feature set, but runs very slowly.  Do you wish to continue?", lParam, lParam );
+            SetDlgItemText( hDlg, 0x101, sz ); 
             SetDlgItemText( hDlg, IDYES, L"&Yes" );
             SetDlgItemText( hDlg, IDNO, L"&No" );
             SetDlgItemText( hDlg, IDIGNORE, L"&Don't show again" );
             break;
 
-        case WM_COMMAND:
-            switch( LOWORD( wParam ) )
-            {
-                case IDIGNORE:
-                    CheckDlgButton( hDlg, IDIGNORE, ( IsDlgButtonChecked( hDlg,
-                                                                          IDIGNORE ) == BST_CHECKED ) ? BST_UNCHECKED :
-                                    BST_CHECKED );
-                    EnableWindow( GetDlgItem( hDlg, IDNO ), ( IsDlgButtonChecked( hDlg, IDIGNORE ) != BST_CHECKED ) );
-                    break;
-                case IDNO:
-                    EndDialog( hDlg, ( IsDlgButtonChecked( hDlg, IDIGNORE ) == BST_CHECKED ) ? IDNO | 0x80 : IDNO |
-                               0x00 ); return TRUE;
+        case WM_COMMAND: 
+            switch (LOWORD(wParam)) 
+            { 
+                case IDIGNORE: CheckDlgButton( hDlg, IDIGNORE, (IsDlgButtonChecked( hDlg, IDIGNORE ) == BST_CHECKED) ? BST_UNCHECKED : BST_CHECKED ); EnableWindow( GetDlgItem( hDlg, IDNO ), (IsDlgButtonChecked( hDlg, IDIGNORE ) != BST_CHECKED) ); break;
+                case IDNO: EndDialog(hDlg, (IsDlgButtonChecked( hDlg, IDIGNORE ) == BST_CHECKED) ? IDNO|0x80 : IDNO|0x00 ); return TRUE; 
                 case IDCANCEL:
-                case IDYES:
-                    EndDialog( hDlg, ( IsDlgButtonChecked( hDlg, IDIGNORE ) == BST_CHECKED ) ? IDYES | 0x80 : IDYES |
-                               0x00 ); return TRUE;
-            }
+                case IDYES: EndDialog(hDlg, (IsDlgButtonChecked( hDlg, IDIGNORE ) == BST_CHECKED) ? IDYES|0x80 : IDYES|0x00 ); return TRUE; 
+            } 
             break;
-    }
-    return FALSE;
-}
+    } 
+    return FALSE; 
+} 
 
 
 //--------------------------------------------------------------------------------------
@@ -179,7 +134,7 @@ WCHAR* DXUTMediaSearchPath()
     static WCHAR s_strMediaSearchPath[MAX_PATH] = {0};
     return s_strMediaSearchPath;
 
-}
+}   
 
 //--------------------------------------------------------------------------------------
 LPCWSTR WINAPI DXUTGetMediaSearchPath()
@@ -191,19 +146,19 @@ LPCWSTR WINAPI DXUTGetMediaSearchPath()
 //--------------------------------------------------------------------------------------
 HRESULT WINAPI DXUTSetMediaSearchPath( LPCWSTR strPath )
 {
-    HRESULT hr = S_OK;
+    HRESULT hr;
 
     WCHAR* s_strSearchPath = DXUTMediaSearchPath();
 
-    hr = wcscpy_s( s_strSearchPath, MAX_PATH, strPath );
-    if( SUCCEEDED( hr ) )
+    hr = StringCchCopy( s_strSearchPath, MAX_PATH, strPath );   
+    if( SUCCEEDED(hr) )
     {
         // append slash if needed
         size_t ch;
-        ch = wcslen( s_strSearchPath);
-        if( SUCCEEDED( hr ) && s_strSearchPath[ch - 1] != L'\\' )
+        hr = StringCchLength( s_strSearchPath, MAX_PATH, &ch );
+        if( SUCCEEDED(hr) && s_strSearchPath[ch-1] != L'\\')
         {
-            hr = wcscat_s( s_strSearchPath, MAX_PATH, L"\\" );
+            hr = StringCchCat( s_strSearchPath, MAX_PATH, L"\\" );
         }
     }
 
@@ -216,13 +171,12 @@ HRESULT WINAPI DXUTSetMediaSearchPath( LPCWSTR strPath )
 //       cchDest is the size in WCHARs of strDestPath.  Be careful not to 
 //       pass in sizeof(strDest) on UNICODE builds.
 //--------------------------------------------------------------------------------------
-HRESULT WINAPI DXUTFindDXSDKMediaFileCch( WCHAR* strDestPath, int cchDest, 
-                                          LPCWSTR strFilename )
+HRESULT WINAPI DXUTFindDXSDKMediaFileCch( WCHAR* strDestPath, int cchDest, LPCWSTR strFilename )
 {
     bool bFound;
     WCHAR strSearchFor[MAX_PATH];
-
-    if( NULL == strFilename || strFilename[0] == 0 || NULL == strDestPath || cchDest < 10 )
+    
+    if( NULL==strFilename || strFilename[0] == 0 || NULL==strDestPath || cchDest < 10 )
         return E_INVALIDARG;
 
     // Get the exe name, and exe path
@@ -230,17 +184,17 @@ HRESULT WINAPI DXUTFindDXSDKMediaFileCch( WCHAR* strDestPath, int cchDest,
     WCHAR strExeName[MAX_PATH] = {0};
     WCHAR* strLastSlash = NULL;
     GetModuleFileName( NULL, strExePath, MAX_PATH );
-    strExePath[MAX_PATH - 1] = 0;
-    strLastSlash = wcsrchr( strExePath, TEXT( '\\' ) );
+    strExePath[MAX_PATH-1]=0;
+    strLastSlash = wcsrchr( strExePath, TEXT('\\') );
     if( strLastSlash )
     {
-        wcscpy_s( strExeName, MAX_PATH, &strLastSlash[1] );
+        StringCchCopy( strExeName, MAX_PATH, &strLastSlash[1] );
 
         // Chop the exe name from the exe path
         *strLastSlash = 0;
 
         // Chop the .exe from the exe name
-        strLastSlash = wcsrchr( strExeName, TEXT( '.' ) );
+        strLastSlash = wcsrchr( strExeName, TEXT('.') );
         if( strLastSlash )
             *strLastSlash = 0;
     }
@@ -261,7 +215,7 @@ HRESULT WINAPI DXUTFindDXSDKMediaFileCch( WCHAR* strDestPath, int cchDest,
         return S_OK;
 
     // Typical directory search again, but also look in a subdir called "\media\" 
-    swprintf_s( strSearchFor, MAX_PATH, L"media\\%s", strFilename );
+    StringCchPrintf( strSearchFor, MAX_PATH, L"media\\%s", strFilename ); 
     bFound = DXUTFindMediaSearchTypicalDirs( strDestPath, cchDest, strSearchFor, strExePath, strExeName );
     if( bFound )
         return S_OK;
@@ -269,7 +223,7 @@ HRESULT WINAPI DXUTFindDXSDKMediaFileCch( WCHAR* strDestPath, int cchDest,
     WCHAR strLeafName[MAX_PATH] = {0};
 
     // Search all parent directories starting at .\ and using strFilename as the leaf name
-    wcscpy_s( strLeafName, MAX_PATH, strFilename );
+    StringCchCopy( strLeafName, MAX_PATH, strFilename ); 
     bFound = DXUTFindMediaSearchParentDirs( strDestPath, cchDest, L".", strLeafName );
     if( bFound )
         return S_OK;
@@ -280,7 +234,7 @@ HRESULT WINAPI DXUTFindDXSDKMediaFileCch( WCHAR* strDestPath, int cchDest,
         return S_OK;
 
     // Search all parent directories starting at .\ and using "media\strFilename" as the leaf name
-    swprintf_s( strLeafName, MAX_PATH, L"media\\%s", strFilename );
+    StringCchPrintf( strLeafName, MAX_PATH, L"media\\%s", strFilename ); 
     bFound = DXUTFindMediaSearchParentDirs( strDestPath, cchDest, L".", strLeafName );
     if( bFound )
         return S_OK;
@@ -291,7 +245,7 @@ HRESULT WINAPI DXUTFindDXSDKMediaFileCch( WCHAR* strDestPath, int cchDest,
         return S_OK;
 
     // On failure, return the file as the path but also return an error code
-    wcscpy_s( strDestPath, cchDest, strFilename );
+    StringCchCopy( strDestPath, cchDest, strFilename );
 
     return DXUTERR_MEDIANOTFOUND;
 }
@@ -300,7 +254,7 @@ HRESULT WINAPI DXUTFindDXSDKMediaFileCch( WCHAR* strDestPath, int cchDest,
 //--------------------------------------------------------------------------------------
 // Search a set of typical directories
 //--------------------------------------------------------------------------------------
-bool DXUTFindMediaSearchTypicalDirs( WCHAR* strSearchPath, int cchSearch, LPCWSTR strLeaf,
+bool DXUTFindMediaSearchTypicalDirs( WCHAR* strSearchPath, int cchSearch, LPCWSTR strLeaf, 
                                      WCHAR* strExePath, WCHAR* strExeName )
 {
     // Typical directories:
@@ -315,47 +269,47 @@ bool DXUTFindMediaSearchTypicalDirs( WCHAR* strSearchPath, int cchSearch, LPCWST
     //      DXSDK media path
 
     // Search in .\  
-    wcscpy_s( strSearchPath, cchSearch, strLeaf );
+    StringCchCopy( strSearchPath, cchSearch, strLeaf ); 
     if( GetFileAttributes( strSearchPath ) != 0xFFFFFFFF )
         return true;
 
     // Search in ..\  
-    swprintf_s( strSearchPath, cchSearch, L"..\\%s", strLeaf );
+    StringCchPrintf( strSearchPath, cchSearch, L"..\\%s", strLeaf ); 
     if( GetFileAttributes( strSearchPath ) != 0xFFFFFFFF )
         return true;
 
     // Search in ..\..\ 
-    swprintf_s( strSearchPath, cchSearch, L"..\\..\\%s", strLeaf );
+    StringCchPrintf( strSearchPath, cchSearch, L"..\\..\\%s", strLeaf ); 
     if( GetFileAttributes( strSearchPath ) != 0xFFFFFFFF )
         return true;
 
     // Search in ..\..\ 
-    swprintf_s( strSearchPath, cchSearch, L"..\\..\\%s", strLeaf );
+    StringCchPrintf( strSearchPath, cchSearch, L"..\\..\\%s", strLeaf ); 
     if( GetFileAttributes( strSearchPath ) != 0xFFFFFFFF )
         return true;
 
     // Search in the %EXE_DIR%\ 
-    swprintf_s( strSearchPath, cchSearch, L"%s\\%s", strExePath, strLeaf );
+    StringCchPrintf( strSearchPath, cchSearch, L"%s\\%s", strExePath, strLeaf ); 
     if( GetFileAttributes( strSearchPath ) != 0xFFFFFFFF )
         return true;
 
     // Search in the %EXE_DIR%\..\ 
-    swprintf_s( strSearchPath, cchSearch, L"%s\\..\\%s", strExePath, strLeaf );
+    StringCchPrintf( strSearchPath, cchSearch, L"%s\\..\\%s", strExePath, strLeaf ); 
     if( GetFileAttributes( strSearchPath ) != 0xFFFFFFFF )
         return true;
 
     // Search in the %EXE_DIR%\..\..\ 
-    swprintf_s( strSearchPath, cchSearch, L"%s\\..\\..\\%s", strExePath, strLeaf );
+    StringCchPrintf( strSearchPath, cchSearch, L"%s\\..\\..\\%s", strExePath, strLeaf ); 
     if( GetFileAttributes( strSearchPath ) != 0xFFFFFFFF )
         return true;
 
     // Search in "%EXE_DIR%\..\%EXE_NAME%\".  This matches the DirectX SDK layout
-    swprintf_s( strSearchPath, cchSearch, L"%s\\..\\%s\\%s", strExePath, strExeName, strLeaf );
+    StringCchPrintf( strSearchPath, cchSearch, L"%s\\..\\%s\\%s", strExePath, strExeName, strLeaf ); 
     if( GetFileAttributes( strSearchPath ) != 0xFFFFFFFF )
         return true;
 
     // Search in "%EXE_DIR%\..\..\%EXE_NAME%\".  This matches the DirectX SDK layout
-    swprintf_s( strSearchPath, cchSearch, L"%s\\..\\..\\%s\\%s", strExePath, strExeName, strLeaf );
+    StringCchPrintf( strSearchPath, cchSearch, L"%s\\..\\..\\%s\\%s", strExePath, strExeName, strLeaf ); 
     if( GetFileAttributes( strSearchPath ) != 0xFFFFFFFF )
         return true;
 
@@ -363,7 +317,7 @@ bool DXUTFindMediaSearchTypicalDirs( WCHAR* strSearchPath, int cchSearch, LPCWST
     WCHAR* s_strSearchPath = DXUTMediaSearchPath();
     if( s_strSearchPath[0] != 0 )
     {
-        swprintf_s( strSearchPath, cchSearch, L"%s%s", s_strSearchPath, strLeaf );
+        StringCchPrintf( strSearchPath, cchSearch, L"%s%s", s_strSearchPath, strLeaf ); 
         if( GetFileAttributes( strSearchPath ) != 0xFFFFFFFF )
             return true;
     }
@@ -377,8 +331,7 @@ bool DXUTFindMediaSearchTypicalDirs( WCHAR* strSearchPath, int cchSearch, LPCWST
 // Search parent directories starting at strStartAt, and appending strLeafName
 // at each parent directory.  It stops at the root directory.
 //--------------------------------------------------------------------------------------
-bool DXUTFindMediaSearchParentDirs( WCHAR* strSearchPath, int cchSearch, WCHAR* strStartAt,
-                                    WCHAR* strLeafName )
+bool DXUTFindMediaSearchParentDirs( WCHAR* strSearchPath, int cchSearch, WCHAR* strStartAt, WCHAR* strLeafName )
 {
     WCHAR strFullPath[MAX_PATH] = {0};
     WCHAR strFullFileName[MAX_PATH] = {0};
@@ -388,17 +341,17 @@ bool DXUTFindMediaSearchParentDirs( WCHAR* strSearchPath, int cchSearch, WCHAR* 
     GetFullPathName( strStartAt, MAX_PATH, strFullPath, &strFilePart );
     if( strFilePart == NULL )
         return false;
-
+   
     while( strFilePart != NULL && *strFilePart != '\0' )
     {
-        swprintf_s( strFullFileName, MAX_PATH, L"%s\\%s", strFullPath, strLeafName );
+        StringCchPrintf( strFullFileName, MAX_PATH, L"%s\\%s", strFullPath, strLeafName ); 
         if( GetFileAttributes( strFullFileName ) != 0xFFFFFFFF )
         {
-            wcscpy_s( strSearchPath, cchSearch, strFullFileName );
+            StringCchCopy( strSearchPath, cchSearch, strFullFileName ); 
             return true;
         }
 
-        swprintf_s( strSearch, MAX_PATH, L"%s\\..", strFullPath );
+        StringCchPrintf( strSearch, MAX_PATH, L"%s\\..", strFullPath ); 
         GetFullPathName( strSearch, MAX_PATH, strFullPath, &strFilePart );
     }
 
@@ -421,8 +374,7 @@ CDXUTResourceCache::~CDXUTResourceCache()
 }
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::CreateTextureFromFile( LPDIRECT3DDEVICE9 pDevice, LPCTSTR pSrcFile,
-                                                   LPDIRECT3DTEXTURE9* ppTexture )
+HRESULT CDXUTResourceCache::CreateTextureFromFile( LPDIRECT3DDEVICE9 pDevice, LPCTSTR pSrcFile, LPDIRECT3DTEXTURE9 *ppTexture )
 {
     return CreateTextureFromFileEx( pDevice, pSrcFile, D3DX_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT,
                                     0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_DEFAULT, D3DX_DEFAULT,
@@ -430,45 +382,38 @@ HRESULT CDXUTResourceCache::CreateTextureFromFile( LPDIRECT3DDEVICE9 pDevice, LP
 }
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::CreateTextureFromFile( LPDIRECT3DDEVICE9 pDevice, LPCSTR pSrcFile,
-                                                   LPDIRECT3DTEXTURE9* ppTexture )
+HRESULT CDXUTResourceCache::CreateTextureFromFile( LPDIRECT3DDEVICE9 pDevice, LPCSTR pSrcFile, LPDIRECT3DTEXTURE9 *ppTexture )
 {
     WCHAR szSrcFile[MAX_PATH];
     MultiByteToWideChar( CP_ACP, 0, pSrcFile, -1, szSrcFile, MAX_PATH );
-    szSrcFile[MAX_PATH - 1] = 0;
+    szSrcFile[MAX_PATH-1] = 0;
 
     return CreateTextureFromFile( pDevice, szSrcFile, ppTexture );
 }
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::CreateTextureFromFile( ID3D10Device* pDevice, LPCTSTR pSrcFile,
-                                                   ID3D10ShaderResourceView** ppOutputRV, bool bSRGB )
+HRESULT CDXUTResourceCache::CreateTextureFromFile( ID3D10Device* pDevice, LPCTSTR pSrcFile, ID3D10ShaderResourceView** ppOutputRV, bool bSRGB )
 {
     return CreateTextureFromFileEx( pDevice, pSrcFile, NULL, NULL, ppOutputRV, bSRGB );
 }
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::CreateTextureFromFile( ID3D10Device* pDevice, LPCSTR pSrcFile,
-                                                   ID3D10ShaderResourceView** ppOutputRV, bool bSRGB )
+HRESULT CDXUTResourceCache::CreateTextureFromFile( ID3D10Device* pDevice, LPCSTR pSrcFile, ID3D10ShaderResourceView** ppOutputRV, bool bSRGB )
 {
     WCHAR szSrcFile[MAX_PATH];
     MultiByteToWideChar( CP_ACP, 0, pSrcFile, -1, szSrcFile, MAX_PATH );
-    szSrcFile[MAX_PATH - 1] = 0;
+    szSrcFile[MAX_PATH-1] = 0;
 
     return CreateTextureFromFile( pDevice, szSrcFile, ppOutputRV, bSRGB );
 }
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::CreateTextureFromFileEx( LPDIRECT3DDEVICE9 pDevice, LPCTSTR pSrcFile, UINT Width,
-                                                     UINT Height, UINT MipLevels, DWORD Usage, D3DFORMAT Format,
-                                                     D3DPOOL Pool, DWORD Filter, DWORD MipFilter, D3DCOLOR ColorKey,
-                                                     D3DXIMAGE_INFO* pSrcInfo, PALETTEENTRY* pPalette,
-                                                     LPDIRECT3DTEXTURE9* ppTexture )
+HRESULT CDXUTResourceCache::CreateTextureFromFileEx( LPDIRECT3DDEVICE9 pDevice, LPCTSTR pSrcFile, UINT Width, UINT Height, UINT MipLevels, DWORD Usage, D3DFORMAT Format, D3DPOOL Pool, DWORD Filter, DWORD MipFilter, D3DCOLOR ColorKey, D3DXIMAGE_INFO *pSrcInfo, PALETTEENTRY *pPalette, LPDIRECT3DTEXTURE9 *ppTexture )
 {
     // Search the cache for a matching entry.
     for( int i = 0; i < m_TextureCache.GetSize(); ++i )
     {
-        DXUTCache_Texture& Entry = m_TextureCache[i];
+        DXUTCache_Texture &Entry = m_TextureCache[i];
         if( Entry.Location == DXUTCACHE_LOCATION_FILE &&
             !lstrcmpW( Entry.wszSource, pSrcFile ) &&
             Entry.Width == Width &&
@@ -480,19 +425,9 @@ HRESULT CDXUTResourceCache::CreateTextureFromFileEx( LPDIRECT3DDEVICE9 pDevice, 
             Entry.Type9 == D3DRTYPE_TEXTURE )
         {
             // A match is found. Obtain the IDirect3DTexture9 interface and return that.
-            return Entry.pTexture9->QueryInterface( IID_IDirect3DTexture9, ( LPVOID* )ppTexture );
+            return Entry.pTexture9->QueryInterface( IID_IDirect3DTexture9, (LPVOID*)ppTexture );
         }
     }
-
-#if defined(PROFILE) || defined(DEBUG)
-    CHAR strFileA[MAX_PATH];
-    WideCharToMultiByte( CP_ACP, 0, pSrcFile, -1, strFileA, MAX_PATH, NULL, FALSE );
-    CHAR* pstrName = strrchr( strFileA, '\\' );
-    if( pstrName == NULL )
-        pstrName = strFileA;
-    else
-        pstrName++;
-#endif
 
     HRESULT hr;
 
@@ -504,7 +439,7 @@ HRESULT CDXUTResourceCache::CreateTextureFromFileEx( LPDIRECT3DDEVICE9 pDevice, 
 
     DXUTCache_Texture NewEntry;
     NewEntry.Location = DXUTCACHE_LOCATION_FILE;
-    wcscpy_s( NewEntry.wszSource, MAX_PATH, pSrcFile );
+    StringCchCopy( NewEntry.wszSource, MAX_PATH, pSrcFile );
     NewEntry.Width = Width;
     NewEntry.Height = Height;
     NewEntry.MipLevels = MipLevels;
@@ -512,18 +447,14 @@ HRESULT CDXUTResourceCache::CreateTextureFromFileEx( LPDIRECT3DDEVICE9 pDevice, 
     NewEntry.Format9 = Format;
     NewEntry.Pool9 = Pool;
     NewEntry.Type9 = D3DRTYPE_TEXTURE;
-    ( *ppTexture )->QueryInterface( IID_IDirect3DBaseTexture9, ( LPVOID* )&NewEntry.pTexture9 );
-
-    DXUT_SetDebugName( *ppTexture, pstrName );
+    (*ppTexture)->QueryInterface( IID_IDirect3DBaseTexture9, (LPVOID*)&NewEntry.pTexture9 );
 
     m_TextureCache.Add( NewEntry );
     return S_OK;
 }
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::CreateTextureFromFileEx( ID3D10Device* pDevice, LPCTSTR pSrcFile,
-                                                     D3DX10_IMAGE_LOAD_INFO* pLoadInfo, ID3DX10ThreadPump* pPump,
-                                                     ID3D10ShaderResourceView** ppOutputRV, bool bSRGB )
+HRESULT CDXUTResourceCache::CreateTextureFromFileEx( ID3D10Device* pDevice, LPCTSTR pSrcFile, D3DX10_IMAGE_LOAD_INFO* pLoadInfo, ID3DX10ThreadPump* pPump, ID3D10ShaderResourceView** ppOutputRV, bool bSRGB )
 {
     HRESULT hr = S_OK;
     D3DX10_IMAGE_LOAD_INFO ZeroInfo;	//D3DX10_IMAGE_LOAD_INFO has a default constructor
@@ -545,7 +476,7 @@ HRESULT CDXUTResourceCache::CreateTextureFromFileEx( ID3D10Device* pDevice, LPCT
     // Search the cache for a matching entry.
     for( int i = 0; i < m_TextureCache.GetSize(); ++i )
     {
-        DXUTCache_Texture& Entry = m_TextureCache[i];
+        DXUTCache_Texture &Entry = m_TextureCache[i];
         if( Entry.Location == DXUTCACHE_LOCATION_FILE &&
             !lstrcmpW( Entry.wszSource, pSrcFile ) &&
             Entry.Width == pLoadInfo->Width &&
@@ -558,25 +489,15 @@ HRESULT CDXUTResourceCache::CreateTextureFromFileEx( ID3D10Device* pDevice, LPCT
             Entry.MiscFlags == pLoadInfo->MiscFlags )
         {
             // A match is found. Obtain the IDirect3DTexture9 interface and return that.
-            return Entry.pSRV10->QueryInterface( __uuidof( ID3D10ShaderResourceView ), ( LPVOID* )ppOutputRV );
+            return Entry.pSRV10->QueryInterface( __uuidof( ID3D10ShaderResourceView ), (LPVOID*)ppOutputRV );
         }
     }
-
-#if defined(PROFILE) || defined(DEBUG)
-    CHAR strFileA[MAX_PATH];
-    WideCharToMultiByte( CP_ACP, 0, pSrcFile, -1, strFileA, MAX_PATH, NULL, FALSE );
-    CHAR* pstrName = strrchr( strFileA, '\\' );
-    if( pstrName == NULL )
-        pstrName = strFileA;
-    else
-        pstrName++;
-#endif
 
     //Ready a new entry to the texture cache
     //Do this before creating the texture since pLoadInfo may be volatile
     DXUTCache_Texture NewEntry;
     NewEntry.Location = DXUTCACHE_LOCATION_FILE;
-    wcscpy_s( NewEntry.wszSource, MAX_PATH, pSrcFile );
+    StringCchCopy( NewEntry.wszSource, MAX_PATH, pSrcFile );
     NewEntry.Width = pLoadInfo->Width;
     NewEntry.Height = pLoadInfo->Height;
     NewEntry.MipLevels = pLoadInfo->MipLevels;
@@ -586,10 +507,10 @@ HRESULT CDXUTResourceCache::CreateTextureFromFileEx( ID3D10Device* pDevice, LPCT
     NewEntry.BindFlags = pLoadInfo->BindFlags;
     NewEntry.MiscFlags = pLoadInfo->MiscFlags;
 
-    //Create the texture
+    //Create the rexture
     ID3D10Texture2D* pRes = NULL;
-    hr = D3DX10CreateTextureFromFile( pDevice, pSrcFile, pLoadInfo, pPump, ( ID3D10Resource** )&pRes, NULL );
-    if( FAILED( hr ) )
+    hr = D3DX10CreateTextureFromFile( pDevice, pSrcFile, pLoadInfo, pPump, (ID3D10Resource**)&pRes, NULL );
+    if( FAILED(hr) )
         return hr;
 
     if( bSRGB )
@@ -597,14 +518,14 @@ HRESULT CDXUTResourceCache::CreateTextureFromFileEx( ID3D10Device* pDevice, LPCT
         // This is a workaround so that we can load linearly, but sample in SRGB.  Right now, we can't load
         // as linear since D3DX will try to do conversion on load.  Loading as TYPELESS doesn't work either, and
         // loading as typed _UNORM doesn't allow us to create an SRGB view.
-        if( pLoadInfo->pSrcInfo->ResourceDimension == D3D10_RESOURCE_DIMENSION_TEXTURE2D )
+        if ( pLoadInfo->pSrcInfo->ResourceDimension == D3D10_RESOURCE_DIMENSION_TEXTURE2D )
         {
             ID3D10Texture2D* pCopyTex = NULL;
             D3D10_TEXTURE2D_DESC CopyDesc;
             pRes->GetDesc( &CopyDesc );
             CopyDesc.Format = MAKE_TYPELESS( CopyDesc.Format );
             hr = pDevice->CreateTexture2D( &CopyDesc, NULL, &pCopyTex );
-            if( FAILED( hr ) )
+            if( FAILED(hr) )
                 return hr;
 
             pDevice->CopyResource( pCopyTex, pRes );
@@ -617,7 +538,6 @@ HRESULT CDXUTResourceCache::CreateTextureFromFileEx( ID3D10Device* pDevice, LPCT
             bSRGB = false;
         }
     }
-    DXUT_SetDebugName( pRes, pstrName );
 
     D3D10_SHADER_RESOURCE_VIEW_DESC SRVDesc;
     if( bSRGB )
@@ -630,7 +550,7 @@ HRESULT CDXUTResourceCache::CreateTextureFromFileEx( ID3D10Device* pDevice, LPCT
         SRVDesc.Texture1D.MostDetailedMip = 0;
         SRVDesc.Texture1D.MipLevels = pLoadInfo->pSrcInfo->MipLevels;
     }
-    else if( pLoadInfo->pSrcInfo->ResourceDimension == D3D10_RESOURCE_DIMENSION_TEXTURE2D )
+    else if(pLoadInfo->pSrcInfo->ResourceDimension == D3D10_RESOURCE_DIMENSION_TEXTURE2D )
     {
         SRVDesc.ViewDimension = D3D10_SRV_DIMENSION_TEXTURE2D;
         SRVDesc.Texture2D.MostDetailedMip = 0;
@@ -643,7 +563,7 @@ HRESULT CDXUTResourceCache::CreateTextureFromFileEx( ID3D10Device* pDevice, LPCT
             SRVDesc.TextureCube.MipLevels = pLoadInfo->pSrcInfo->MipLevels;
         }
     }
-    else if( pLoadInfo->pSrcInfo->ResourceDimension == D3D10_RESOURCE_DIMENSION_TEXTURE3D )
+    else if(pLoadInfo->pSrcInfo->ResourceDimension == D3D10_RESOURCE_DIMENSION_TEXTURE3D )
     {
         SRVDesc.ViewDimension = D3D10_SRV_DIMENSION_TEXTURE3D;
         SRVDesc.Texture3D.MostDetailedMip = 0;
@@ -652,12 +572,10 @@ HRESULT CDXUTResourceCache::CreateTextureFromFileEx( ID3D10Device* pDevice, LPCT
 
     hr = pDevice->CreateShaderResourceView( pRes, &SRVDesc, ppOutputRV );
     pRes->Release();
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return hr;
 
-    ( *ppOutputRV )->QueryInterface( __uuidof( ID3D10ShaderResourceView ), ( LPVOID* )&NewEntry.pSRV10 );
-
-    DXUT_SetDebugName( *ppOutputRV, pstrName );
+    (*ppOutputRV)->QueryInterface( __uuidof( ID3D10ShaderResourceView ), (LPVOID*)&NewEntry.pSRV10 );
 
     m_TextureCache.Add( NewEntry );
 
@@ -665,8 +583,7 @@ HRESULT CDXUTResourceCache::CreateTextureFromFileEx( ID3D10Device* pDevice, LPCT
 }
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::CreateTextureFromResource( LPDIRECT3DDEVICE9 pDevice, HMODULE hSrcModule,
-                                                       LPCTSTR pSrcResource, LPDIRECT3DTEXTURE9* ppTexture )
+HRESULT CDXUTResourceCache::CreateTextureFromResource( LPDIRECT3DDEVICE9 pDevice, HMODULE hSrcModule, LPCTSTR pSrcResource, LPDIRECT3DTEXTURE9 *ppTexture )
 {
     return CreateTextureFromResourceEx( pDevice, hSrcModule, pSrcResource, D3DX_DEFAULT, D3DX_DEFAULT,
                                         D3DX_DEFAULT, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_DEFAULT,
@@ -675,16 +592,12 @@ HRESULT CDXUTResourceCache::CreateTextureFromResource( LPDIRECT3DDEVICE9 pDevice
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::CreateTextureFromResourceEx( LPDIRECT3DDEVICE9 pDevice, HMODULE hSrcModule,
-                                                         LPCTSTR pSrcResource, UINT Width, UINT Height, UINT MipLevels,
-                                                         DWORD Usage, D3DFORMAT Format, D3DPOOL Pool, DWORD Filter,
-                                                         DWORD MipFilter, D3DCOLOR ColorKey, D3DXIMAGE_INFO* pSrcInfo,
-                                                         PALETTEENTRY* pPalette, LPDIRECT3DTEXTURE9* ppTexture )
+HRESULT CDXUTResourceCache::CreateTextureFromResourceEx( LPDIRECT3DDEVICE9 pDevice, HMODULE hSrcModule, LPCTSTR pSrcResource, UINT Width, UINT Height, UINT MipLevels, DWORD Usage, D3DFORMAT Format, D3DPOOL Pool, DWORD Filter, DWORD MipFilter, D3DCOLOR ColorKey, D3DXIMAGE_INFO *pSrcInfo, PALETTEENTRY *pPalette, LPDIRECT3DTEXTURE9 *ppTexture )
 {
     // Search the cache for a matching entry.
     for( int i = 0; i < m_TextureCache.GetSize(); ++i )
     {
-        DXUTCache_Texture& Entry = m_TextureCache[i];
+        DXUTCache_Texture &Entry = m_TextureCache[i];
         if( Entry.Location == DXUTCACHE_LOCATION_RESOURCE &&
             Entry.hSrcModule == hSrcModule &&
             !lstrcmpW( Entry.wszSource, pSrcResource ) &&
@@ -697,7 +610,7 @@ HRESULT CDXUTResourceCache::CreateTextureFromResourceEx( LPDIRECT3DDEVICE9 pDevi
             Entry.Type9 == D3DRTYPE_TEXTURE )
         {
             // A match is found. Obtain the IDirect3DTexture9 interface and return that.
-            return Entry.pTexture9->QueryInterface( IID_IDirect3DTexture9, ( LPVOID* )ppTexture );
+            return Entry.pTexture9->QueryInterface( IID_IDirect3DTexture9, (LPVOID*)ppTexture );
         }
     }
 
@@ -712,7 +625,7 @@ HRESULT CDXUTResourceCache::CreateTextureFromResourceEx( LPDIRECT3DDEVICE9 pDevi
     DXUTCache_Texture NewEntry;
     NewEntry.Location = DXUTCACHE_LOCATION_RESOURCE;
     NewEntry.hSrcModule = hSrcModule;
-    wcscpy_s( NewEntry.wszSource, MAX_PATH, pSrcResource );
+    StringCchCopy( NewEntry.wszSource, MAX_PATH, pSrcResource );
     NewEntry.Width = Width;
     NewEntry.Height = Height;
     NewEntry.MipLevels = MipLevels;
@@ -720,7 +633,7 @@ HRESULT CDXUTResourceCache::CreateTextureFromResourceEx( LPDIRECT3DDEVICE9 pDevi
     NewEntry.Format9 = Format;
     NewEntry.Pool9 = Pool;
     NewEntry.Type9 = D3DRTYPE_TEXTURE;
-    ( *ppTexture )->QueryInterface( IID_IDirect3DBaseTexture9, ( LPVOID* )&NewEntry.pTexture9 );
+    (*ppTexture)->QueryInterface( IID_IDirect3DBaseTexture9, (LPVOID*)&NewEntry.pTexture9 );
 
     m_TextureCache.Add( NewEntry );
     return S_OK;
@@ -728,8 +641,7 @@ HRESULT CDXUTResourceCache::CreateTextureFromResourceEx( LPDIRECT3DDEVICE9 pDevi
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::CreateCubeTextureFromFile( LPDIRECT3DDEVICE9 pDevice, LPCTSTR pSrcFile,
-                                                       LPDIRECT3DCUBETEXTURE9* ppCubeTexture )
+HRESULT CDXUTResourceCache::CreateCubeTextureFromFile( LPDIRECT3DDEVICE9 pDevice, LPCTSTR pSrcFile, LPDIRECT3DCUBETEXTURE9 *ppCubeTexture )
 {
     return CreateCubeTextureFromFileEx( pDevice, pSrcFile, D3DX_DEFAULT, D3DX_DEFAULT, 0,
                                         D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_DEFAULT, D3DX_DEFAULT,
@@ -738,16 +650,12 @@ HRESULT CDXUTResourceCache::CreateCubeTextureFromFile( LPDIRECT3DDEVICE9 pDevice
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::CreateCubeTextureFromFileEx( LPDIRECT3DDEVICE9 pDevice, LPCTSTR pSrcFile, UINT Size,
-                                                         UINT MipLevels, DWORD Usage, D3DFORMAT Format, D3DPOOL Pool,
-                                                         DWORD Filter, DWORD MipFilter, D3DCOLOR ColorKey,
-                                                         D3DXIMAGE_INFO* pSrcInfo, PALETTEENTRY* pPalette,
-                                                         LPDIRECT3DCUBETEXTURE9* ppCubeTexture )
+HRESULT CDXUTResourceCache::CreateCubeTextureFromFileEx( LPDIRECT3DDEVICE9 pDevice, LPCTSTR pSrcFile, UINT Size, UINT MipLevels, DWORD Usage, D3DFORMAT Format, D3DPOOL Pool, DWORD Filter, DWORD MipFilter, D3DCOLOR ColorKey, D3DXIMAGE_INFO *pSrcInfo, PALETTEENTRY *pPalette, LPDIRECT3DCUBETEXTURE9 *ppCubeTexture )
 {
     // Search the cache for a matching entry.
     for( int i = 0; i < m_TextureCache.GetSize(); ++i )
     {
-        DXUTCache_Texture& Entry = m_TextureCache[i];
+        DXUTCache_Texture &Entry = m_TextureCache[i];
         if( Entry.Location == DXUTCACHE_LOCATION_FILE &&
             !lstrcmpW( Entry.wszSource, pSrcFile ) &&
             Entry.Width == Size &&
@@ -758,7 +666,7 @@ HRESULT CDXUTResourceCache::CreateCubeTextureFromFileEx( LPDIRECT3DDEVICE9 pDevi
             Entry.Type9 == D3DRTYPE_CUBETEXTURE )
         {
             // A match is found. Obtain the IDirect3DCubeTexture9 interface and return that.
-            return Entry.pTexture9->QueryInterface( IID_IDirect3DCubeTexture9, ( LPVOID* )ppCubeTexture );
+            return Entry.pTexture9->QueryInterface( IID_IDirect3DCubeTexture9, (LPVOID*)ppCubeTexture );
         }
     }
 
@@ -772,14 +680,14 @@ HRESULT CDXUTResourceCache::CreateCubeTextureFromFileEx( LPDIRECT3DDEVICE9 pDevi
 
     DXUTCache_Texture NewEntry;
     NewEntry.Location = DXUTCACHE_LOCATION_FILE;
-    wcscpy_s( NewEntry.wszSource, MAX_PATH, pSrcFile );
+    StringCchCopy( NewEntry.wszSource, MAX_PATH, pSrcFile );
     NewEntry.Width = Size;
     NewEntry.MipLevels = MipLevels;
     NewEntry.Usage9 = Usage;
     NewEntry.Format9 = Format;
     NewEntry.Pool9 = Pool;
     NewEntry.Type9 = D3DRTYPE_CUBETEXTURE;
-    ( *ppCubeTexture )->QueryInterface( IID_IDirect3DBaseTexture9, ( LPVOID* )&NewEntry.pTexture9 );
+    (*ppCubeTexture)->QueryInterface( IID_IDirect3DBaseTexture9, (LPVOID*)&NewEntry.pTexture9 );
 
     m_TextureCache.Add( NewEntry );
     return S_OK;
@@ -787,9 +695,7 @@ HRESULT CDXUTResourceCache::CreateCubeTextureFromFileEx( LPDIRECT3DDEVICE9 pDevi
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::CreateCubeTextureFromResource( LPDIRECT3DDEVICE9 pDevice, HMODULE hSrcModule,
-                                                           LPCTSTR pSrcResource,
-                                                           LPDIRECT3DCUBETEXTURE9* ppCubeTexture )
+HRESULT CDXUTResourceCache::CreateCubeTextureFromResource( LPDIRECT3DDEVICE9 pDevice, HMODULE hSrcModule, LPCTSTR pSrcResource, LPDIRECT3DCUBETEXTURE9 *ppCubeTexture )
 {
     return CreateCubeTextureFromResourceEx( pDevice, hSrcModule, pSrcResource, D3DX_DEFAULT, D3DX_DEFAULT,
                                             0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_DEFAULT, D3DX_DEFAULT,
@@ -798,17 +704,12 @@ HRESULT CDXUTResourceCache::CreateCubeTextureFromResource( LPDIRECT3DDEVICE9 pDe
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::CreateCubeTextureFromResourceEx( LPDIRECT3DDEVICE9 pDevice, HMODULE hSrcModule,
-                                                             LPCTSTR pSrcResource, UINT Size, UINT MipLevels,
-                                                             DWORD Usage, D3DFORMAT Format, D3DPOOL Pool, DWORD Filter,
-                                                             DWORD MipFilter, D3DCOLOR ColorKey,
-                                                             D3DXIMAGE_INFO* pSrcInfo, PALETTEENTRY* pPalette,
-                                                             LPDIRECT3DCUBETEXTURE9* ppCubeTexture )
+HRESULT CDXUTResourceCache::CreateCubeTextureFromResourceEx( LPDIRECT3DDEVICE9 pDevice, HMODULE hSrcModule, LPCTSTR pSrcResource, UINT Size, UINT MipLevels, DWORD Usage, D3DFORMAT Format, D3DPOOL Pool, DWORD Filter, DWORD MipFilter, D3DCOLOR ColorKey, D3DXIMAGE_INFO *pSrcInfo, PALETTEENTRY *pPalette, LPDIRECT3DCUBETEXTURE9 *ppCubeTexture )
 {
     // Search the cache for a matching entry.
     for( int i = 0; i < m_TextureCache.GetSize(); ++i )
     {
-        DXUTCache_Texture& Entry = m_TextureCache[i];
+        DXUTCache_Texture &Entry = m_TextureCache[i];
         if( Entry.Location == DXUTCACHE_LOCATION_RESOURCE &&
             Entry.hSrcModule == hSrcModule &&
             !lstrcmpW( Entry.wszSource, pSrcResource ) &&
@@ -820,7 +721,7 @@ HRESULT CDXUTResourceCache::CreateCubeTextureFromResourceEx( LPDIRECT3DDEVICE9 p
             Entry.Type9 == D3DRTYPE_CUBETEXTURE )
         {
             // A match is found. Obtain the IDirect3DCubeTexture9 interface and return that.
-            return Entry.pTexture9->QueryInterface( IID_IDirect3DCubeTexture9, ( LPVOID* )ppCubeTexture );
+            return Entry.pTexture9->QueryInterface( IID_IDirect3DCubeTexture9, (LPVOID*)ppCubeTexture );
         }
     }
 
@@ -835,14 +736,14 @@ HRESULT CDXUTResourceCache::CreateCubeTextureFromResourceEx( LPDIRECT3DDEVICE9 p
     DXUTCache_Texture NewEntry;
     NewEntry.Location = DXUTCACHE_LOCATION_RESOURCE;
     NewEntry.hSrcModule = hSrcModule;
-    wcscpy_s( NewEntry.wszSource, MAX_PATH, pSrcResource );
+    StringCchCopy( NewEntry.wszSource, MAX_PATH, pSrcResource );
     NewEntry.Width = Size;
     NewEntry.MipLevels = MipLevels;
     NewEntry.Usage9 = Usage;
     NewEntry.Format9 = Format;
     NewEntry.Pool9 = Pool;
     NewEntry.Type9 = D3DRTYPE_CUBETEXTURE;
-    ( *ppCubeTexture )->QueryInterface( IID_IDirect3DBaseTexture9, ( LPVOID* )&NewEntry.pTexture9 );
+    (*ppCubeTexture)->QueryInterface( IID_IDirect3DBaseTexture9, (LPVOID*)&NewEntry.pTexture9 );
 
     m_TextureCache.Add( NewEntry );
     return S_OK;
@@ -850,8 +751,7 @@ HRESULT CDXUTResourceCache::CreateCubeTextureFromResourceEx( LPDIRECT3DDEVICE9 p
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::CreateVolumeTextureFromFile( LPDIRECT3DDEVICE9 pDevice, LPCTSTR pSrcFile,
-                                                         LPDIRECT3DVOLUMETEXTURE9* ppVolumeTexture )
+HRESULT CDXUTResourceCache::CreateVolumeTextureFromFile( LPDIRECT3DDEVICE9 pDevice, LPCTSTR pSrcFile, LPDIRECT3DVOLUMETEXTURE9 *ppVolumeTexture )
 {
     return CreateVolumeTextureFromFileEx( pDevice, pSrcFile, D3DX_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT,
                                           0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_DEFAULT, D3DX_DEFAULT,
@@ -860,17 +760,12 @@ HRESULT CDXUTResourceCache::CreateVolumeTextureFromFile( LPDIRECT3DDEVICE9 pDevi
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::CreateVolumeTextureFromFileEx( LPDIRECT3DDEVICE9 pDevice, LPCTSTR pSrcFile, UINT Width,
-                                                           UINT Height, UINT Depth, UINT MipLevels, DWORD Usage,
-                                                           D3DFORMAT Format, D3DPOOL Pool, DWORD Filter,
-                                                           DWORD MipFilter, D3DCOLOR ColorKey,
-                                                           D3DXIMAGE_INFO* pSrcInfo, PALETTEENTRY* pPalette,
-                                                           LPDIRECT3DVOLUMETEXTURE9* ppTexture )
+HRESULT CDXUTResourceCache::CreateVolumeTextureFromFileEx( LPDIRECT3DDEVICE9 pDevice, LPCTSTR pSrcFile, UINT Width, UINT Height, UINT Depth, UINT MipLevels, DWORD Usage, D3DFORMAT Format, D3DPOOL Pool, DWORD Filter, DWORD MipFilter, D3DCOLOR ColorKey, D3DXIMAGE_INFO *pSrcInfo, PALETTEENTRY *pPalette, LPDIRECT3DVOLUMETEXTURE9 *ppTexture )
 {
     // Search the cache for a matching entry.
     for( int i = 0; i < m_TextureCache.GetSize(); ++i )
     {
-        DXUTCache_Texture& Entry = m_TextureCache[i];
+        DXUTCache_Texture &Entry = m_TextureCache[i];
         if( Entry.Location == DXUTCACHE_LOCATION_FILE &&
             !lstrcmpW( Entry.wszSource, pSrcFile ) &&
             Entry.Width == Width &&
@@ -883,7 +778,7 @@ HRESULT CDXUTResourceCache::CreateVolumeTextureFromFileEx( LPDIRECT3DDEVICE9 pDe
             Entry.Type9 == D3DRTYPE_VOLUMETEXTURE )
         {
             // A match is found. Obtain the IDirect3DVolumeTexture9 interface and return that.
-            return Entry.pTexture9->QueryInterface( IID_IDirect3DVolumeTexture9, ( LPVOID* )ppTexture );
+            return Entry.pTexture9->QueryInterface( IID_IDirect3DVolumeTexture9, (LPVOID*)ppTexture );
         }
     }
 
@@ -897,7 +792,7 @@ HRESULT CDXUTResourceCache::CreateVolumeTextureFromFileEx( LPDIRECT3DDEVICE9 pDe
 
     DXUTCache_Texture NewEntry;
     NewEntry.Location = DXUTCACHE_LOCATION_FILE;
-    wcscpy_s( NewEntry.wszSource, MAX_PATH, pSrcFile );
+    StringCchCopy( NewEntry.wszSource, MAX_PATH, pSrcFile );
     NewEntry.Width = Width;
     NewEntry.Height = Height;
     NewEntry.Depth = Depth;
@@ -906,7 +801,7 @@ HRESULT CDXUTResourceCache::CreateVolumeTextureFromFileEx( LPDIRECT3DDEVICE9 pDe
     NewEntry.Format9 = Format;
     NewEntry.Pool9 = Pool;
     NewEntry.Type9 = D3DRTYPE_VOLUMETEXTURE;
-    ( *ppTexture )->QueryInterface( IID_IDirect3DBaseTexture9, ( LPVOID* )&NewEntry.pTexture9 );
+    (*ppTexture)->QueryInterface( IID_IDirect3DBaseTexture9, (LPVOID*)&NewEntry.pTexture9 );
 
     m_TextureCache.Add( NewEntry );
     return S_OK;
@@ -914,9 +809,7 @@ HRESULT CDXUTResourceCache::CreateVolumeTextureFromFileEx( LPDIRECT3DDEVICE9 pDe
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::CreateVolumeTextureFromResource( LPDIRECT3DDEVICE9 pDevice, HMODULE hSrcModule,
-                                                             LPCTSTR pSrcResource,
-                                                             LPDIRECT3DVOLUMETEXTURE9* ppVolumeTexture )
+HRESULT CDXUTResourceCache::CreateVolumeTextureFromResource( LPDIRECT3DDEVICE9 pDevice, HMODULE hSrcModule, LPCTSTR pSrcResource, LPDIRECT3DVOLUMETEXTURE9 *ppVolumeTexture )
 {
     return CreateVolumeTextureFromResourceEx( pDevice, hSrcModule, pSrcResource, D3DX_DEFAULT, D3DX_DEFAULT,
                                               D3DX_DEFAULT, D3DX_DEFAULT, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED,
@@ -925,18 +818,12 @@ HRESULT CDXUTResourceCache::CreateVolumeTextureFromResource( LPDIRECT3DDEVICE9 p
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::CreateVolumeTextureFromResourceEx( LPDIRECT3DDEVICE9 pDevice, HMODULE hSrcModule,
-                                                               LPCTSTR pSrcResource, UINT Width, UINT Height,
-                                                               UINT Depth, UINT MipLevels, DWORD Usage,
-                                                               D3DFORMAT Format, D3DPOOL Pool, DWORD Filter,
-                                                               DWORD MipFilter, D3DCOLOR ColorKey,
-                                                               D3DXIMAGE_INFO* pSrcInfo, PALETTEENTRY* pPalette,
-                                                               LPDIRECT3DVOLUMETEXTURE9* ppVolumeTexture )
+HRESULT CDXUTResourceCache::CreateVolumeTextureFromResourceEx( LPDIRECT3DDEVICE9 pDevice, HMODULE hSrcModule, LPCTSTR pSrcResource, UINT Width, UINT Height, UINT Depth, UINT MipLevels, DWORD Usage, D3DFORMAT Format, D3DPOOL Pool, DWORD Filter, DWORD MipFilter, D3DCOLOR ColorKey, D3DXIMAGE_INFO *pSrcInfo, PALETTEENTRY *pPalette, LPDIRECT3DVOLUMETEXTURE9 *ppVolumeTexture )
 {
     // Search the cache for a matching entry.
     for( int i = 0; i < m_TextureCache.GetSize(); ++i )
     {
-        DXUTCache_Texture& Entry = m_TextureCache[i];
+        DXUTCache_Texture &Entry = m_TextureCache[i];
         if( Entry.Location == DXUTCACHE_LOCATION_RESOURCE &&
             Entry.hSrcModule == hSrcModule &&
             !lstrcmpW( Entry.wszSource, pSrcResource ) &&
@@ -950,24 +837,22 @@ HRESULT CDXUTResourceCache::CreateVolumeTextureFromResourceEx( LPDIRECT3DDEVICE9
             Entry.Type9 == D3DRTYPE_VOLUMETEXTURE )
         {
             // A match is found. Obtain the IDirect3DVolumeTexture9 interface and return that.
-            return Entry.pTexture9->QueryInterface( IID_IDirect3DVolumeTexture9, ( LPVOID* )ppVolumeTexture );
+            return Entry.pTexture9->QueryInterface( IID_IDirect3DVolumeTexture9, (LPVOID*)ppVolumeTexture );
         }
     }
 
     HRESULT hr;
 
     // No matching entry.  Load the resource and create a new entry.
-    hr = D3DXCreateVolumeTextureFromResourceEx( pDevice, hSrcModule, pSrcResource, Width, Height, Depth, MipLevels,
-                                                Usage,
-                                                Format, Pool, Filter, MipFilter, ColorKey, pSrcInfo, pPalette,
-                                                ppVolumeTexture );
+    hr = D3DXCreateVolumeTextureFromResourceEx( pDevice, hSrcModule, pSrcResource, Width, Height, Depth, MipLevels, Usage,
+                                                Format, Pool, Filter, MipFilter, ColorKey, pSrcInfo, pPalette, ppVolumeTexture );
     if( FAILED( hr ) )
         return hr;
 
     DXUTCache_Texture NewEntry;
     NewEntry.Location = DXUTCACHE_LOCATION_RESOURCE;
     NewEntry.hSrcModule = hSrcModule;
-    wcscpy_s( NewEntry.wszSource, MAX_PATH, pSrcResource );
+    StringCchCopy( NewEntry.wszSource, MAX_PATH, pSrcResource );
     NewEntry.Width = Width;
     NewEntry.Height = Height;
     NewEntry.Depth = Depth;
@@ -976,7 +861,7 @@ HRESULT CDXUTResourceCache::CreateVolumeTextureFromResourceEx( LPDIRECT3DDEVICE9
     NewEntry.Format9 = Format;
     NewEntry.Pool9 = Pool;
     NewEntry.Type9 = D3DRTYPE_VOLUMETEXTURE;
-    ( *ppVolumeTexture )->QueryInterface( IID_IDirect3DBaseTexture9, ( LPVOID* )&NewEntry.pTexture9 );
+    (*ppVolumeTexture)->QueryInterface( IID_IDirect3DBaseTexture9, (LPVOID*)&NewEntry.pTexture9 );
 
     m_TextureCache.Add( NewEntry );
     return S_OK;
@@ -984,22 +869,20 @@ HRESULT CDXUTResourceCache::CreateVolumeTextureFromResourceEx( LPDIRECT3DDEVICE9
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::CreateFont( LPDIRECT3DDEVICE9 pDevice, UINT Height, UINT Width, UINT Weight,
-                                        UINT MipLevels, BOOL Italic, DWORD CharSet, DWORD OutputPrecision,
-                                        DWORD Quality, DWORD PitchAndFamily, LPCTSTR pFacename, LPD3DXFONT* ppFont )
+HRESULT CDXUTResourceCache::CreateFont( LPDIRECT3DDEVICE9 pDevice, UINT Height, UINT Width, UINT Weight, UINT MipLevels, BOOL Italic, DWORD CharSet, DWORD OutputPrecision, DWORD Quality, DWORD PitchAndFamily, LPCTSTR pFacename, LPD3DXFONT *ppFont )
 {
     D3DXFONT_DESCW Desc;
-
+    
     Desc.Height = Height;
     Desc.Width = Width;
     Desc.Weight = Weight;
     Desc.MipLevels = MipLevels;
     Desc.Italic = Italic;
-    Desc.CharSet = ( BYTE )CharSet;
-    Desc.OutputPrecision = ( BYTE )OutputPrecision;
-    Desc.Quality = ( BYTE )Quality;
-    Desc.PitchAndFamily = ( BYTE )PitchAndFamily;
-    wcscpy_s( Desc.FaceName, LF_FACESIZE, pFacename );
+    Desc.CharSet = (BYTE)CharSet;
+    Desc.OutputPrecision = (BYTE)OutputPrecision;
+    Desc.Quality = (BYTE)Quality;
+    Desc.PitchAndFamily = (BYTE)PitchAndFamily;
+    StringCchCopy( Desc.FaceName, LF_FACESIZE, pFacename );
 
     return CreateFontIndirect( pDevice, &Desc, ppFont );
 }
@@ -1007,10 +890,10 @@ HRESULT CDXUTResourceCache::CreateFont( LPDIRECT3DDEVICE9 pDevice, UINT Height, 
 
 //--------------------------------------------------------------------------------------
 HRESULT CDXUTResourceCache::CreateFontIndirect( LPDIRECT3DDEVICE9 pDevice, CONST D3DXFONT_DESC *pDesc, LPD3DXFONT *ppFont )
- {
+{
     // Search the cache for a matching entry.
     for( int i = 0; i < m_FontCache.GetSize(); ++i )
- {
+    {
         DXUTCache_Font &Entry = m_FontCache[i];
 
         if( Entry.Width == pDesc->Width &&
@@ -1025,8 +908,8 @@ HRESULT CDXUTResourceCache::CreateFontIndirect( LPDIRECT3DDEVICE9 pDevice, CONST
             CompareString( LOCALE_USER_DEFAULT, NORM_IGNORECASE,
                            Entry.FaceName, -1,
                            pDesc->FaceName, -1 ) == CSTR_EQUAL )
- {
-    // A match is found.  Increment the reference and return the ID3DXFont object.
+        {
+            // A match is found.  Increment the reference and return the ID3DXFont object.
             Entry.pFont->AddRef();
             *ppFont = Entry.pFont;
             return S_OK;
@@ -1041,7 +924,7 @@ HRESULT CDXUTResourceCache::CreateFontIndirect( LPDIRECT3DDEVICE9 pDevice, CONST
         return hr;
 
     DXUTCache_Font NewEntry;
-    ( D3DXFONT_DESC & )NewEntry = *pDesc;
+    (D3DXFONT_DESC &)NewEntry = *pDesc;
     NewEntry.pFont = *ppFont;
     NewEntry.pFont->AddRef();
 
@@ -1051,15 +934,12 @@ HRESULT CDXUTResourceCache::CreateFontIndirect( LPDIRECT3DDEVICE9 pDevice, CONST
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::CreateEffectFromFile( LPDIRECT3DDEVICE9 pDevice, LPCTSTR pSrcFile,
-                                                  const D3DXMACRO* pDefines, LPD3DXINCLUDE pInclude, DWORD Flags,
-                                                  LPD3DXEFFECTPOOL pPool, LPD3DXEFFECT* ppEffect,
-                                                  LPD3DXBUFFER* ppCompilationErrors )
+HRESULT CDXUTResourceCache::CreateEffectFromFile( LPDIRECT3DDEVICE9 pDevice, LPCTSTR pSrcFile, const D3DXMACRO *pDefines, LPD3DXINCLUDE pInclude, DWORD Flags, LPD3DXEFFECTPOOL pPool, LPD3DXEFFECT *ppEffect, LPD3DXBUFFER *ppCompilationErrors )
 {
     // Search the cache for a matching entry.
     for( int i = 0; i < m_EffectCache.GetSize(); ++i )
     {
-        DXUTCache_Effect& Entry = m_EffectCache[i];
+        DXUTCache_Effect &Entry = m_EffectCache[i];
 
         if( Entry.Location == DXUTCACHE_LOCATION_FILE &&
             !lstrcmpW( Entry.wszSource, pSrcFile ) &&
@@ -1067,7 +947,7 @@ HRESULT CDXUTResourceCache::CreateEffectFromFile( LPDIRECT3DDEVICE9 pDevice, LPC
         {
             // A match is found.  Increment the ref coutn and return the ID3DXEffect object.
             *ppEffect = Entry.pEffect;
-            ( *ppEffect )->AddRef();
+            (*ppEffect)->AddRef();
             return S_OK;
         }
     }
@@ -1075,18 +955,13 @@ HRESULT CDXUTResourceCache::CreateEffectFromFile( LPDIRECT3DDEVICE9 pDevice, LPC
     HRESULT hr;
 
     // No matching entry.  Load the resource and create a new entry.
-#ifdef D3DXFX_LARGEADDRESS_HANDLE
-    Flags |= D3DXFX_LARGEADDRESSAWARE;
-#endif
-
-    hr = D3DXCreateEffectFromFile( pDevice, pSrcFile, pDefines, pInclude, Flags, pPool, ppEffect,
-                                   ppCompilationErrors );
+    hr = D3DXCreateEffectFromFile( pDevice, pSrcFile, pDefines, pInclude, Flags, pPool, ppEffect, ppCompilationErrors );
     if( FAILED( hr ) )
         return hr;
 
     DXUTCache_Effect NewEntry;
     NewEntry.Location = DXUTCACHE_LOCATION_FILE;
-    wcscpy_s( NewEntry.wszSource, MAX_PATH, pSrcFile );
+    StringCchCopy( NewEntry.wszSource, MAX_PATH, pSrcFile );
     NewEntry.dwFlags = Flags;
     NewEntry.pEffect = *ppEffect;
     NewEntry.pEffect->AddRef();
@@ -1097,15 +972,12 @@ HRESULT CDXUTResourceCache::CreateEffectFromFile( LPDIRECT3DDEVICE9 pDevice, LPC
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::CreateEffectFromResource( LPDIRECT3DDEVICE9 pDevice, HMODULE hSrcModule,
-                                                      LPCTSTR pSrcResource, const D3DXMACRO* pDefines,
-                                                      LPD3DXINCLUDE pInclude, DWORD Flags, LPD3DXEFFECTPOOL pPool,
-                                                      LPD3DXEFFECT* ppEffect, LPD3DXBUFFER* ppCompilationErrors )
+HRESULT CDXUTResourceCache::CreateEffectFromResource( LPDIRECT3DDEVICE9 pDevice, HMODULE hSrcModule, LPCTSTR pSrcResource, const D3DXMACRO *pDefines, LPD3DXINCLUDE pInclude, DWORD Flags, LPD3DXEFFECTPOOL pPool, LPD3DXEFFECT *ppEffect, LPD3DXBUFFER *ppCompilationErrors )
 {
     // Search the cache for a matching entry.
     for( int i = 0; i < m_EffectCache.GetSize(); ++i )
     {
-        DXUTCache_Effect& Entry = m_EffectCache[i];
+        DXUTCache_Effect &Entry = m_EffectCache[i];
 
         if( Entry.Location == DXUTCACHE_LOCATION_RESOURCE &&
             Entry.hSrcModule == hSrcModule &&
@@ -1114,7 +986,7 @@ HRESULT CDXUTResourceCache::CreateEffectFromResource( LPDIRECT3DDEVICE9 pDevice,
         {
             // A match is found.  Increment the ref coutn and return the ID3DXEffect object.
             *ppEffect = Entry.pEffect;
-            ( *ppEffect )->AddRef();
+            (*ppEffect)->AddRef();
             return S_OK;
         }
     }
@@ -1122,10 +994,6 @@ HRESULT CDXUTResourceCache::CreateEffectFromResource( LPDIRECT3DDEVICE9 pDevice,
     HRESULT hr;
 
     // No matching entry.  Load the resource and create a new entry.
-#ifdef D3DXFX_LARGEADDRESS_HANDLE
-    Flags |= D3DXFX_LARGEADDRESSAWARE;
-#endif
-
     hr = D3DXCreateEffectFromResource( pDevice, hSrcModule, pSrcResource, pDefines, pInclude, Flags,
                                        pPool, ppEffect, ppCompilationErrors );
     if( FAILED( hr ) )
@@ -1134,7 +1002,7 @@ HRESULT CDXUTResourceCache::CreateEffectFromResource( LPDIRECT3DDEVICE9 pDevice,
     DXUTCache_Effect NewEntry;
     NewEntry.Location = DXUTCACHE_LOCATION_RESOURCE;
     NewEntry.hSrcModule = hSrcModule;
-    wcscpy_s( NewEntry.wszSource, MAX_PATH, pSrcResource );
+    StringCchCopy( NewEntry.wszSource, MAX_PATH, pSrcResource );
     NewEntry.dwFlags = Flags;
     NewEntry.pEffect = *ppEffect;
     NewEntry.pEffect->AddRef();
@@ -1150,14 +1018,14 @@ HRESULT CDXUTResourceCache::CreateEffectFromResource( LPDIRECT3DDEVICE9 pDevice,
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::OnCreateDevice( IDirect3DDevice9* pd3dDevice )
+HRESULT CDXUTResourceCache::OnCreateDevice( IDirect3DDevice9 *pd3dDevice )
 {
     return S_OK;
 }
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTResourceCache::OnResetDevice( IDirect3DDevice9* pd3dDevice )
+HRESULT CDXUTResourceCache::OnResetDevice( IDirect3DDevice9 *pd3dDevice )
 {
     // Call OnResetDevice on all effect and font objects
     for( int i = 0; i < m_EffectCache.GetSize(); ++i )
@@ -1221,7 +1089,7 @@ HRESULT CDXUTResourceCache::OnDestroyDevice()
 //--------------------------------------------------------------------------------------
 D3DXMATRIX WINAPI DXUTGetCubeMapViewMatrix( DWORD dwFace )
 {
-    D3DXVECTOR3 vEyePt = D3DXVECTOR3( 0.0f, 0.0f, 0.0f );
+    D3DXVECTOR3 vEyePt   = D3DXVECTOR3( 0.0f, 0.0f, 0.0f );
     D3DXVECTOR3 vLookDir;
     D3DXVECTOR3 vUpDir;
 
@@ -1229,27 +1097,27 @@ D3DXMATRIX WINAPI DXUTGetCubeMapViewMatrix( DWORD dwFace )
     {
         case D3DCUBEMAP_FACE_POSITIVE_X:
             vLookDir = D3DXVECTOR3( 1.0f, 0.0f, 0.0f );
-            vUpDir = D3DXVECTOR3( 0.0f, 1.0f, 0.0f );
+            vUpDir   = D3DXVECTOR3( 0.0f, 1.0f, 0.0f );
             break;
         case D3DCUBEMAP_FACE_NEGATIVE_X:
-            vLookDir = D3DXVECTOR3( -1.0f, 0.0f, 0.0f );
-            vUpDir = D3DXVECTOR3( 0.0f, 1.0f, 0.0f );
+            vLookDir = D3DXVECTOR3(-1.0f, 0.0f, 0.0f );
+            vUpDir   = D3DXVECTOR3( 0.0f, 1.0f, 0.0f );
             break;
         case D3DCUBEMAP_FACE_POSITIVE_Y:
             vLookDir = D3DXVECTOR3( 0.0f, 1.0f, 0.0f );
-            vUpDir = D3DXVECTOR3( 0.0f, 0.0f, -1.0f );
+            vUpDir   = D3DXVECTOR3( 0.0f, 0.0f,-1.0f );
             break;
         case D3DCUBEMAP_FACE_NEGATIVE_Y:
-            vLookDir = D3DXVECTOR3( 0.0f, -1.0f, 0.0f );
-            vUpDir = D3DXVECTOR3( 0.0f, 0.0f, 1.0f );
+            vLookDir = D3DXVECTOR3( 0.0f,-1.0f, 0.0f );
+            vUpDir   = D3DXVECTOR3( 0.0f, 0.0f, 1.0f );
             break;
         case D3DCUBEMAP_FACE_POSITIVE_Z:
             vLookDir = D3DXVECTOR3( 0.0f, 0.0f, 1.0f );
-            vUpDir = D3DXVECTOR3( 0.0f, 1.0f, 0.0f );
+            vUpDir   = D3DXVECTOR3( 0.0f, 1.0f, 0.0f );
             break;
         case D3DCUBEMAP_FACE_NEGATIVE_Z:
-            vLookDir = D3DXVECTOR3( 0.0f, 0.0f, -1.0f );
-            vUpDir = D3DXVECTOR3( 0.0f, 1.0f, 0.0f );
+            vLookDir = D3DXVECTOR3( 0.0f, 0.0f,-1.0f );
+            vUpDir   = D3DXVECTOR3( 0.0f, 1.0f, 0.0f );
             break;
     }
 
@@ -1282,7 +1150,7 @@ HRESULT CDXUTLineManager::OnCreatedDevice( IDirect3DDevice9* pd3dDevice )
 
     HRESULT hr;
     hr = D3DXCreateLine( m_pd3dDevice, &m_pD3DXLine );
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return hr;
 
     return S_OK;
@@ -1309,20 +1177,20 @@ HRESULT CDXUTLineManager::OnRender()
     bool bDrawingHasBegun = false;
     float fLastWidth = 0.0f;
     bool bLastAntiAlias = false;
-
-    for( int i = 0; i < m_LinesList.GetSize(); i++ )
+    
+    for( int i=0; i<m_LinesList.GetSize(); i++ )
     {
-        LINE_NODE* pLineNode = m_LinesList.GetAt( i );
+        LINE_NODE* pLineNode = m_LinesList.GetAt(i);
         if( pLineNode )
         {
-            if( !bDrawingHasBegun ||
-                fLastWidth != pLineNode->fWidth ||
+            if( !bDrawingHasBegun || 
+                fLastWidth != pLineNode->fWidth || 
                 bLastAntiAlias != pLineNode->bAntiAlias )
             {
                 if( bDrawingHasBegun )
                 {
                     hr = m_pD3DXLine->End();
-                    if( FAILED( hr ) )
+                    if( FAILED(hr) )
                         return hr;
                 }
 
@@ -1333,13 +1201,13 @@ HRESULT CDXUTLineManager::OnRender()
                 bLastAntiAlias = pLineNode->bAntiAlias;
 
                 hr = m_pD3DXLine->Begin();
-                if( FAILED( hr ) )
+                if( FAILED(hr) )
                     return hr;
                 bDrawingHasBegun = true;
             }
 
             hr = m_pD3DXLine->Draw( pLineNode->pVertexList, pLineNode->dwVertexListCount, pLineNode->Color );
-            if( FAILED( hr ) )
+            if( FAILED(hr) )
                 return hr;
         }
     }
@@ -1347,7 +1215,7 @@ HRESULT CDXUTLineManager::OnRender()
     if( bDrawingHasBegun )
     {
         hr = m_pD3DXLine->End();
-        if( FAILED( hr ) )
+        if( FAILED(hr) )
             return hr;
     }
 
@@ -1376,8 +1244,7 @@ HRESULT CDXUTLineManager::OnDeletedDevice()
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTLineManager::AddLine( int* pnLineID, D3DXVECTOR2* pVertexList, DWORD dwVertexListCount, D3DCOLOR Color,
-                                   float fWidth, float fScaleRatio, bool bAntiAlias )
+HRESULT CDXUTLineManager::AddLine( int* pnLineID, D3DXVECTOR2* pVertexList, DWORD dwVertexListCount, D3DCOLOR Color, float fWidth, float fScaleRatio, bool bAntiAlias )
 {
     if( pVertexList == NULL || dwVertexListCount == 0 )
         return E_INVALIDARG;
@@ -1385,7 +1252,7 @@ HRESULT CDXUTLineManager::AddLine( int* pnLineID, D3DXVECTOR2* pVertexList, DWOR
     LINE_NODE* pLineNode = new LINE_NODE;
     if( pLineNode == NULL )
         return E_OUTOFMEMORY;
-    ZeroMemory( pLineNode, sizeof( LINE_NODE ) );
+    ZeroMemory( pLineNode, sizeof(LINE_NODE) );
 
     pLineNode->nLineID = m_LinesList.GetSize();
     pLineNode->Color = Color;
@@ -1402,7 +1269,7 @@ HRESULT CDXUTLineManager::AddLine( int* pnLineID, D3DXVECTOR2* pVertexList, DWOR
         delete pLineNode;
         return E_OUTOFMEMORY;
     }
-    for( DWORD i = 0; i < dwVertexListCount; i++ )
+    for( DWORD i=0; i<dwVertexListCount; i++ )
     {
         pLineNode->pVertexList[i] = pVertexList[i] * fScaleRatio;
     }
@@ -1414,57 +1281,56 @@ HRESULT CDXUTLineManager::AddLine( int* pnLineID, D3DXVECTOR2* pVertexList, DWOR
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CDXUTLineManager::AddRect( int* pnLineID, RECT rc, D3DCOLOR Color, float fWidth, float fScaleRatio,
-                                   bool bAntiAlias )
+HRESULT CDXUTLineManager::AddRect( int* pnLineID, RECT rc, D3DCOLOR Color, float fWidth, float fScaleRatio, bool bAntiAlias )
 {
     if( fWidth > 2.0f )
     {
         D3DXVECTOR2 vertexList[8];
 
-        vertexList[0].x = ( float )rc.left;
-        vertexList[0].y = ( float )rc.top - ( fWidth / 2.0f );
+        vertexList[0].x = (float)rc.left;
+        vertexList[0].y = (float)rc.top - (fWidth/2.0f);
 
-        vertexList[1].x = ( float )rc.left;
-        vertexList[1].y = ( float )rc.bottom + ( fWidth / 2.0f );
+        vertexList[1].x = (float)rc.left;
+        vertexList[1].y = (float)rc.bottom + (fWidth/2.0f);
 
-        vertexList[2].x = ( float )rc.left;
-        vertexList[2].y = ( float )rc.bottom - 0.5f;
+        vertexList[2].x = (float)rc.left;
+        vertexList[2].y = (float)rc.bottom - 0.5f;
 
-        vertexList[3].x = ( float )rc.right;
-        vertexList[3].y = ( float )rc.bottom - 0.5f;
+        vertexList[3].x = (float)rc.right;
+        vertexList[3].y = (float)rc.bottom - 0.5f;
 
-        vertexList[4].x = ( float )rc.right;
-        vertexList[4].y = ( float )rc.bottom + ( fWidth / 2.0f );
+        vertexList[4].x = (float)rc.right;
+        vertexList[4].y = (float)rc.bottom + (fWidth/2.0f);
 
-        vertexList[5].x = ( float )rc.right;
-        vertexList[5].y = ( float )rc.top - ( fWidth / 2.0f );
+        vertexList[5].x = (float)rc.right;
+        vertexList[5].y = (float)rc.top - (fWidth/2.0f);
 
-        vertexList[6].x = ( float )rc.right;
-        vertexList[6].y = ( float )rc.top;
+        vertexList[6].x = (float)rc.right;
+        vertexList[6].y = (float)rc.top;
 
-        vertexList[7].x = ( float )rc.left;
-        vertexList[7].y = ( float )rc.top;
-
+        vertexList[7].x = (float)rc.left;
+        vertexList[7].y = (float)rc.top;
+        
         return AddLine( pnLineID, vertexList, 8, Color, fWidth, fScaleRatio, bAntiAlias );
     }
     else
     {
         D3DXVECTOR2 vertexList[5];
-        vertexList[0].x = ( float )rc.left;
-        vertexList[0].y = ( float )rc.top;
+        vertexList[0].x = (float)rc.left;
+        vertexList[0].y = (float)rc.top;
 
-        vertexList[1].x = ( float )rc.left;
-        vertexList[1].y = ( float )rc.bottom;
+        vertexList[1].x = (float)rc.left;
+        vertexList[1].y = (float)rc.bottom;
 
-        vertexList[2].x = ( float )rc.right;
-        vertexList[2].y = ( float )rc.bottom;
+        vertexList[2].x = (float)rc.right;
+        vertexList[2].y = (float)rc.bottom;
 
-        vertexList[3].x = ( float )rc.right;
-        vertexList[3].y = ( float )rc.top;
+        vertexList[3].x = (float)rc.right;
+        vertexList[3].y = (float)rc.top;
 
-        vertexList[4].x = ( float )rc.left;
-        vertexList[4].y = ( float )rc.top;
-
+        vertexList[4].x = (float)rc.left;
+        vertexList[4].y = (float)rc.top;
+        
         return AddLine( pnLineID, vertexList, 5, Color, fWidth, fScaleRatio, bAntiAlias );
     }
 }
@@ -1474,14 +1340,14 @@ HRESULT CDXUTLineManager::AddRect( int* pnLineID, RECT rc, D3DCOLOR Color, float
 //--------------------------------------------------------------------------------------
 HRESULT CDXUTLineManager::RemoveLine( int nLineID )
 {
-    for( int i = 0; i < m_LinesList.GetSize(); i++ )
+    for( int i=0; i<m_LinesList.GetSize(); i++ )
     {
-        LINE_NODE* pLineNode = m_LinesList.GetAt( i );
+        LINE_NODE* pLineNode = m_LinesList.GetAt(i);
         if( pLineNode && pLineNode->nLineID == nLineID )
         {
             SAFE_DELETE_ARRAY( pLineNode->pVertexList );
             delete pLineNode;
-            m_LinesList.SetAt( i, NULL );
+            m_LinesList.SetAt(i, NULL);
         }
     }
 
@@ -1492,9 +1358,9 @@ HRESULT CDXUTLineManager::RemoveLine( int nLineID )
 //--------------------------------------------------------------------------------------
 HRESULT CDXUTLineManager::RemoveAllLines()
 {
-    for( int i = 0; i < m_LinesList.GetSize(); i++ )
+    for( int i=0; i<m_LinesList.GetSize(); i++ )
     {
-        LINE_NODE* pLineNode = m_LinesList.GetAt( i );
+        LINE_NODE* pLineNode = m_LinesList.GetAt(i);
         if( pLineNode )
         {
             SAFE_DELETE_ARRAY( pLineNode->pVertexList );
@@ -1508,35 +1374,24 @@ HRESULT CDXUTLineManager::RemoveAllLines()
 
 
 //--------------------------------------------------------------------------------------
-CDXUTTextHelper::CDXUTTextHelper( ID3DXFont* pFont9, ID3DXSprite* pSprite9, ID3DX10Font* pFont10,
-                                  ID3DX10Sprite* pSprite10, int nLineHeight )
-{
-    Init( pFont9, pSprite9, pFont10, pSprite10, nLineHeight );
-}
-CDXUTTextHelper::CDXUTTextHelper( ID3DXFont* pFont, ID3DXSprite* pSprite, int nLineHeight )
-{
-    Init( pFont, pSprite, NULL, NULL, nLineHeight );
-}
-CDXUTTextHelper::CDXUTTextHelper( ID3DX10Font* pFont, ID3DX10Sprite* pSprite, int nLineHeight )
-{
-    Init( NULL, NULL, pFont, pSprite, nLineHeight );
-}
+CDXUTTextHelper::CDXUTTextHelper( ID3DXFont* pFont9, ID3DXSprite* pSprite9, ID3DX10Font* pFont10, ID3DX10Sprite* pSprite10, int nLineHeight ) { Init( pFont9, pSprite9, pFont10, pSprite10, nLineHeight ); }
+CDXUTTextHelper::CDXUTTextHelper( ID3DXFont* pFont, ID3DXSprite* pSprite, int nLineHeight )     { Init( pFont, pSprite, NULL, NULL, nLineHeight ); }
+CDXUTTextHelper::CDXUTTextHelper( ID3DX10Font* pFont, ID3DX10Sprite* pSprite, int nLineHeight ) { Init( NULL, NULL, pFont, pSprite, nLineHeight ); }
 CDXUTTextHelper::~CDXUTTextHelper()
 {
     SAFE_RELEASE( m_pFontBlendState10 );
 }
 
 //--------------------------------------------------------------------------------------
-void CDXUTTextHelper::Init( ID3DXFont* pFont9, ID3DXSprite* pSprite9, ID3DX10Font* pFont10, ID3DX10Sprite* pSprite10,
-                            int nLineHeight )
+void CDXUTTextHelper::Init( ID3DXFont* pFont9, ID3DXSprite* pSprite9, ID3DX10Font* pFont10, ID3DX10Sprite* pSprite10, int nLineHeight )
 {
     m_pFont9 = pFont9;
     m_pSprite9 = pSprite9;
     m_pFont10 = pFont10;
     m_pSprite10 = pSprite10;
-    m_clr = D3DXCOLOR( 1, 1, 1, 1 );
-    m_pt.x = 0;
-    m_pt.y = 0;
+    m_clr = D3DXCOLOR(1,1,1,1);
+    m_pt.x = 0; 
+    m_pt.y = 0; 
     m_nLineHeight = nLineHeight;
     m_pFontBlendState10 = NULL;
 
@@ -1548,7 +1403,7 @@ void CDXUTTextHelper::Init( ID3DXFont* pFont9, ID3DXSprite* pSprite9, ID3DX10Fon
         if( pDev )
         {
             D3D10_BLEND_DESC StateDesc;
-            ZeroMemory( &StateDesc, sizeof( D3D10_BLEND_DESC ) );
+            ZeroMemory( &StateDesc, sizeof(D3D10_BLEND_DESC) );
             StateDesc.AlphaToCoverageEnable = FALSE;
             StateDesc.BlendEnable[0] = TRUE;
             StateDesc.SrcBlend = D3D10_BLEND_SRC_ALPHA;
@@ -1559,7 +1414,6 @@ void CDXUTTextHelper::Init( ID3DXFont* pFont9, ID3DXSprite* pSprite9, ID3DX10Fon
             StateDesc.BlendOpAlpha = D3D10_BLEND_OP_ADD;
             StateDesc.RenderTargetWriteMask[0] = 0xf;
             pDev->CreateBlendState( &StateDesc, &m_pFontBlendState10 );
-            DXUT_SetDebugName( m_pFontBlendState10, "CDXUTTextHelper" );
 
             pDev->Release();
         }
@@ -1571,12 +1425,12 @@ void CDXUTTextHelper::Init( ID3DXFont* pFont9, ID3DXSprite* pSprite9, ID3DX10Fon
 HRESULT CDXUTTextHelper::DrawFormattedTextLine( const WCHAR* strMsg, ... )
 {
     WCHAR strBuffer[512];
-
+    
     va_list args;
-    va_start( args, strMsg );
-    vswprintf_s( strBuffer, 512, strMsg, args );
+    va_start(args, strMsg);
+    StringCchVPrintf( strBuffer, 512, strMsg, args );
     strBuffer[511] = L'\0';
-    va_end( args );
+    va_end(args);
 
     return DrawTextLine( strBuffer );
 }
@@ -1585,17 +1439,17 @@ HRESULT CDXUTTextHelper::DrawFormattedTextLine( const WCHAR* strMsg, ... )
 //--------------------------------------------------------------------------------------
 HRESULT CDXUTTextHelper::DrawTextLine( const WCHAR* strMsg )
 {
-    if( NULL == m_pFont9 && NULL == m_pFont10 )
+    if( NULL == m_pFont9 && NULL == m_pFont10 ) 
         return DXUT_ERR_MSGBOX( L"DrawTextLine", E_INVALIDARG );
 
     HRESULT hr;
     RECT rc;
-    SetRect( &rc, m_pt.x, m_pt.y, 0, 0 );
+    SetRect( &rc, m_pt.x, m_pt.y, 0, 0 ); 
     if( m_pFont9 )
         hr = m_pFont9->DrawText( m_pSprite9, strMsg, -1, &rc, DT_NOCLIP, m_clr );
     else
         hr = m_pFont10->DrawText( m_pSprite10, strMsg, -1, &rc, DT_NOCLIP, m_clr );
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return DXTRACE_ERR_MSGBOX( L"DrawText", hr );
 
     m_pt.y += m_nLineHeight;
@@ -1604,23 +1458,23 @@ HRESULT CDXUTTextHelper::DrawTextLine( const WCHAR* strMsg )
 }
 
 
-HRESULT CDXUTTextHelper::DrawFormattedTextLine( RECT& rc, DWORD dwFlags, const WCHAR* strMsg, ... )
+HRESULT CDXUTTextHelper::DrawFormattedTextLine( RECT &rc, DWORD dwFlags, const WCHAR* strMsg, ... )
 {
     WCHAR strBuffer[512];
-
+    
     va_list args;
-    va_start( args, strMsg );
-    vswprintf_s( strBuffer, 512, strMsg, args );
+    va_start(args, strMsg);
+    StringCchVPrintf( strBuffer, 512, strMsg, args );
     strBuffer[511] = L'\0';
-    va_end( args );
+    va_end(args);
 
     return DrawTextLine( rc, dwFlags, strBuffer );
 }
 
 
-HRESULT CDXUTTextHelper::DrawTextLine( RECT& rc, DWORD dwFlags, const WCHAR* strMsg )
+HRESULT CDXUTTextHelper::DrawTextLine( RECT &rc, DWORD dwFlags, const WCHAR* strMsg )
 {
-    if( NULL == m_pFont9 && NULL == m_pFont10 )
+    if( NULL == m_pFont9 && NULL == m_pFont10 ) 
         return DXUT_ERR_MSGBOX( L"DrawTextLine", E_INVALIDARG );
 
     HRESULT hr;
@@ -1628,7 +1482,7 @@ HRESULT CDXUTTextHelper::DrawTextLine( RECT& rc, DWORD dwFlags, const WCHAR* str
         hr = m_pFont9->DrawText( m_pSprite9, strMsg, -1, &rc, dwFlags, m_clr );
     else
         hr = m_pFont10->DrawText( m_pSprite10, strMsg, -1, &rc, dwFlags, m_clr );
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return DXTRACE_ERR_MSGBOX( L"DrawText", hr );
 
     m_pt.y += m_nLineHeight;
@@ -1651,12 +1505,10 @@ void CDXUTTextHelper::Begin()
         if( pd3dDevice )
         {
             // Set projection
-            pd3dDevice->RSGetViewports( &cVPs, VPs );
+            pd3dDevice->RSGetViewports(&cVPs, VPs);
             D3DXMATRIXA16 matProjection;
-            D3DXMatrixOrthoOffCenterLH( &matProjection, ( FLOAT )VPs[0].TopLeftX, ( FLOAT )
-                                        ( VPs[0].TopLeftX + VPs[0].Width ), ( FLOAT )VPs[0].TopLeftY, ( FLOAT )
-                                        ( VPs[0].TopLeftY + VPs[0].Height ), 0.1f, 10 );
-            m_pSprite10->SetProjectionTransform( &matProjection );
+            D3DXMatrixOrthoOffCenterLH(&matProjection, (FLOAT)VPs[0].TopLeftX, (FLOAT)(VPs[0].TopLeftX + VPs[0].Width), (FLOAT)VPs[0].TopLeftY, (FLOAT)(VPs[0].TopLeftY + VPs[0].Height), 0.1f, 10);
+            m_pSprite10->SetProjectionTransform(&matProjection);
 
             m_pSprite10->Begin( D3DX10_SPRITE_SORT_TEXTURE );
             SAFE_RELEASE( pd3dDevice );
@@ -1671,10 +1523,10 @@ void CDXUTTextHelper::End()
         m_pSprite9->End();
     if( m_pSprite10 )
     {
-        FLOAT OriginalBlendFactor[4];
-        UINT OriginalSampleMask = 0;
+        FLOAT			  OriginalBlendFactor[4];
+        UINT			  OriginalSampleMask = 0;
         ID3D10BlendState* pOriginalBlendState10 = NULL;
-        ID3D10Device* pd3dDevice = NULL;
+        ID3D10Device*	  pd3dDevice = NULL;
 
         m_pSprite10->GetDevice( &pd3dDevice );
         if( pd3dDevice )
@@ -1711,15 +1563,12 @@ HRESULT DXUTSnapD3D9Screenshot( LPCTSTR szFileName )
     IDirect3DSurface9* pBackBuffer = NULL;
     V_RETURN( pDev->GetBackBuffer( 0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer ) );
 
-    hr = D3DXSaveSurfaceToFile( szFileName, D3DXIFF_BMP, pBackBuffer, NULL, NULL );
-    SAFE_RELEASE( pBackBuffer );
-
-    return hr;
+    return D3DXSaveSurfaceToFile( szFileName, D3DXIFF_BMP, pBackBuffer, NULL, NULL );
 }
 
 //--------------------------------------------------------------------------------------
 HRESULT DXUTSnapD3D10Screenshot( LPCTSTR szFileName )
 {
     return E_FAIL;
-}
+} 
 

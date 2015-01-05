@@ -15,12 +15,12 @@
 //--------------------------------------------------------------------------------------
 // Internal functions forward declarations
 //--------------------------------------------------------------------------------------
-WCHAR*              DXUTAPIVersionToString( DXUTDeviceVersion version );
-WCHAR*              DXUTPresentIntervalToString( UINT pi );
-WCHAR*              DXUTMultisampleTypeToString( D3DMULTISAMPLE_TYPE MultiSampleType );
-WCHAR*              DXUTD3DDeviceTypeToString( D3DDEVTYPE devType );
-WCHAR*              DXUTD3DX10DeviceTypeToString( D3D10_DRIVER_TYPE devType );
-WCHAR*              DXUTVertexProcessingTypeToString( DWORD vpt );
+WCHAR* DXUTAPIVersionToString( DXUTDeviceVersion version );
+WCHAR* DXUTPresentIntervalToString( UINT pi );
+WCHAR* DXUTMultisampleTypeToString(D3DMULTISAMPLE_TYPE MultiSampleType);
+WCHAR* DXUTD3DDeviceTypeToString(D3DDEVTYPE devType);
+WCHAR* DXUTD3DX10DeviceTypeToString(D3D10_DRIVER_TYPE devType);
+WCHAR* DXUTVertexProcessingTypeToString(DWORD vpt);
 
 
 //--------------------------------------------------------------------------------------
@@ -53,7 +53,7 @@ CD3DSettingsDlg::~CD3DSettingsDlg()
     if( pComboBox )
         for( UINT i = 0; i < pComboBox->GetNumItems(); ++i )
         {
-            DXGI_RATIONAL* pRate = reinterpret_cast<DXGI_RATIONAL*>( pComboBox->GetItemData( i ) );
+            DXGI_RATIONAL *pRate = reinterpret_cast<DXGI_RATIONAL*>( pComboBox->GetItemData( i ) );
             delete pRate;
         }
 }
@@ -81,8 +81,7 @@ void CD3DSettingsDlg::Init( CDXUTDialogResourceManager* pManager, LPCWSTR szCont
 
 
 //--------------------------------------------------------------------------------------
-void CD3DSettingsDlg::Init( CDXUTDialogResourceManager* pManager, LPCWSTR pszControlTextureResourcename,
-                            HMODULE hModule )
+void CD3DSettingsDlg::Init( CDXUTDialogResourceManager* pManager, LPCWSTR pszControlTextureResourcename, HMODULE hModule )
 {
     assert( pManager );
     m_Dialog.Init( pManager, false, pszControlTextureResourcename, hModule );  // Don't register this dialog.
@@ -105,7 +104,7 @@ void CD3DSettingsDlg::CreateControls()
     if( pElement )
     {
         pElement->dwTextFormat = DT_VCENTER | DT_RIGHT;
-
+        
         // Title
         CDXUTStatic* pStatic = NULL;
         m_Dialog.AddStatic( DXUTSETTINGSDLG_STATIC, L"Direct3D Settings", 10, 5, 400, 50, false, &pStatic );
@@ -127,12 +126,9 @@ void CD3DSettingsDlg::CreateControls()
     m_Dialog.AddComboBox( DXUTSETTINGSDLG_DEVICE_TYPE, 200, 85, 300, 23 );
 
     // DXUTSETTINGSDLG_WINDOWED, DXUTSETTINGSDLG_FULLSCREEN
-    m_Dialog.AddRadioButton( DXUTSETTINGSDLG_WINDOWED, DXUTSETTINGSDLG_WINDOWED_GROUP, L"Windowed", 240, 115, 300,
-                             16 );
-    m_Dialog.AddCheckBox( DXUTSETTINGSDLG_DEVICECLIP, L"Clip to device when window spans across multiple monitors",
-                          250, 136, 400, 16 );
-    m_Dialog.AddRadioButton( DXUTSETTINGSDLG_FULLSCREEN, DXUTSETTINGSDLG_WINDOWED_GROUP, L"Full Screen", 240, 157, 300,
-                             16 );
+    m_Dialog.AddRadioButton( DXUTSETTINGSDLG_WINDOWED, DXUTSETTINGSDLG_WINDOWED_GROUP, L"Windowed", 240, 115, 300, 16 );
+    m_Dialog.AddCheckBox( DXUTSETTINGSDLG_DEVICECLIP, L"Clip to device when window spans across multiple monitors", 250, 136, 400, 16 );
+    m_Dialog.AddRadioButton( DXUTSETTINGSDLG_FULLSCREEN, DXUTSETTINGSDLG_WINDOWED_GROUP, L"Full Screen", 240, 157, 300, 16 );
 
     // DXUTSETTINGSDLG_ADAPTER_FORMAT
     m_Dialog.AddStatic( DXUTSETTINGSDLG_ADAPTER_FORMAT_LABEL, L"Adapter Format", 10, 175, 180, 23 );
@@ -166,11 +162,11 @@ void CD3DSettingsDlg::CreateControls()
     m_Dialog.AddStatic( DXUTSETTINGSDLG_MULTISAMPLE_QUALITY_LABEL, L"Multisample Quality", 10, 335, 180, 23 );
     m_Dialog.AddComboBox( DXUTSETTINGSDLG_MULTISAMPLE_QUALITY, 200, 335, 300, 23 );
 
-    // DXUTSETTINGSDLG_VERTEX_PROCESSING
+     // DXUTSETTINGSDLG_VERTEX_PROCESSING
     m_Dialog.AddStatic( DXUTSETTINGSDLG_VERTEX_PROCESSING_LABEL, L"Vertex Processing", 10, 360, 180, 23 );
     m_Dialog.AddComboBox( DXUTSETTINGSDLG_VERTEX_PROCESSING, 200, 360, 300, 23 );
 
-    // DXUTSETTINGSDLG_PRESENT_INTERVAL
+     // DXUTSETTINGSDLG_PRESENT_INTERVAL
     m_Dialog.AddStatic( DXUTSETTINGSDLG_PRESENT_INTERVAL_LABEL, L"Vertical Sync", 10, 385, 180, 23 );
     m_Dialog.AddComboBox( DXUTSETTINGSDLG_PRESENT_INTERVAL, 200, 385, 300, 23 );
 
@@ -223,15 +219,13 @@ void CD3DSettingsDlg::CreateControls()
 
         // Title
         CDXUTStatic* pStatic = NULL;
-        m_RevertModeDialog.AddStatic( DXUTSETTINGSDLG_STATIC, L"Do you want to keep these display settings?", 10, 5,
-                                      640, 50, false, &pStatic );
+        m_RevertModeDialog.AddStatic( DXUTSETTINGSDLG_STATIC, L"Do you want to keep these display settings?", 10, 5, 640, 50, false, &pStatic );
         pElement = pStatic->GetElement( 0 );
         pElement->iFont = 1;
         pElement->dwTextFormat = DT_TOP | DT_LEFT;
 
         // Timeout static text control
-        m_RevertModeDialog.AddStatic( DXUTSETTINGSDLG_STATIC_MODE_CHANGE_TIMEOUT, L"", 10, 90, 640, 30,
-                                      false, &pStatic );
+        m_RevertModeDialog.AddStatic( DXUTSETTINGSDLG_STATIC_MODE_CHANGE_TIMEOUT, L"", 10, 90, 640, 30, false, &pStatic );
         pElement = pStatic->GetElement( 0 );
         pElement->iFont = 0;
         pElement->dwTextFormat = DT_TOP | DT_LEFT;
@@ -250,9 +244,9 @@ HRESULT CD3DSettingsDlg::OnD3D9CreateDevice( IDirect3DDevice9* pd3dDevice )
         return DXUT_ERR_MSGBOX( L"CD3DSettingsDlg::OnCreatedDevice", E_INVALIDARG );
 
     // Create the fonts/textures 
-    m_Dialog.SetCallback( StaticOnEvent, ( void* )this );
-    m_RevertModeDialog.SetCallback( StaticOnEvent, ( void* )this );
-
+    m_Dialog.SetCallback( StaticOnEvent, (void*) this );
+    m_RevertModeDialog.SetCallback( StaticOnEvent, (void*) this );
+  
     return S_OK;
 }
 
@@ -266,7 +260,7 @@ HRESULT CD3DSettingsDlg::Refresh()
 
     g_DeviceSettings = DXUTGetDeviceSettings();
 
-    CDXUTComboBox* pAPIComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_API_VERSION );
+    CDXUTComboBox *pAPIComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_API_VERSION );
     pAPIComboBox->RemoveAllItems();
     if( DXUTDoesAppSupportD3D9() )
     {
@@ -290,7 +284,7 @@ HRESULT CD3DSettingsDlg::Refresh()
         return S_OK;
     }
 
-    pAPIComboBox->SetSelectedByData( ULongToPtr( g_DeviceSettings.ver ) );
+    pAPIComboBox->SetSelectedByData( ULongToPtr(g_DeviceSettings.ver) );
 
     switch( g_DeviceSettings.ver )
     {
@@ -304,7 +298,7 @@ HRESULT CD3DSettingsDlg::Refresh()
             // Fill the UI with the current settings
             AddDeviceType( g_DeviceSettings.d3d9.DeviceType );
             SetWindowed( FALSE != g_DeviceSettings.d3d9.pp.Windowed );
-            SetDeviceClip( 0 != ( g_DeviceSettings.d3d9.pp.Flags & D3DPRESENTFLAG_DEVICECLIP ) );
+            SetDeviceClip( 0 != (g_DeviceSettings.d3d9.pp.Flags & D3DPRESENTFLAG_DEVICECLIP) );
             AddAdapterFormat( g_DeviceSettings.d3d9.AdapterFormat );
             AddResolution( g_DeviceSettings.d3d9.pp.BackBufferWidth, g_DeviceSettings.d3d9.pp.BackBufferHeight );
             AddRefreshRate( g_DeviceSettings.d3d9.pp.FullScreen_RefreshRateInHz );
@@ -322,37 +316,34 @@ HRESULT CD3DSettingsDlg::Refresh()
             else if( g_DeviceSettings.d3d9.BehaviorFlags & D3DCREATE_MIXED_VERTEXPROCESSING )
                 AddVertexProcessingType( D3DCREATE_MIXED_VERTEXPROCESSING );
 
-            CD3D9EnumDeviceSettingsCombo* pBestDeviceSettingsCombo = pD3DEnum->GetDeviceSettingsCombo(
-                g_DeviceSettings.d3d9.AdapterOrdinal, g_DeviceSettings.d3d9.DeviceType,
-                g_DeviceSettings.d3d9.AdapterFormat, g_DeviceSettings.d3d9.pp.BackBufferFormat,
-                ( g_DeviceSettings.d3d9.pp.Windowed != 0 ) );
+            CD3D9EnumDeviceSettingsCombo* pBestDeviceSettingsCombo = pD3DEnum->GetDeviceSettingsCombo( g_DeviceSettings.d3d9.AdapterOrdinal, g_DeviceSettings.d3d9.DeviceType, g_DeviceSettings.d3d9.AdapterFormat, g_DeviceSettings.d3d9.pp.BackBufferFormat, (g_DeviceSettings.d3d9.pp.Windowed != 0) );
             if( NULL == pBestDeviceSettingsCombo )
-                return DXUT_ERR_MSGBOX( L"GetDeviceSettingsCombo", E_INVALIDARG );
+                return DXUT_ERR_MSGBOX( L"GetDeviceSettingsCombo", E_INVALIDARG );    
 
             // Get the adapters list from CD3D9Enumeration object
-            CGrowableArray <CD3D9EnumAdapterInfo*>* pAdapterInfoList = pD3DEnum->GetAdapterInfoList();
+            CGrowableArray<CD3D9EnumAdapterInfo*>* pAdapterInfoList = pD3DEnum->GetAdapterInfoList();
 
             if( pAdapterInfoList->GetSize() == 0 )
                 return DXUT_ERR_MSGBOX( L"CD3DSettingsDlg::OnCreatedDevice", DXUTERR_NOCOMPATIBLEDEVICES );
-
+            
             CDXUTComboBox* pAdapterCombo = m_Dialog.GetComboBox( DXUTSETTINGSDLG_ADAPTER );
             pAdapterCombo->RemoveAllItems();
 
             // Add adapters
-            for( int iAdapter = 0; iAdapter < pAdapterInfoList->GetSize(); iAdapter++ )
+            for( int iAdapter=0; iAdapter<pAdapterInfoList->GetSize(); iAdapter++ )
             {
-                CD3D9EnumAdapterInfo* pAdapterInfo = pAdapterInfoList->GetAt( iAdapter );
+                CD3D9EnumAdapterInfo* pAdapterInfo = pAdapterInfoList->GetAt(iAdapter);
                 AddAdapter( pAdapterInfo->szUniqueDescription, pAdapterInfo->AdapterOrdinal );
             }
-
+            
             pAdapterCombo->SetSelectedByData( ULongToPtr( g_DeviceSettings.d3d9.AdapterOrdinal ) );
 
             hr = OnAPIVersionChanged( true );
-            if( FAILED( hr ) )
+            if( FAILED(hr) )
                 return hr;
 
             //m_Dialog.Refresh();
-            CDXUTDialog::SetRefreshTime( ( float )DXUTGetTime() );
+            CDXUTDialog::SetRefreshTime( (float) DXUTGetTime() );
             break;
         }
         case DXUT_D3D10_DEVICE:
@@ -365,24 +356,20 @@ HRESULT CD3DSettingsDlg::Refresh()
             // Fill the UI with the current settings
             AddD3D10DeviceType( g_DeviceSettings.d3d10.DriverType );
             SetWindowed( FALSE != g_DeviceSettings.d3d10.sd.Windowed );
-            CD3D10EnumOutputInfo* pOutputInfo = GetCurrentD3D10OutputInfo();
-            if (pOutputInfo != NULL ) AddD3D10AdapterOutput( pOutputInfo->Desc.DeviceName, g_DeviceSettings.d3d10.Output );
-            AddD3D10Resolution( g_DeviceSettings.d3d10.sd.BufferDesc.Width,
-                                g_DeviceSettings.d3d10.sd.BufferDesc.Height );
+            CD3D10EnumOutputInfo *pOutputInfo = GetCurrentD3D10OutputInfo();
+            AddD3D10AdapterOutput( pOutputInfo->Desc.DeviceName, g_DeviceSettings.d3d10.Output );
+            AddD3D10Resolution( g_DeviceSettings.d3d10.sd.BufferDesc.Width, g_DeviceSettings.d3d10.sd.BufferDesc.Height );
             AddD3D10RefreshRate( g_DeviceSettings.d3d10.sd.BufferDesc.RefreshRate );
             AddD3D10BackBufferFormat( g_DeviceSettings.d3d10.sd.BufferDesc.Format );
             AddD3D10MultisampleCount( g_DeviceSettings.d3d10.sd.SampleDesc.Count );
             AddD3D10MultisampleQuality( g_DeviceSettings.d3d10.sd.SampleDesc.Quality );
 
-            CD3D10EnumDeviceSettingsCombo* pBestDeviceSettingsCombo = pD3DEnum->GetDeviceSettingsCombo(
-                g_DeviceSettings.d3d10.AdapterOrdinal, g_DeviceSettings.d3d10.DriverType,
-                g_DeviceSettings.d3d10.Output, g_DeviceSettings.d3d10.sd.BufferDesc.Format,
-                ( g_DeviceSettings.d3d10.sd.Windowed != 0 ) );
+            CD3D10EnumDeviceSettingsCombo* pBestDeviceSettingsCombo = pD3DEnum->GetDeviceSettingsCombo( g_DeviceSettings.d3d10.AdapterOrdinal, g_DeviceSettings.d3d10.DriverType, g_DeviceSettings.d3d10.Output, g_DeviceSettings.d3d10.sd.BufferDesc.Format, (g_DeviceSettings.d3d10.sd.Windowed != 0) );
             if( NULL == pBestDeviceSettingsCombo )
-                return DXUT_ERR_MSGBOX( L"GetDeviceSettingsCombo", E_INVALIDARG );
+                return DXUT_ERR_MSGBOX( L"GetDeviceSettingsCombo", E_INVALIDARG );    
 
             // Get the adapters list from CD3D10Enumeration object
-            CGrowableArray <CD3D10EnumAdapterInfo*>* pAdapterInfoList = pD3DEnum->GetAdapterInfoList();
+            CGrowableArray<CD3D10EnumAdapterInfo*>* pAdapterInfoList = pD3DEnum->GetAdapterInfoList();
 
             if( pAdapterInfoList->GetSize() == 0 )
                 return DXUT_ERR_MSGBOX( L"CD3DSettingsDlg::OnCreatedDevice", DXUTERR_NOCOMPATIBLEDEVICES );
@@ -391,20 +378,20 @@ HRESULT CD3DSettingsDlg::Refresh()
             pAdapterCombo->RemoveAllItems();
 
             // Add adapters
-            for( int iAdapter = 0; iAdapter < pAdapterInfoList->GetSize(); iAdapter++ )
-            {
-                CD3D10EnumAdapterInfo* pAdapterInfo = pAdapterInfoList->GetAt( iAdapter );
+            for( int iAdapter=0; iAdapter<pAdapterInfoList->GetSize(); iAdapter++ )
+            {          
+                CD3D10EnumAdapterInfo* pAdapterInfo = pAdapterInfoList->GetAt(iAdapter);
                 AddAdapter( pAdapterInfo->szUniqueDescription, pAdapterInfo->AdapterOrdinal );
             }
 
             pAdapterCombo->SetSelectedByData( ULongToPtr( g_DeviceSettings.d3d10.AdapterOrdinal ) );
 
             hr = OnAPIVersionChanged( true );
-            if( FAILED( hr ) )
+            if( FAILED(hr) )
                 return hr;
 
             //m_Dialog.Refresh();
-            CDXUTDialog::SetRefreshTime( ( float )DXUTGetTime() );
+            CDXUTDialog::SetRefreshTime( (float) DXUTGetTime() );
             break;
         }
     }
@@ -419,17 +406,17 @@ HRESULT CD3DSettingsDlg::OnD3D9ResetDevice()
     const D3DSURFACE_DESC* pDesc = DXUTGetD3D9BackBufferSurfaceDesc();
     m_Dialog.SetLocation( 0, 0 );
     m_Dialog.SetSize( pDesc->Width, pDesc->Height );
-    m_Dialog.SetBackgroundColors( D3DCOLOR_ARGB( 255, 98, 138, 206 ),
-                                  D3DCOLOR_ARGB( 255, 54, 105, 192 ),
-                                  D3DCOLOR_ARGB( 255, 54, 105, 192 ),
-                                  D3DCOLOR_ARGB( 255, 10, 73, 179 ) );
+    m_Dialog.SetBackgroundColors( D3DCOLOR_ARGB(255, 98, 138, 206),
+                                  D3DCOLOR_ARGB(255, 54, 105, 192),
+                                  D3DCOLOR_ARGB(255, 54, 105, 192),
+                                  D3DCOLOR_ARGB(255, 10,  73, 179) );
 
     m_RevertModeDialog.SetLocation( 0, 0 );
     m_RevertModeDialog.SetSize( pDesc->Width, pDesc->Height );
-    m_RevertModeDialog.SetBackgroundColors( D3DCOLOR_ARGB( 255, 98, 138, 206 ),
-                                            D3DCOLOR_ARGB( 255, 54, 105, 192 ),
-                                            D3DCOLOR_ARGB( 255, 54, 105, 192 ),
-                                            D3DCOLOR_ARGB( 255, 10, 73, 179 ) );
+    m_RevertModeDialog.SetBackgroundColors( D3DCOLOR_ARGB(255, 98, 138, 206),
+                                            D3DCOLOR_ARGB(255, 54, 105, 192),
+                                            D3DCOLOR_ARGB(255, 54, 105, 192),
+                                            D3DCOLOR_ARGB(255, 10,  73, 179) );
 
     IDirect3DDevice9* pd3dDevice = DXUTGetD3D9Device();
     pd3dDevice->BeginStateBlock();
@@ -456,13 +443,13 @@ void CD3DSettingsDlg::OnRender9( float fElapsedTime )
     IDirect3DDevice9* pd3dDevice = DXUTGetD3D9Device();
 
     // Clear the render target and the zbuffer 
-    pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET, 0x00003F3F, 1.0f, 0 );
+    pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0x00003F3F, 1.0f, 0);
 
     // Render the scene
     if( SUCCEEDED( pd3dDevice->BeginScene() ) )
     {
         m_pStateBlock->Capture();
-        pd3dDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
+        pd3dDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID ); 
         m_pActiveDialog->OnRender( fElapsedTime );
         m_pStateBlock->Apply();
         pd3dDevice->EndScene();
@@ -475,7 +462,7 @@ void CD3DSettingsDlg::OnRender10( float fElapsedTime )
 {
     // Render the scene
     m_pStateBlock10->Capture();
-    //    pd3dDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
+//    pd3dDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
     m_pActiveDialog->OnRender( fElapsedTime );
     m_pStateBlock10->Apply();
 }
@@ -513,35 +500,34 @@ HRESULT CD3DSettingsDlg::OnD3D10CreateDevice( ID3D10Device* pd3dDevice )
         return DXUT_ERR_MSGBOX( L"CD3DSettingsDlg::OnCreatedDevice", E_INVALIDARG );
 
     // Create the fonts/textures 
-    m_Dialog.SetCallback( StaticOnEvent, ( void* )this );
-    m_RevertModeDialog.SetCallback( StaticOnEvent, ( void* )this );
+    m_Dialog.SetCallback( StaticOnEvent, (void*) this );
+    m_RevertModeDialog.SetCallback( StaticOnEvent, (void*) this );
 
     D3D10_STATE_BLOCK_MASK SBM;
     DXUT_Dynamic_D3D10StateBlockMaskDisableAll( &SBM );
     DXUT_Dynamic_D3D10StateBlockMaskEnableCapture( &SBM, D3D10_DST_RS_RASTERIZER_STATE, 0, 1 );
-    V_RETURN( DXUT_Dynamic_D3D10CreateStateBlock( pd3dDevice, &SBM, &m_pStateBlock10 ) );
+    V_RETURN(DXUT_Dynamic_D3D10CreateStateBlock( pd3dDevice, &SBM, &m_pStateBlock10 ));
 
     return S_OK;
 }
 
 
 //--------------------------------------------------------------------------------------
-HRESULT CD3DSettingsDlg::OnD3D10ResizedSwapChain( ID3D10Device* pd3dDevice,
-                                                  const DXGI_SURFACE_DESC* pBackBufferSurfaceDesc )
+HRESULT CD3DSettingsDlg::OnD3D10ResizedSwapChain( ID3D10Device* pd3dDevice, const DXGI_SURFACE_DESC* pBackBufferSurfaceDesc )
 {
     m_Dialog.SetLocation( 0, 0 );
     m_Dialog.SetSize( pBackBufferSurfaceDesc->Width, pBackBufferSurfaceDesc->Height );
-    m_Dialog.SetBackgroundColors( D3DCOLOR_ARGB( 255, 98, 138, 206 ),
-                                  D3DCOLOR_ARGB( 255, 54, 105, 192 ),
-                                  D3DCOLOR_ARGB( 255, 54, 105, 192 ),
-                                  D3DCOLOR_ARGB( 255, 10, 73, 179 ) );
+    m_Dialog.SetBackgroundColors( D3DCOLOR_ARGB(255, 98, 138, 206),
+                                  D3DCOLOR_ARGB(255, 54, 105, 192),
+                                  D3DCOLOR_ARGB(255, 54, 105, 192),
+                                  D3DCOLOR_ARGB(255, 10,  73, 179) );
 
     m_RevertModeDialog.SetLocation( 0, 0 );
     m_RevertModeDialog.SetSize( pBackBufferSurfaceDesc->Width, pBackBufferSurfaceDesc->Height );
-    m_RevertModeDialog.SetBackgroundColors( D3DCOLOR_ARGB( 255, 98, 138, 206 ),
-                                            D3DCOLOR_ARGB( 255, 54, 105, 192 ),
-                                            D3DCOLOR_ARGB( 255, 54, 105, 192 ),
-                                            D3DCOLOR_ARGB( 255, 10, 73, 179 ) );
+    m_RevertModeDialog.SetBackgroundColors( D3DCOLOR_ARGB(255, 98, 138, 206),
+                                  D3DCOLOR_ARGB(255, 54, 105, 192),
+                                  D3DCOLOR_ARGB(255, 54, 105, 192),
+                                  D3DCOLOR_ARGB(255, 10,  73, 179) );
 
     return S_OK;
 }
@@ -637,10 +623,10 @@ void CD3DSettingsDlg::ShowControlSet( DXUTDeviceVersion ver )
 
 
 //--------------------------------------------------------------------------------------
-void WINAPI CD3DSettingsDlg::StaticOnEvent( UINT nEvent, int nControlID,
+void WINAPI CD3DSettingsDlg::StaticOnEvent( UINT nEvent, int nControlID, 
                                             CDXUTControl* pControl, void* pUserData )
 {
-    CD3DSettingsDlg* pD3DSettings = ( CD3DSettingsDlg* )pUserData;
+    CD3DSettingsDlg* pD3DSettings = (CD3DSettingsDlg*) pUserData;
     if( pD3DSettings )
         pD3DSettings->OnEvent( nEvent, nControlID, pControl );
 }
@@ -652,7 +638,7 @@ void WINAPI CD3DSettingsDlg::StaticOnEvent( UINT nEvent, int nControlID,
 //--------------------------------------------------------------------------------------
 void WINAPI CD3DSettingsDlg::StaticOnModeChangeTimer( UINT nIDEvent, void* pUserContext )
 {
-    CD3DSettingsDlg* pD3DSettings = ( CD3DSettingsDlg* )pUserContext;
+    CD3DSettingsDlg* pD3DSettings = ( CD3DSettingsDlg* ) pUserContext;
     assert( pD3DSettings );
     assert( pD3DSettings->m_pActiveDialog == &pD3DSettings->m_RevertModeDialog );
     assert( pD3DSettings->m_nIDEvent == nIDEvent );
@@ -667,21 +653,16 @@ void WINAPI CD3DSettingsDlg::StaticOnModeChangeTimer( UINT nIDEvent, void* pUser
 }
 
 //--------------------------------------------------------------------------------------
-void CD3DSettingsDlg::OnEvent( UINT nEvent, int nControlID,
+void CD3DSettingsDlg::OnEvent( UINT nEvent, int nControlID, 
                                CDXUTControl* pControl )
 {
     switch( nControlID )
     {
-        case DXUTSETTINGSDLG_ADAPTER:
-            OnAdapterChanged(); break;
-        case DXUTSETTINGSDLG_DEVICE_TYPE:
-            OnDeviceTypeChanged(); break;
-        case DXUTSETTINGSDLG_WINDOWED:
-            OnWindowedFullScreenChanged(); break;
-        case DXUTSETTINGSDLG_FULLSCREEN:
-            OnWindowedFullScreenChanged(); break;
-        case DXUTSETTINGSDLG_ADAPTER_FORMAT:
-            OnAdapterFormatChanged(); break;
+        case DXUTSETTINGSDLG_ADAPTER:                        OnAdapterChanged(); break;
+        case DXUTSETTINGSDLG_DEVICE_TYPE:                    OnDeviceTypeChanged(); break;
+        case DXUTSETTINGSDLG_WINDOWED:                       OnWindowedFullScreenChanged(); break;
+        case DXUTSETTINGSDLG_FULLSCREEN:                     OnWindowedFullScreenChanged(); break;
+        case DXUTSETTINGSDLG_ADAPTER_FORMAT:                 OnAdapterFormatChanged(); break;
         case DXUTSETTINGSDLG_RESOLUTION_SHOW_ALL:
         {
             if( g_DeviceSettings.ver == DXUT_D3D9_DEVICE )
@@ -694,42 +675,24 @@ void CD3DSettingsDlg::OnEvent( UINT nEvent, int nControlID,
             }
             break;
         }
-        case DXUTSETTINGSDLG_RESOLUTION:
-            OnResolutionChanged(); break;
-        case DXUTSETTINGSDLG_REFRESH_RATE:
-            OnRefreshRateChanged(); break;
-        case DXUTSETTINGSDLG_BACK_BUFFER_FORMAT:
-            OnBackBufferFormatChanged(); break;
-        case DXUTSETTINGSDLG_DEPTH_STENCIL:
-            OnDepthStencilBufferFormatChanged(); break;
-        case DXUTSETTINGSDLG_MULTISAMPLE_TYPE:
-            OnMultisampleTypeChanged(); break;
-        case DXUTSETTINGSDLG_MULTISAMPLE_QUALITY:
-            OnMultisampleQualityChanged(); break;
-        case DXUTSETTINGSDLG_VERTEX_PROCESSING:
-            OnVertexProcessingChanged(); break;
-        case DXUTSETTINGSDLG_PRESENT_INTERVAL:
-            OnPresentIntervalChanged(); break;
-        case DXUTSETTINGSDLG_DEVICECLIP:
-            OnDeviceClipChanged(); break;
-        case DXUTSETTINGSDLG_API_VERSION:
-            OnAPIVersionChanged(); break;
-        case DXUTSETTINGSDLG_D3D10_ADAPTER_OUTPUT:
-            OnAdapterOutputChanged(); break;
-        case DXUTSETTINGSDLG_D3D10_RESOLUTION:
-            OnD3D10ResolutionChanged(); break;
-        case DXUTSETTINGSDLG_D3D10_REFRESH_RATE:
-            OnRefreshRateChanged(); break;
-        case DXUTSETTINGSDLG_D3D10_BACK_BUFFER_FORMAT:
-            OnBackBufferFormatChanged(); break;
-        case DXUTSETTINGSDLG_D3D10_MULTISAMPLE_COUNT:
-            OnMultisampleTypeChanged(); break;
-        case DXUTSETTINGSDLG_D3D10_MULTISAMPLE_QUALITY:
-            OnMultisampleQualityChanged(); break;
-        case DXUTSETTINGSDLG_D3D10_PRESENT_INTERVAL:
-            OnPresentIntervalChanged(); break;
-        case DXUTSETTINGSDLG_D3D10_DEBUG_DEVICE:
-            OnDebugDeviceChanged(); break;
+        case DXUTSETTINGSDLG_RESOLUTION:                     OnResolutionChanged(); break;
+        case DXUTSETTINGSDLG_REFRESH_RATE:                   OnRefreshRateChanged(); break;
+        case DXUTSETTINGSDLG_BACK_BUFFER_FORMAT:             OnBackBufferFormatChanged(); break;
+        case DXUTSETTINGSDLG_DEPTH_STENCIL:                  OnDepthStencilBufferFormatChanged(); break;
+        case DXUTSETTINGSDLG_MULTISAMPLE_TYPE:               OnMultisampleTypeChanged(); break;
+        case DXUTSETTINGSDLG_MULTISAMPLE_QUALITY:            OnMultisampleQualityChanged(); break;
+        case DXUTSETTINGSDLG_VERTEX_PROCESSING:              OnVertexProcessingChanged(); break;
+        case DXUTSETTINGSDLG_PRESENT_INTERVAL:               OnPresentIntervalChanged(); break;
+        case DXUTSETTINGSDLG_DEVICECLIP:                     OnDeviceClipChanged(); break;
+        case DXUTSETTINGSDLG_API_VERSION:                    OnAPIVersionChanged(); break;
+        case DXUTSETTINGSDLG_D3D10_ADAPTER_OUTPUT:           OnAdapterOutputChanged(); break;
+        case DXUTSETTINGSDLG_D3D10_RESOLUTION:               OnD3D10ResolutionChanged(); break;
+        case DXUTSETTINGSDLG_D3D10_REFRESH_RATE:             OnRefreshRateChanged(); break;
+        case DXUTSETTINGSDLG_D3D10_BACK_BUFFER_FORMAT:       OnBackBufferFormatChanged(); break;
+        case DXUTSETTINGSDLG_D3D10_MULTISAMPLE_COUNT:        OnMultisampleTypeChanged(); break;
+        case DXUTSETTINGSDLG_D3D10_MULTISAMPLE_QUALITY:      OnMultisampleQualityChanged(); break;
+        case DXUTSETTINGSDLG_D3D10_PRESENT_INTERVAL:         OnPresentIntervalChanged(); break;
+        case DXUTSETTINGSDLG_D3D10_DEBUG_DEVICE:			 OnDebugDeviceChanged(); break;
 
         case DXUTSETTINGSDLG_OK:
         {
@@ -746,7 +709,7 @@ void CD3DSettingsDlg::OnEvent( UINT nEvent, int nControlID,
                         GetClientRect( DXUTGetHWND(), &rcClient );
                     else
                         rcClient = DXUTGetWindowClientRectAtModeChange();
-                    DWORD dwWindowWidth = rcClient.right - rcClient.left;
+                    DWORD dwWindowWidth  = rcClient.right - rcClient.left;
                     DWORD dwWindowHeight = rcClient.bottom - rcClient.top;
 
                     g_DeviceSettings.d3d9.pp.BackBufferWidth = dwWindowWidth;
@@ -755,11 +718,9 @@ void CD3DSettingsDlg::OnEvent( UINT nEvent, int nControlID,
                 else
                 {
                     // Check for fullscreen mode change
-                    bFullScreenModeChange = g_DeviceSettings.d3d9.pp.BackBufferWidth !=
-                        currentSettings.d3d9.pp.BackBufferWidth ||
-                        g_DeviceSettings.d3d9.pp.BackBufferHeight != currentSettings.d3d9.pp.BackBufferHeight ||
-                        g_DeviceSettings.d3d9.pp.FullScreen_RefreshRateInHz !=
-                        currentSettings.d3d9.pp.FullScreen_RefreshRateInHz;
+                    bFullScreenModeChange = g_DeviceSettings.d3d9.pp.BackBufferWidth != currentSettings.d3d9.pp.BackBufferWidth ||
+                                            g_DeviceSettings.d3d9.pp.BackBufferHeight != currentSettings.d3d9.pp.BackBufferHeight ||
+                                            g_DeviceSettings.d3d9.pp.FullScreen_RefreshRateInHz != currentSettings.d3d9.pp.FullScreen_RefreshRateInHz;
                 }
 
                 if( g_DeviceSettings.d3d9.pp.MultiSampleType != D3DMULTISAMPLE_NONE )
@@ -772,14 +733,14 @@ void CD3DSettingsDlg::OnEvent( UINT nEvent, int nControlID,
                 if( g_DeviceSettings.d3d10.sd.Windowed )
                 {
                     g_DeviceSettings.d3d10.sd.BufferDesc.RefreshRate.Denominator =
-                        g_DeviceSettings.d3d10.sd.BufferDesc.RefreshRate.Numerator = 0;
+                    g_DeviceSettings.d3d10.sd.BufferDesc.RefreshRate.Numerator = 0;
 
                     RECT rcClient;
                     if( DXUTIsWindowed() )
                         GetClientRect( DXUTGetHWND(), &rcClient );
                     else
                         rcClient = DXUTGetWindowClientRectAtModeChange();
-                    DWORD dwWindowWidth = rcClient.right - rcClient.left;
+                    DWORD dwWindowWidth  = rcClient.right - rcClient.left;
                     DWORD dwWindowHeight = rcClient.bottom - rcClient.top;
 
                     g_DeviceSettings.d3d10.sd.BufferDesc.Width = dwWindowWidth;
@@ -788,16 +749,13 @@ void CD3DSettingsDlg::OnEvent( UINT nEvent, int nControlID,
                 else
                 {
                     // Check for fullscreen mode change
-                    bFullScreenModeChange = g_DeviceSettings.d3d10.sd.BufferDesc.Width !=
-                        currentSettings.d3d10.sd.BufferDesc.Width ||
-                        g_DeviceSettings.d3d10.sd.BufferDesc.Height != currentSettings.d3d10.sd.BufferDesc.Height ||
-                        g_DeviceSettings.d3d10.sd.BufferDesc.RefreshRate.Denominator !=
-                        currentSettings.d3d10.sd.BufferDesc.RefreshRate.Denominator ||
-                        g_DeviceSettings.d3d10.sd.BufferDesc.RefreshRate.Numerator !=
-                        currentSettings.d3d10.sd.BufferDesc.RefreshRate.Numerator;
+                    bFullScreenModeChange = g_DeviceSettings.d3d10.sd.BufferDesc.Width != currentSettings.d3d10.sd.BufferDesc.Width ||
+                                            g_DeviceSettings.d3d10.sd.BufferDesc.Height != currentSettings.d3d10.sd.BufferDesc.Height ||
+                                            g_DeviceSettings.d3d10.sd.BufferDesc.RefreshRate.Denominator != currentSettings.d3d10.sd.BufferDesc.RefreshRate.Denominator ||
+                                            g_DeviceSettings.d3d10.sd.BufferDesc.RefreshRate.Numerator != currentSettings.d3d10.sd.BufferDesc.RefreshRate.Numerator;
                 }
             }
-
+            
             if( bFullScreenModeChange )
             {
                 // set appropriate global device settings to that of the current device
@@ -808,18 +766,15 @@ void CD3DSettingsDlg::OnEvent( UINT nEvent, int nControlID,
                 {
                     g_DeviceSettings.d3d9.pp.BackBufferWidth = currentSettings.d3d9.pp.BackBufferWidth;
                     g_DeviceSettings.d3d9.pp.BackBufferHeight = currentSettings.d3d9.pp.BackBufferHeight;
-                    g_DeviceSettings.d3d9.pp.FullScreen_RefreshRateInHz =
-                        currentSettings.d3d9.pp.FullScreen_RefreshRateInHz;
+                    g_DeviceSettings.d3d9.pp.FullScreen_RefreshRateInHz = currentSettings.d3d9.pp.FullScreen_RefreshRateInHz;
                     g_DeviceSettings.d3d9.pp.Windowed = currentSettings.d3d9.pp.Windowed;
                 }
                 else
                 {
                     g_DeviceSettings.d3d10.sd.BufferDesc.Width = currentSettings.d3d10.sd.BufferDesc.Width;
                     g_DeviceSettings.d3d10.sd.BufferDesc.Height = currentSettings.d3d10.sd.BufferDesc.Height;
-                    g_DeviceSettings.d3d10.sd.BufferDesc.RefreshRate.Denominator =
-                        currentSettings.d3d10.sd.BufferDesc.RefreshRate.Denominator;
-                    g_DeviceSettings.d3d10.sd.BufferDesc.RefreshRate.Numerator =
-                        currentSettings.d3d10.sd.BufferDesc.RefreshRate.Numerator;
+                    g_DeviceSettings.d3d10.sd.BufferDesc.RefreshRate.Denominator = currentSettings.d3d10.sd.BufferDesc.RefreshRate.Denominator;
+                    g_DeviceSettings.d3d10.sd.BufferDesc.RefreshRate.Numerator = currentSettings.d3d10.sd.BufferDesc.RefreshRate.Numerator;
                     g_DeviceSettings.d3d10.sd.Windowed = currentSettings.d3d10.sd.Windowed;
                 }
 
@@ -830,7 +785,7 @@ void CD3DSettingsDlg::OnEvent( UINT nEvent, int nControlID,
                 m_nRevertModeTimeout = 15;
                 UpdateModeChangeTimeoutText( m_nRevertModeTimeout );
                 // activate a timer for 1-second updates
-                DXUTSetTimer( StaticOnModeChangeTimer, 1.0f, &m_nIDEvent, ( void* )this );
+                DXUTSetTimer( StaticOnModeChangeTimer, 1.0f, &m_nIDEvent, (void*) this );
             }
             else
             {
@@ -840,7 +795,7 @@ void CD3DSettingsDlg::OnEvent( UINT nEvent, int nControlID,
             break;
         }
 
-        case DXUTSETTINGSDLG_CANCEL:
+        case DXUTSETTINGSDLG_CANCEL:                
         {
             SetActive( false );
             break;
@@ -877,7 +832,7 @@ HRESULT CD3DSettingsDlg::SetDeviceSettingsFromUI()
 
     // DXUTSETTINGSDLG_DEVICE_TYPE
     pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_DEVICE_TYPE );
-    g_DeviceSettings.d3d9.DeviceType = ( D3DDEVTYPE )PtrToUlong( pComboBox->GetSelectedData() );
+    g_DeviceSettings.d3d9.DeviceType = (D3DDEVTYPE) PtrToUlong( pComboBox->GetSelectedData() );
 
     // DXUTSETTINGSDLG_WINDOWED
     pRadioButton = m_Dialog.GetRadioButton( DXUTSETTINGSDLG_WINDOWED );
@@ -885,7 +840,7 @@ HRESULT CD3DSettingsDlg::SetDeviceSettingsFromUI()
 
     // DXUTSETTINGSDLG_ADAPTER_FORMAT
     pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_ADAPTER_FORMAT );
-    g_DeviceSettings.d3d9.AdapterFormat = ( D3DFORMAT )PtrToUlong( pComboBox->GetSelectedData() );
+    g_DeviceSettings.d3d9.AdapterFormat = (D3DFORMAT) PtrToUlong( pComboBox->GetSelectedData() );
 
     if( g_DeviceSettings.d3d9.pp.Windowed )
     {
@@ -896,14 +851,14 @@ HRESULT CD3DSettingsDlg::SetDeviceSettingsFromUI()
     {
         // DXUTSETTINGSDLG_BACK_BUFFER_FORMAT
         pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_BACK_BUFFER_FORMAT );
-        g_DeviceSettings.d3d9.pp.BackBufferFormat = ( D3DFORMAT )PtrToUlong( pComboBox->GetSelectedData() );
-
+        g_DeviceSettings.d3d9.pp.BackBufferFormat = (D3DFORMAT) PtrToUlong( pComboBox->GetSelectedData() );
+    
         // DXUTSETTINGSDLG_RESOLUTION
         pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_RESOLUTION );
         DWORD dwResolution = PtrToUlong( pComboBox->GetSelectedData() );
         g_DeviceSettings.d3d9.pp.BackBufferWidth = HIWORD( dwResolution );
         g_DeviceSettings.d3d9.pp.BackBufferHeight = LOWORD( dwResolution );
-
+        
         // DXUTSETTINGSDLG_REFRESH_RATE
         pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_REFRESH_RATE );
         g_DeviceSettings.d3d9.pp.FullScreen_RefreshRateInHz = PtrToUlong( pComboBox->GetSelectedData() );
@@ -911,8 +866,8 @@ HRESULT CD3DSettingsDlg::SetDeviceSettingsFromUI()
 
     // DXUTSETTINGSDLG_DEPTH_STENCIL
     pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_DEPTH_STENCIL );
-    g_DeviceSettings.d3d9.pp.AutoDepthStencilFormat = ( D3DFORMAT )PtrToUlong( pComboBox->GetSelectedData() );
-
+    g_DeviceSettings.d3d9.pp.AutoDepthStencilFormat = (D3DFORMAT) PtrToUlong( pComboBox->GetSelectedData() );
+    
     return S_OK;
 }
 
@@ -968,7 +923,7 @@ CD3D9EnumDeviceSettingsCombo* CD3DSettingsDlg::GetCurrentDeviceSettingsCombo()
                                              g_DeviceSettings.d3d9.DeviceType,
                                              g_DeviceSettings.d3d9.AdapterFormat,
                                              g_DeviceSettings.d3d9.pp.BackBufferFormat,
-                                             ( g_DeviceSettings.d3d9.pp.Windowed == TRUE ) );
+                                             (g_DeviceSettings.d3d9.pp.Windowed == TRUE) );
 }
 
 
@@ -980,7 +935,7 @@ CD3D10EnumDeviceSettingsCombo* CD3DSettingsDlg::GetCurrentD3D10DeviceSettingsCom
                                              g_DeviceSettings.d3d10.DriverType,
                                              g_DeviceSettings.d3d10.Output,
                                              g_DeviceSettings.d3d10.sd.BufferDesc.Format,
-                                             ( g_DeviceSettings.d3d10.sd.Windowed == TRUE ) );
+                                             (g_DeviceSettings.d3d10.sd.Windowed == TRUE) );
 }
 
 
@@ -1003,7 +958,7 @@ HRESULT CD3DSettingsDlg::OnAPIVersionChanged( bool bRefresh )
             {
                 // Obtain a set of valid D3D9 device settings.
                 UINT CreateFlags = g_DeviceSettings.d3d10.CreateFlags;
-                ZeroMemory( &g_DeviceSettings, sizeof( g_DeviceSettings ) );
+                ZeroMemory( &g_DeviceSettings, sizeof(g_DeviceSettings) );
                 g_DeviceSettings.d3d10.CreateFlags = CreateFlags;
                 g_DeviceSettings.ver = DXUT_D3D9_DEVICE;
                 // We want a specific API version, so set up match option to preserve it.
@@ -1014,21 +969,21 @@ HRESULT CD3DSettingsDlg::OnAPIVersionChanged( bool bRefresh )
             }
 
             CD3D9Enumeration* pD3DEnum = DXUTGetD3D9Enumeration();
-            CGrowableArray <CD3D9EnumAdapterInfo*>* pAdapterInfoList = pD3DEnum->GetAdapterInfoList();
+            CGrowableArray<CD3D9EnumAdapterInfo*> *pAdapterInfoList = pD3DEnum->GetAdapterInfoList();
 
             CDXUTComboBox* pAdapterComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_ADAPTER );
             pAdapterComboBox->RemoveAllItems();
 
             for( int iAdapter = 0; iAdapter < pAdapterInfoList->GetSize(); ++iAdapter )
             {
-                CD3D9EnumAdapterInfo* pAdapterInfo = pAdapterInfoList->GetAt( iAdapter );
+                CD3D9EnumAdapterInfo* pAdapterInfo = pAdapterInfoList->GetAt(iAdapter);
                 AddAdapter( pAdapterInfo->szUniqueDescription, pAdapterInfo->AdapterOrdinal );
             }
 
-            pAdapterComboBox->SetSelectedByData( ULongToPtr( g_DeviceSettings.d3d9.AdapterOrdinal ) );
+            pAdapterComboBox->SetSelectedByData( ULongToPtr(g_DeviceSettings.d3d9.AdapterOrdinal) );
 
             hr = OnAdapterChanged();
-            if( FAILED( hr ) )
+            if( FAILED(hr) )
                 return hr;
 
             break;
@@ -1040,7 +995,7 @@ HRESULT CD3DSettingsDlg::OnAPIVersionChanged( bool bRefresh )
             {
                 // Obtain a set of valid D3D10 device settings.
                 UINT CreateFlags = g_DeviceSettings.d3d10.CreateFlags;
-                ZeroMemory( &g_DeviceSettings, sizeof( g_DeviceSettings ) );
+                ZeroMemory( &g_DeviceSettings, sizeof(g_DeviceSettings) );
                 g_DeviceSettings.d3d10.CreateFlags = CreateFlags;
                 g_DeviceSettings.ver = DXUT_D3D10_DEVICE;
                 // We want a specific API version, so set up match option to preserve it.
@@ -1051,24 +1006,24 @@ HRESULT CD3DSettingsDlg::OnAPIVersionChanged( bool bRefresh )
             }
 
             CD3D10Enumeration* pD3DEnum = DXUTGetD3D10Enumeration();
-            CGrowableArray <CD3D10EnumAdapterInfo*>* pAdapterInfoList = pD3DEnum->GetAdapterInfoList();
+            CGrowableArray<CD3D10EnumAdapterInfo*> *pAdapterInfoList = pD3DEnum->GetAdapterInfoList();
 
             CDXUTComboBox* pAdapterComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_ADAPTER );
             pAdapterComboBox->RemoveAllItems();
 
             for( int iAdapter = 0; iAdapter < pAdapterInfoList->GetSize(); ++iAdapter )
             {
-                CD3D10EnumAdapterInfo* pAdapterInfo = pAdapterInfoList->GetAt( iAdapter );
+                CD3D10EnumAdapterInfo* pAdapterInfo = pAdapterInfoList->GetAt(iAdapter);
                 AddAdapter( pAdapterInfo->szUniqueDescription, pAdapterInfo->AdapterOrdinal );
             }
 
-            pAdapterComboBox->SetSelectedByData( ULongToPtr( g_DeviceSettings.d3d10.AdapterOrdinal ) );
+            pAdapterComboBox->SetSelectedByData( ULongToPtr(g_DeviceSettings.d3d10.AdapterOrdinal) );
 
             CDXUTCheckBox* pCheckBox = m_Dialog.GetCheckBox( DXUTSETTINGSDLG_D3D10_DEBUG_DEVICE );
-            pCheckBox->SetChecked( 0 != ( g_DeviceSettings.d3d10.CreateFlags & D3D10_CREATE_DEVICE_DEBUG ) );
+            pCheckBox->SetChecked( 0 != (g_DeviceSettings.d3d10.CreateFlags & D3D10_CREATE_DEVICE_DEBUG) );
 
             hr = OnAdapterChanged();
-            if( FAILED( hr ) )
+            if( FAILED(hr) )
                 return hr;
 
             break;
@@ -1094,21 +1049,21 @@ HRESULT CD3DSettingsDlg::OnAdapterChanged()
             // DXUTSETTINGSDLG_DEVICE_TYPE
             CDXUTComboBox* pDeviceTypeComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_DEVICE_TYPE );
             pDeviceTypeComboBox->RemoveAllItems();
-
+         
             CD3D9EnumAdapterInfo* pAdapterInfo = GetCurrentAdapterInfo();
             if( pAdapterInfo == NULL )
                 return E_FAIL;
 
-            for( int iDeviceInfo = 0; iDeviceInfo < pAdapterInfo->deviceInfoList.GetSize(); iDeviceInfo++ )
+            for( int iDeviceInfo=0; iDeviceInfo < pAdapterInfo->deviceInfoList.GetSize(); iDeviceInfo++ )
             {
-                CD3D9EnumDeviceInfo* pDeviceInfo = pAdapterInfo->deviceInfoList.GetAt( iDeviceInfo );
+                CD3D9EnumDeviceInfo* pDeviceInfo = pAdapterInfo->deviceInfoList.GetAt(iDeviceInfo);
                 AddDeviceType( pDeviceInfo->DeviceType );
             }
 
-            pDeviceTypeComboBox->SetSelectedByData( ULongToPtr( g_DeviceSettings.d3d9.DeviceType ) );
+            pDeviceTypeComboBox->SetSelectedByData( ULongToPtr(g_DeviceSettings.d3d9.DeviceType) );
 
             hr = OnDeviceTypeChanged();
-            if( FAILED( hr ) )
+            if( FAILED(hr) )
                 return hr;
 
             break;
@@ -1122,21 +1077,21 @@ HRESULT CD3DSettingsDlg::OnAdapterChanged()
             // DXUTSETTINGSDLG_DEVICE_TYPE
             CDXUTComboBox* pDeviceTypeComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_DEVICE_TYPE );
             pDeviceTypeComboBox->RemoveAllItems();
-
+         
             CD3D10EnumAdapterInfo* pAdapterInfo = GetCurrentD3D10AdapterInfo();
             if( pAdapterInfo == NULL )
                 return E_FAIL;
 
-            for( int iDeviceInfo = 0; iDeviceInfo < pAdapterInfo->deviceInfoList.GetSize(); iDeviceInfo++ )
+            for( int iDeviceInfo=0; iDeviceInfo < pAdapterInfo->deviceInfoList.GetSize(); iDeviceInfo++ )
             {
-                CD3D10EnumDeviceInfo* pDeviceInfo = pAdapterInfo->deviceInfoList.GetAt( iDeviceInfo );
+                CD3D10EnumDeviceInfo* pDeviceInfo = pAdapterInfo->deviceInfoList.GetAt(iDeviceInfo);
                 AddD3D10DeviceType( pDeviceInfo->DeviceType );
             }
 
-            pDeviceTypeComboBox->SetSelectedByData( ULongToPtr( g_DeviceSettings.d3d10.DriverType ) );
+            pDeviceTypeComboBox->SetSelectedByData( ULongToPtr(g_DeviceSettings.d3d10.DriverType) );
 
             hr = OnDeviceTypeChanged();
-            if( FAILED( hr ) )
+            if( FAILED(hr) )
                 return hr;
 
             break;
@@ -1166,7 +1121,7 @@ HRESULT CD3DSettingsDlg::OnDeviceTypeChanged()
             CD3D9EnumDeviceInfo* pDeviceInfo = GetCurrentDeviceInfo();
             if( pDeviceInfo == NULL )
                 return E_FAIL;
-
+                    
             for( int idc = 0; idc < pDeviceInfo->deviceSettingsComboList.GetSize(); idc++ )
             {
                 CD3D9EnumDeviceSettingsCombo* pDeviceSettingsCombo = pDeviceInfo->deviceSettingsComboList.GetAt( idc );
@@ -1184,7 +1139,7 @@ HRESULT CD3DSettingsDlg::OnDeviceTypeChanged()
             SetWindowed( g_DeviceSettings.d3d9.pp.Windowed && bHasWindowedDeviceCombo );
 
             hr = OnWindowedFullScreenChanged();
-            if( FAILED( hr ) )
+            if( FAILED(hr) )
                 return hr;
 
             break;
@@ -1201,7 +1156,7 @@ HRESULT CD3DSettingsDlg::OnDeviceTypeChanged()
             SetWindowed( g_DeviceSettings.d3d10.sd.Windowed != 0 );
 
             hr = OnWindowedFullScreenChanged();
-            if( FAILED( hr ) )
+            if( FAILED(hr) )
                 return hr;
 
             break;
@@ -1240,7 +1195,7 @@ HRESULT CD3DSettingsDlg::OnWindowedFullScreenChanged()
         case DXUT_D3D9_DEVICE:
         {
             g_DeviceSettings.d3d9.pp.Windowed = bWindowed;
-            bool bDeviceClip = ( 0x0 != ( g_DeviceSettings.d3d9.pp.Flags & D3DPRESENTFLAG_DEVICECLIP ) );
+            bool bDeviceClip = ( 0x0 != (g_DeviceSettings.d3d9.pp.Flags & D3DPRESENTFLAG_DEVICECLIP) );
 
             // If windowed, get the appropriate adapter format from Direct3D
             if( g_DeviceSettings.d3d9.pp.Windowed )
@@ -1251,7 +1206,7 @@ HRESULT CD3DSettingsDlg::OnWindowedFullScreenChanged()
 
                 D3DDISPLAYMODE mode;
                 hr = pD3D->GetAdapterDisplayMode( g_DeviceSettings.d3d9.AdapterOrdinal, &mode );
-                if( FAILED( hr ) )
+                if( FAILED(hr) )
                     return DXTRACE_ERR( L"GetAdapterDisplayMode", hr );
 
                 // Default resolution to the fullscreen res that was last used
@@ -1279,7 +1234,7 @@ HRESULT CD3DSettingsDlg::OnWindowedFullScreenChanged()
 
             // DXUTSETTINGSDLG_DEVICECLIP
             SetDeviceClip( bDeviceClip );
-
+            
             // DXUTSETTINGSDLG_ADAPTER_FORMAT
             CDXUTComboBox* pAdapterFormatComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_ADAPTER_FORMAT );
             if( pAdapterFormatComboBox == NULL )
@@ -1296,49 +1251,47 @@ HRESULT CD3DSettingsDlg::OnWindowedFullScreenChanged()
             }
             else
             {
-                for( int iSettingsCombo = 0; iSettingsCombo < pDeviceInfo->deviceSettingsComboList.GetSize();
-                     iSettingsCombo++ )
+                for( int iSettingsCombo=0; iSettingsCombo < pDeviceInfo->deviceSettingsComboList.GetSize(); iSettingsCombo++ )
                 {
-                    CD3D9EnumDeviceSettingsCombo* pSettingsCombo = pDeviceInfo->deviceSettingsComboList.GetAt(
-                        iSettingsCombo );
+                    CD3D9EnumDeviceSettingsCombo* pSettingsCombo = pDeviceInfo->deviceSettingsComboList.GetAt(iSettingsCombo);
                     AddAdapterFormat( pSettingsCombo->AdapterFormat );
-                }
+                }    
             }
 
-            pAdapterFormatComboBox->SetSelectedByData( ULongToPtr( adapterFormat ) );
+            pAdapterFormatComboBox->SetSelectedByData( ULongToPtr(adapterFormat) );
 
             hr = OnAdapterFormatChanged();
-            if( FAILED( hr ) )
+            if( FAILED(hr) )
                 return hr;
 
             // DXUTSETTINGSDLG_RESOLUTION
             CDXUTComboBox* pResolutionComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_RESOLUTION );
-
+            
             if( bWindowed )
             {
                 pResolutionComboBox->RemoveAllItems();
                 AddResolution( dwWidth, dwHeight );
             }
 
-            pResolutionComboBox->SetSelectedByData( ULongToPtr( MAKELONG( dwWidth, dwHeight ) ) );
-
+            pResolutionComboBox->SetSelectedByData( ULongToPtr( MAKELONG(dwWidth, dwHeight) ) );
+            
             hr = OnResolutionChanged();
-            if( FAILED( hr ) )
+            if( FAILED(hr) )
                 return hr;
 
             // DXUTSETTINGSDLG_REFRESH_RATE
             CDXUTComboBox* pRefreshRateComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_REFRESH_RATE );
-
+            
             if( bWindowed )
             {
                 pRefreshRateComboBox->RemoveAllItems();
                 AddRefreshRate( dwRefreshRate );
             }
 
-            pRefreshRateComboBox->SetSelectedByData( ULongToPtr( dwRefreshRate ) );
+            pRefreshRateComboBox->SetSelectedByData( ULongToPtr(dwRefreshRate) ); 
 
             hr = OnRefreshRateChanged();
-            if( FAILED( hr ) )
+            if( FAILED(hr) )
                 return hr;
 
             break;
@@ -1349,22 +1302,22 @@ HRESULT CD3DSettingsDlg::OnWindowedFullScreenChanged()
             g_DeviceSettings.d3d10.sd.Windowed = bWindowed;
 
             // Get available adapter output
-            CD3D10Enumeration* pD3DEnum = DXUTGetD3D10Enumeration();
+            CD3D10Enumeration *pD3DEnum = DXUTGetD3D10Enumeration();
 
-            CDXUTComboBox* pOutputComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_D3D10_ADAPTER_OUTPUT );
+            CDXUTComboBox *pOutputComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_D3D10_ADAPTER_OUTPUT );
             pOutputComboBox->RemoveAllItems();
 
-            CD3D10EnumAdapterInfo* pAdapterInfo = pD3DEnum->GetAdapterInfo( g_DeviceSettings.d3d10.AdapterOrdinal );
+            CD3D10EnumAdapterInfo *pAdapterInfo = pD3DEnum->GetAdapterInfo( g_DeviceSettings.d3d10.AdapterOrdinal );
             for( int ioutput = 0; ioutput < pAdapterInfo->outputInfoList.GetSize(); ++ioutput )
             {
-                CD3D10EnumOutputInfo* pOutputInfo = pAdapterInfo->outputInfoList.GetAt( ioutput );
+                CD3D10EnumOutputInfo *pOutputInfo = pAdapterInfo->outputInfoList.GetAt(ioutput);
                 AddD3D10AdapterOutput( pOutputInfo->Desc.DeviceName, pOutputInfo->Output );
             }
 
-            pOutputComboBox->SetSelectedByData( ULongToPtr( g_DeviceSettings.d3d10.Output ) );
+            pOutputComboBox->SetSelectedByData( ULongToPtr(g_DeviceSettings.d3d10.Output) );
 
             hr = OnAdapterOutputChanged();
-            if( FAILED( hr ) )
+            if( FAILED(hr) )
                 return hr;
 
             break;
@@ -1387,9 +1340,8 @@ HRESULT CD3DSettingsDlg::OnAdapterOutputChanged()
     if( g_DeviceSettings.d3d10.sd.Windowed )
     {
         DXGI_MODE_DESC mode;
-        hr = DXUTGetD3D10AdapterDisplayMode( g_DeviceSettings.d3d10.AdapterOrdinal,
-                                             g_DeviceSettings.d3d10.Output, &mode );
-        if( FAILED( hr ) )
+        hr = DXUTGetD3D10AdapterDisplayMode( g_DeviceSettings.d3d10.AdapterOrdinal, g_DeviceSettings.d3d10.Output, &mode );
+        if( FAILED(hr) )
             return DXTRACE_ERR( L"GetD3D10AdapterDisplayMode", hr );
 
         // Default resolution to the fullscreen res that was last used
@@ -1417,7 +1369,7 @@ HRESULT CD3DSettingsDlg::OnAdapterOutputChanged()
 
     // DXUTSETTINGSDLG_D3D10_RESOLUTION
     hr = UpdateD3D10Resolutions();
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return hr;
 
     // DXUTSETTINGSDLG_D3D10_BACK_BUFFER_FORMAT
@@ -1433,10 +1385,10 @@ HRESULT CD3DSettingsDlg::OnAdapterOutputChanged()
         }
     }
 
-    pBackBufferFormatComboBox->SetSelectedByData( ULongToPtr( g_DeviceSettings.d3d10.sd.BufferDesc.Format ) );
+    pBackBufferFormatComboBox->SetSelectedByData( ULongToPtr(g_DeviceSettings.d3d10.sd.BufferDesc.Format) );
 
     hr = OnBackBufferFormatChanged();
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return hr;
 
     // DXUTSETTINGSDLG_D3D10_REFRESH_RATE
@@ -1445,7 +1397,7 @@ HRESULT CD3DSettingsDlg::OnAdapterOutputChanged()
         CDXUTComboBox* pRefreshRateComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_D3D10_REFRESH_RATE );
         for( UINT i = 0; i < pRefreshRateComboBox->GetNumItems(); ++i )
         {
-            DXGI_RATIONAL* pRefreshRate = reinterpret_cast<DXGI_RATIONAL*>( pRefreshRateComboBox->GetItemData( i ) );
+            DXGI_RATIONAL *pRefreshRate = reinterpret_cast<DXGI_RATIONAL *>( pRefreshRateComboBox->GetItemData( i ) );
             delete pRefreshRate;
         }
         pRefreshRateComboBox->RemoveAllItems();
@@ -1455,7 +1407,7 @@ HRESULT CD3DSettingsDlg::OnAdapterOutputChanged()
     SetSelectedD3D10RefreshRate( RefreshRate );
 
     hr = OnRefreshRateChanged();
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return hr;
 
     return S_OK;
@@ -1464,7 +1416,7 @@ HRESULT CD3DSettingsDlg::OnAdapterOutputChanged()
 
 //-------------------------------------------------------------------------------------
 HRESULT CD3DSettingsDlg::OnAdapterFormatChanged()
-{
+{ 
     HRESULT hr = S_OK;
 
     switch( g_DeviceSettings.ver )
@@ -1488,31 +1440,31 @@ HRESULT CD3DSettingsDlg::OnAdapterFormatChanged()
             // Get the desktop aspect ratio
             D3DDISPLAYMODE dmDesktop;
             DXUTGetDesktopResolution( g_DeviceSettings.d3d9.AdapterOrdinal, &dmDesktop.Width, &dmDesktop.Height );
-            float fDesktopAspectRatio = dmDesktop.Width / ( float )dmDesktop.Height;
+            float fDesktopAspectRatio = dmDesktop.Width / (float)dmDesktop.Height;
 
             for( int idm = 0; idm < pAdapterInfo->displayModeList.GetSize(); idm++ )
             {
                 D3DDISPLAYMODE DisplayMode = pAdapterInfo->displayModeList.GetAt( idm );
-                float fAspect = ( float )DisplayMode.Width / ( float )DisplayMode.Height;
+                float fAspect = (float)DisplayMode.Width / (float)DisplayMode.Height;
 
                 if( DisplayMode.Format == g_DeviceSettings.d3d9.AdapterFormat )
                 {
                     // If "Show All" is not checked, then hide all resolutions
                     // that don't match the aspect ratio of the desktop resolution
-                    if( bShowAll || ( !bShowAll && fabsf( fDesktopAspectRatio - fAspect ) < 0.05f ) )
+                    if( bShowAll || (!bShowAll && fabsf(fDesktopAspectRatio - fAspect) < 0.05f) )
                     {
-                        AddResolution( DisplayMode.Width, DisplayMode.Height );
+                        AddResolution( DisplayMode.Width, DisplayMode.Height );    
                     }
                 }
             }
 
-            const DWORD dwCurResolution = MAKELONG( g_DeviceSettings.d3d9.pp.BackBufferWidth,
+            const DWORD dwCurResolution = MAKELONG( g_DeviceSettings.d3d9.pp.BackBufferWidth, 
                                                     g_DeviceSettings.d3d9.pp.BackBufferHeight );
 
-            pResolutionComboBox->SetSelectedByData( ULongToPtr( dwCurResolution ) );
+            pResolutionComboBox->SetSelectedByData( ULongToPtr(dwCurResolution) );
 
             hr = OnResolutionChanged();
-            if( FAILED( hr ) )
+            if( FAILED(hr) )
                 return hr;
 
             // DXUTSETTINGSDLG_BACK_BUFFER_FORMAT
@@ -1537,10 +1489,10 @@ HRESULT CD3DSettingsDlg::OnAdapterFormatChanged()
                 }
             }
 
-            pBackBufferFormatComboBox->SetSelectedByData( ULongToPtr( g_DeviceSettings.d3d9.pp.BackBufferFormat ) );
+            pBackBufferFormatComboBox->SetSelectedByData( ULongToPtr(g_DeviceSettings.d3d9.pp.BackBufferFormat) );
 
             hr = OnBackBufferFormatChanged();
-            if( FAILED( hr ) )
+            if( FAILED(hr) )
                 return hr;
 
             if( !bHasWindowedBackBuffer )
@@ -1552,7 +1504,7 @@ HRESULT CD3DSettingsDlg::OnAdapterFormatChanged()
                     SetWindowed( false );
 
                     hr = OnWindowedFullScreenChanged();
-                    if( FAILED( hr ) )
+                    if( FAILED(hr) )
                         return hr;
                 }
             }
@@ -1599,10 +1551,10 @@ HRESULT CD3DSettingsDlg::OnResolutionChanged()
         }
     }
 
-    pRefreshRateComboBox->SetSelectedByData( ULongToPtr( dwRefreshRate ) );
+    pRefreshRateComboBox->SetSelectedByData( ULongToPtr(dwRefreshRate) );
 
     hr = OnRefreshRateChanged();
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return hr;
 
     return S_OK;
@@ -1630,7 +1582,7 @@ HRESULT CD3DSettingsDlg::OnD3D10ResolutionChanged()
     CDXUTComboBox* pRefreshRateComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_D3D10_REFRESH_RATE );
     for( UINT i = 0; i < pRefreshRateComboBox->GetNumItems(); ++i )
     {
-        DXGI_RATIONAL* pRefreshRate = reinterpret_cast<DXGI_RATIONAL*>( pRefreshRateComboBox->GetItemData( i ) );
+        DXGI_RATIONAL *pRefreshRate = reinterpret_cast<DXGI_RATIONAL *>( pRefreshRateComboBox->GetItemData( i ) );
         delete pRefreshRate;
     }
     pRefreshRateComboBox->RemoveAllItems();
@@ -1651,7 +1603,7 @@ HRESULT CD3DSettingsDlg::OnD3D10ResolutionChanged()
     SetSelectedD3D10RefreshRate( RefreshRate );
 
     hr = OnRefreshRateChanged();
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return hr;
 
     return S_OK;
@@ -1696,32 +1648,31 @@ HRESULT CD3DSettingsDlg::OnBackBufferFormatChanged()
                 return E_FAIL;
 
             bool bAllowSoftwareVP, bAllowHardwareVP, bAllowPureHardwareVP, bAllowMixedVP;
-            DXUTGetD3D9Enumeration()->GetPossibleVertexProcessingList( &bAllowSoftwareVP, &bAllowHardwareVP,
-                                                                       &bAllowPureHardwareVP, &bAllowMixedVP );
-
-            for( int idc = 0; idc < pDeviceInfo->deviceSettingsComboList.GetSize(); idc++ )
+            DXUTGetD3D9Enumeration()->GetPossibleVertexProcessingList( &bAllowSoftwareVP, &bAllowHardwareVP, 
+                                                                &bAllowPureHardwareVP, &bAllowMixedVP );
+            
+            for( int idc=0; idc < pDeviceInfo->deviceSettingsComboList.GetSize(); idc++ )
             {
                 CD3D9EnumDeviceSettingsCombo* pDeviceCombo = pDeviceInfo->deviceSettingsComboList.GetAt( idc );
 
-                if( pDeviceCombo->Windowed == ( g_DeviceSettings.d3d9.pp.Windowed == TRUE ) &&
+                if( pDeviceCombo->Windowed == (g_DeviceSettings.d3d9.pp.Windowed == TRUE) &&
                     pDeviceCombo->AdapterFormat == adapterFormat &&
                     pDeviceCombo->BackBufferFormat == backBufferFormat )
                 {
                     CDXUTComboBox* pDepthStencilComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_DEPTH_STENCIL );
                     pDepthStencilComboBox->RemoveAllItems();
-                    pDepthStencilComboBox->SetEnabled( ( g_DeviceSettings.d3d9.pp.EnableAutoDepthStencil == TRUE ) );
+                    pDepthStencilComboBox->SetEnabled( (g_DeviceSettings.d3d9.pp.EnableAutoDepthStencil == TRUE) ); 
 
                     if( g_DeviceSettings.d3d9.pp.EnableAutoDepthStencil )
                     {
-                        for( int ifmt = 0; ifmt < pDeviceCombo->depthStencilFormatList.GetSize(); ifmt++ )
+                        for( int ifmt=0; ifmt < pDeviceCombo->depthStencilFormatList.GetSize(); ifmt++ )
                         {
                             D3DFORMAT fmt = pDeviceCombo->depthStencilFormatList.GetAt( ifmt );
 
                             AddDepthStencilBufferFormat( fmt );
                         }
 
-                        pDepthStencilComboBox->SetSelectedByData( ULongToPtr(
-                                                                  g_DeviceSettings.d3d9.pp.AutoDepthStencilFormat ) );
+                        pDepthStencilComboBox->SetSelectedByData( ULongToPtr(g_DeviceSettings.d3d9.pp.AutoDepthStencilFormat) );
                     }
                     else
                     {
@@ -1730,11 +1681,10 @@ HRESULT CD3DSettingsDlg::OnBackBufferFormatChanged()
                     }
 
                     hr = OnDepthStencilBufferFormatChanged();
-                    if( FAILED( hr ) )
+                    if( FAILED(hr) )
                         return hr;
 
-                    CDXUTComboBox* pVertexProcessingComboBox =
-                        m_Dialog.GetComboBox( DXUTSETTINGSDLG_VERTEX_PROCESSING );
+                    CDXUTComboBox* pVertexProcessingComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_VERTEX_PROCESSING );
                     pVertexProcessingComboBox->RemoveAllItems();
 
                     // Add valid vertex processing types
@@ -1751,30 +1701,27 @@ HRESULT CD3DSettingsDlg::OnBackBufferFormatChanged()
                         AddVertexProcessingType( D3DCREATE_MIXED_VERTEXPROCESSING );
 
                     if( g_DeviceSettings.d3d9.BehaviorFlags & D3DCREATE_PUREDEVICE )
-                        pVertexProcessingComboBox->SetSelectedByData( ULongToPtr( D3DCREATE_PUREDEVICE ) );
+                        pVertexProcessingComboBox->SetSelectedByData( ULongToPtr(D3DCREATE_PUREDEVICE) );
                     else if( g_DeviceSettings.d3d9.BehaviorFlags & D3DCREATE_SOFTWARE_VERTEXPROCESSING )
-                        pVertexProcessingComboBox->SetSelectedByData( ULongToPtr(
-                                                                      D3DCREATE_SOFTWARE_VERTEXPROCESSING ) );
+                        pVertexProcessingComboBox->SetSelectedByData( ULongToPtr(D3DCREATE_SOFTWARE_VERTEXPROCESSING) );
                     else if( g_DeviceSettings.d3d9.BehaviorFlags & D3DCREATE_HARDWARE_VERTEXPROCESSING )
-                        pVertexProcessingComboBox->SetSelectedByData( ULongToPtr(
-                                                                      D3DCREATE_HARDWARE_VERTEXPROCESSING ) );
+                        pVertexProcessingComboBox->SetSelectedByData( ULongToPtr(D3DCREATE_HARDWARE_VERTEXPROCESSING) );
                     else if( g_DeviceSettings.d3d9.BehaviorFlags & D3DCREATE_MIXED_VERTEXPROCESSING )
-                        pVertexProcessingComboBox->SetSelectedByData( ULongToPtr( D3DCREATE_MIXED_VERTEXPROCESSING ) );
+                        pVertexProcessingComboBox->SetSelectedByData( ULongToPtr(D3DCREATE_MIXED_VERTEXPROCESSING) );
 
                     hr = OnVertexProcessingChanged();
-                    if( FAILED( hr ) )
+                    if( FAILED(hr) )
                         return hr;
 
                     CDXUTComboBox* pPresentIntervalComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_PRESENT_INTERVAL );
                     pPresentIntervalComboBox->RemoveAllItems();
-                    pPresentIntervalComboBox->AddItem( L"On", ULongToPtr( D3DPRESENT_INTERVAL_DEFAULT ) );
-                    pPresentIntervalComboBox->AddItem( L"Off", ULongToPtr( D3DPRESENT_INTERVAL_IMMEDIATE ) );
+                    pPresentIntervalComboBox->AddItem( L"On", ULongToPtr(D3DPRESENT_INTERVAL_DEFAULT) );
+                    pPresentIntervalComboBox->AddItem( L"Off", ULongToPtr(D3DPRESENT_INTERVAL_IMMEDIATE) );
 
-                    pPresentIntervalComboBox->SetSelectedByData( ULongToPtr(
-                                                                 g_DeviceSettings.d3d9.pp.PresentationInterval ) );
-
+                    pPresentIntervalComboBox->SetSelectedByData( ULongToPtr( g_DeviceSettings.d3d9.pp.PresentationInterval ) );
+                
                     hr = OnPresentIntervalChanged();
-                    if( FAILED( hr ) )
+                    if( FAILED(hr) )
                         return hr;
                 }
             }
@@ -1785,47 +1732,44 @@ HRESULT CD3DSettingsDlg::OnBackBufferFormatChanged()
         case DXUT_D3D10_DEVICE:
         {
             g_DeviceSettings.d3d10.sd.BufferDesc.Format = GetSelectedD3D10BackBufferFormat();
-
+            
             DXGI_FORMAT backBufferFormat = g_DeviceSettings.d3d10.sd.BufferDesc.Format;
 
             CD3D10EnumAdapterInfo* pAdapterInfo = GetCurrentD3D10AdapterInfo();
             if( pAdapterInfo == NULL )
                 return E_FAIL;
 
-            for( int idc = 0; idc < pAdapterInfo->deviceSettingsComboList.GetSize(); idc++ )
+            for( int idc=0; idc < pAdapterInfo->deviceSettingsComboList.GetSize(); idc++ )
             {
                 CD3D10EnumDeviceSettingsCombo* pDeviceCombo = pAdapterInfo->deviceSettingsComboList.GetAt( idc );
 
-                if( pDeviceCombo->Windowed == ( g_DeviceSettings.d3d10.sd.Windowed == TRUE ) &&
+                if( pDeviceCombo->Windowed == (g_DeviceSettings.d3d10.sd.Windowed == TRUE) &&
                     pDeviceCombo->BackBufferFormat == backBufferFormat &&
                     pDeviceCombo->DeviceType == g_DeviceSettings.d3d10.DriverType )
                 {
-                    CDXUTComboBox* pMultisampleCountCombo = m_Dialog.GetComboBox( DXUTSETTINGSDLG_D3D10_MULTISAMPLE_COUNT
-                                                                                   );
+                    CDXUTComboBox* pMultisampleCountCombo = m_Dialog.GetComboBox( DXUTSETTINGSDLG_D3D10_MULTISAMPLE_COUNT );
                     pMultisampleCountCombo->RemoveAllItems();
                     for( int i = 0; i < pDeviceCombo->multiSampleCountList.GetSize(); ++i )
-                        AddD3D10MultisampleCount( pDeviceCombo->multiSampleCountList.GetAt( i ) );
-                    pMultisampleCountCombo->SetSelectedByData( ULongToPtr(
-                                                               g_DeviceSettings.d3d10.sd.SampleDesc.Count ) );
+                        AddD3D10MultisampleCount( pDeviceCombo->multiSampleCountList.GetAt(i) );
+                    pMultisampleCountCombo->SetSelectedByData( ULongToPtr(g_DeviceSettings.d3d10.sd.SampleDesc.Count) );
 
                     hr = OnMultisampleTypeChanged();
-                    if( FAILED( hr ) )
+                    if( FAILED(hr) )
                         return hr;
 
-                    CDXUTComboBox* pPresentIntervalComboBox =
-                        m_Dialog.GetComboBox( DXUTSETTINGSDLG_D3D10_PRESENT_INTERVAL );
+                    CDXUTComboBox* pPresentIntervalComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_D3D10_PRESENT_INTERVAL );
                     pPresentIntervalComboBox->RemoveAllItems();
-                    pPresentIntervalComboBox->AddItem( L"On", ULongToPtr( 1 ) );
-                    pPresentIntervalComboBox->AddItem( L"Off", ULongToPtr( 0 ) );
+                    pPresentIntervalComboBox->AddItem( L"On", ULongToPtr(1) );
+                    pPresentIntervalComboBox->AddItem( L"Off", ULongToPtr(0) );
 
                     pPresentIntervalComboBox->SetSelectedByData( ULongToPtr( g_DeviceSettings.d3d10.SyncInterval ) );
 
                     hr = OnPresentIntervalChanged();
-                    if( FAILED( hr ) )
+                    if( FAILED(hr) )
                         return hr;
 
                     hr = UpdateD3D10Resolutions();
-                    if( FAILED( hr ) )
+                    if( FAILED(hr) )
                         return hr;
                 }
             }
@@ -1851,11 +1795,11 @@ HRESULT CD3DSettingsDlg::OnDepthStencilBufferFormatChanged()
     CD3D9EnumDeviceSettingsCombo* pDeviceSettingsCombo = GetCurrentDeviceSettingsCombo();
     if( pDeviceSettingsCombo == NULL )
         return E_FAIL;
-
+    
     CDXUTComboBox* pMultisampleTypeCombo = m_Dialog.GetComboBox( DXUTSETTINGSDLG_MULTISAMPLE_TYPE );
     pMultisampleTypeCombo->RemoveAllItems();
 
-    for( int ims = 0; ims < pDeviceSettingsCombo->multiSampleTypeList.GetSize(); ims++ )
+    for( int ims=0; ims < pDeviceSettingsCombo->multiSampleTypeList.GetSize(); ims++ )
     {
         D3DMULTISAMPLE_TYPE msType = pDeviceSettingsCombo->multiSampleTypeList.GetAt( ims );
 
@@ -1876,10 +1820,10 @@ HRESULT CD3DSettingsDlg::OnDepthStencilBufferFormatChanged()
     }
 
     CDXUTComboBox* pMultisampleQualityCombo = m_Dialog.GetComboBox( DXUTSETTINGSDLG_MULTISAMPLE_TYPE );
-    pMultisampleQualityCombo->SetSelectedByData( ULongToPtr( g_DeviceSettings.d3d9.pp.MultiSampleType ) );
+    pMultisampleQualityCombo->SetSelectedByData( ULongToPtr(g_DeviceSettings.d3d9.pp.MultiSampleType) );
 
     hr = OnMultisampleTypeChanged();
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return hr;
 
     return S_OK;
@@ -1922,10 +1866,10 @@ HRESULT CD3DSettingsDlg::OnMultisampleTypeChanged()
                 AddMultisampleQuality( iQuality );
             }
 
-            pMultisampleQualityCombo->SetSelectedByData( ULongToPtr( g_DeviceSettings.d3d9.pp.MultiSampleQuality ) );
+            pMultisampleQualityCombo->SetSelectedByData( ULongToPtr(g_DeviceSettings.d3d9.pp.MultiSampleQuality) );
 
             hr = OnMultisampleQualityChanged();
-            if( FAILED( hr ) )
+            if( FAILED(hr) )
                 return hr;
 
             break;
@@ -1952,8 +1896,7 @@ HRESULT CD3DSettingsDlg::OnMultisampleTypeChanged()
             }
 
             // DXUTSETTINGSDLG_D3D10_MULTISAMPLE_QUALITY
-            CDXUTComboBox* pMultisampleQualityCombo = m_Dialog.GetComboBox( DXUTSETTINGSDLG_D3D10_MULTISAMPLE_QUALITY
-                                                                             );
+            CDXUTComboBox* pMultisampleQualityCombo = m_Dialog.GetComboBox( DXUTSETTINGSDLG_D3D10_MULTISAMPLE_QUALITY );
             pMultisampleQualityCombo->RemoveAllItems();
 
             for( UINT iQuality = 0; iQuality < MaxQuality; iQuality++ )
@@ -1961,10 +1904,10 @@ HRESULT CD3DSettingsDlg::OnMultisampleTypeChanged()
                 AddD3D10MultisampleQuality( iQuality );
             }
 
-            pMultisampleQualityCombo->SetSelectedByData( ULongToPtr( g_DeviceSettings.d3d10.sd.SampleDesc.Quality ) );
+            pMultisampleQualityCombo->SetSelectedByData( ULongToPtr(g_DeviceSettings.d3d10.sd.SampleDesc.Quality) );
 
             hr = OnMultisampleQualityChanged();
-            if( FAILED( hr ) )
+            if( FAILED(hr) )
                 return hr;
 
             break;
@@ -2064,8 +2007,8 @@ void CD3DSettingsDlg::AddAPIVersion( DXUTDeviceVersion version )
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_API_VERSION );
 
-    if( !pComboBox->ContainsItem( DXUTAPIVersionToString( version ) ) )
-        pComboBox->AddItem( DXUTAPIVersionToString( version ), ULongToPtr( version ) );
+    if( !pComboBox->ContainsItem( DXUTAPIVersionToString(version) ) )
+        pComboBox->AddItem( DXUTAPIVersionToString(version), ULongToPtr(version) );
 }
 
 
@@ -2074,7 +2017,7 @@ DXUTDeviceVersion CD3DSettingsDlg::GetSelectedAPIVersion()
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_API_VERSION );
 
-    return ( DXUTDeviceVersion )PtrToUlong( pComboBox->GetSelectedData() );
+    return (DXUTDeviceVersion) PtrToUlong( pComboBox->GetSelectedData() );
 }
 
 
@@ -2082,9 +2025,9 @@ DXUTDeviceVersion CD3DSettingsDlg::GetSelectedAPIVersion()
 void CD3DSettingsDlg::AddAdapter( const WCHAR* strDescription, UINT iAdapter )
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_ADAPTER );
-
+ 
     if( !pComboBox->ContainsItem( strDescription ) )
-        pComboBox->AddItem( strDescription, ULongToPtr( iAdapter ) );
+        pComboBox->AddItem( strDescription, ULongToPtr(iAdapter) );
 }
 
 
@@ -2093,7 +2036,7 @@ UINT CD3DSettingsDlg::GetSelectedAdapter()
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_ADAPTER );
 
-    return PtrToUlong( pComboBox->GetSelectedData() );
+    return PtrToUlong( pComboBox->GetSelectedData() );  
 }
 
 
@@ -2102,8 +2045,8 @@ void CD3DSettingsDlg::AddDeviceType( D3DDEVTYPE devType )
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_DEVICE_TYPE );
 
-    if( !pComboBox->ContainsItem( DXUTD3DDeviceTypeToString( devType ) ) )
-        pComboBox->AddItem( DXUTD3DDeviceTypeToString( devType ), ULongToPtr( devType ) );
+    if( !pComboBox->ContainsItem( DXUTD3DDeviceTypeToString(devType) ) )
+        pComboBox->AddItem( DXUTD3DDeviceTypeToString(devType), ULongToPtr(devType) );
 }
 
 
@@ -2112,7 +2055,7 @@ D3DDEVTYPE CD3DSettingsDlg::GetSelectedDeviceType()
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_DEVICE_TYPE );
 
-    return ( D3DDEVTYPE )PtrToUlong( pComboBox->GetSelectedData() );
+    return (D3DDEVTYPE) PtrToUlong( pComboBox->GetSelectedData() );
 }
 
 
@@ -2139,9 +2082,9 @@ bool CD3DSettingsDlg::IsWindowed()
 void CD3DSettingsDlg::AddAdapterFormat( D3DFORMAT format )
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_ADAPTER_FORMAT );
-
-    if( !pComboBox->ContainsItem( DXUTD3DFormatToString( format, TRUE ) ) )
-        pComboBox->AddItem( DXUTD3DFormatToString( format, TRUE ), ULongToPtr( format ) );
+    
+    if( !pComboBox->ContainsItem( DXUTD3DFormatToString(format, TRUE) ) )
+        pComboBox->AddItem( DXUTD3DFormatToString(format, TRUE), ULongToPtr( format ) );
 }
 
 
@@ -2149,8 +2092,8 @@ void CD3DSettingsDlg::AddAdapterFormat( D3DFORMAT format )
 D3DFORMAT CD3DSettingsDlg::GetSelectedAdapterFormat()
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_ADAPTER_FORMAT );
-
-    return ( D3DFORMAT )PtrToUlong( pComboBox->GetSelectedData() );
+  
+    return (D3DFORMAT) PtrToUlong( pComboBox->GetSelectedData() ); 
 }
 
 
@@ -2160,7 +2103,7 @@ void CD3DSettingsDlg::AddD3D10AdapterOutput( const WCHAR* strName, UINT Output )
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_D3D10_ADAPTER_OUTPUT );
 
     if( !pComboBox->ContainsItem( strName ) )
-        pComboBox->AddItem( strName, ULongToPtr( Output ) );
+        pComboBox->AddItem( strName, ULongToPtr(Output) );
 }
 
 
@@ -2177,11 +2120,11 @@ UINT CD3DSettingsDlg::GetSelectedD3D10AdapterOutput()
 void CD3DSettingsDlg::AddResolution( DWORD dwWidth, DWORD dwHeight )
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_RESOLUTION );
-
+  
     DWORD dwResolutionData;
     WCHAR strResolution[50];
     dwResolutionData = MAKELONG( dwWidth, dwHeight );
-    swprintf_s( strResolution, 50, L"%d by %d", dwWidth, dwHeight );
+    StringCchPrintf( strResolution, 50, L"%d by %d", dwWidth, dwHeight );
 
     if( !pComboBox->ContainsItem( strResolution ) )
         pComboBox->AddItem( strResolution, ULongToPtr( dwResolutionData ) );
@@ -2208,7 +2151,7 @@ void CD3DSettingsDlg::AddD3D10Resolution( DWORD dwWidth, DWORD dwHeight )
     DWORD dwResolutionData;
     WCHAR strResolution[50];
     dwResolutionData = MAKELONG( dwWidth, dwHeight );
-    swprintf_s( strResolution, 50, L"%d by %d", dwWidth, dwHeight );
+    StringCchPrintf( strResolution, 50, L"%d by %d", dwWidth, dwHeight );
 
     if( !pComboBox->ContainsItem( strResolution ) )
         pComboBox->AddItem( strResolution, ULongToPtr( dwResolutionData ) );
@@ -2231,16 +2174,16 @@ void CD3DSettingsDlg::GetSelectedD3D10Resolution( DWORD* pdwWidth, DWORD* pdwHei
 void CD3DSettingsDlg::AddRefreshRate( DWORD dwRate )
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_REFRESH_RATE );
-
+        
     WCHAR strRefreshRate[50];
 
     if( dwRate == 0 )
-        wcscpy_s( strRefreshRate, 50, L"Default Rate" );
+        StringCchCopy( strRefreshRate, 50, L"Default Rate" );
     else
-        swprintf_s( strRefreshRate, 50, L"%d Hz", dwRate );
+        StringCchPrintf( strRefreshRate, 50, L"%d Hz", dwRate );
 
     if( !pComboBox->ContainsItem( strRefreshRate ) )
-        pComboBox->AddItem( strRefreshRate, ULongToPtr( dwRate ) );
+        pComboBox->AddItem( strRefreshRate, ULongToPtr(dwRate) );
 }
 
 
@@ -2248,7 +2191,7 @@ void CD3DSettingsDlg::AddRefreshRate( DWORD dwRate )
 DWORD CD3DSettingsDlg::GetSelectedRefreshRate()
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_REFRESH_RATE );
-
+    
     return PtrToUlong( pComboBox->GetSelectedData() );
 }
 
@@ -2261,13 +2204,13 @@ void CD3DSettingsDlg::AddD3D10RefreshRate( DXGI_RATIONAL RefreshRate )
     WCHAR strRefreshRate[50];
 
     if( RefreshRate.Numerator == 0 && RefreshRate.Denominator == 0 )
-        wcscpy_s( strRefreshRate, 50, L"Default Rate" );
+        StringCchCopy( strRefreshRate, 50, L"Default Rate" );
     else
-        swprintf_s( strRefreshRate, 50, L"%d Hz", RefreshRate.Numerator / RefreshRate.Denominator );
+        StringCchPrintf( strRefreshRate, 50, L"%d Hz", RefreshRate.Numerator / RefreshRate.Denominator );
 
     if( !pComboBox->ContainsItem( strRefreshRate ) )
     {
-        DXGI_RATIONAL* pNewRate = new DXGI_RATIONAL;
+        DXGI_RATIONAL *pNewRate = new DXGI_RATIONAL;
         if( pNewRate )
         {
             *pNewRate = RefreshRate;
@@ -2285,10 +2228,10 @@ DXGI_RATIONAL CD3DSettingsDlg::GetSelectedD3D10RefreshRate()
     dxgiR.Denominator = 1;
     return dxgiR;
     /*
-      CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_D3D10_REFRESH_RATE );
-      
-      return *reinterpret_cast<DXGI_RATIONAL*>( pComboBox->GetSelectedData() );
-     */
+    CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_D3D10_REFRESH_RATE );
+
+    return *reinterpret_cast<DXGI_RATIONAL*>( pComboBox->GetSelectedData() );
+    */
 }
 
 
@@ -2297,8 +2240,8 @@ void CD3DSettingsDlg::AddBackBufferFormat( D3DFORMAT format )
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_BACK_BUFFER_FORMAT );
 
-    if( !pComboBox->ContainsItem( DXUTD3DFormatToString( format, TRUE ) ) )
-        pComboBox->AddItem( DXUTD3DFormatToString( format, TRUE ), ULongToPtr( format ) );
+    if( !pComboBox->ContainsItem( DXUTD3DFormatToString(format, TRUE) ) )
+        pComboBox->AddItem( DXUTD3DFormatToString(format, TRUE), ULongToPtr( format ) );
 }
 
 
@@ -2307,7 +2250,7 @@ D3DFORMAT CD3DSettingsDlg::GetSelectedBackBufferFormat()
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_BACK_BUFFER_FORMAT );
 
-    return ( D3DFORMAT )PtrToUlong( pComboBox->GetSelectedData() );
+    return (D3DFORMAT) PtrToUlong( pComboBox->GetSelectedData() ); 
 }
 
 
@@ -2315,9 +2258,9 @@ D3DFORMAT CD3DSettingsDlg::GetSelectedBackBufferFormat()
 void CD3DSettingsDlg::AddD3D10BackBufferFormat( DXGI_FORMAT format )
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_D3D10_BACK_BUFFER_FORMAT );
-
-    if( !pComboBox->ContainsItem( DXUTDXGIFormatToString( format, TRUE ) ) )
-        pComboBox->AddItem( DXUTDXGIFormatToString( format, TRUE ), ULongToPtr( format ) );
+    
+    if( !pComboBox->ContainsItem( DXUTDXGIFormatToString(format, TRUE) ) )
+        pComboBox->AddItem( DXUTDXGIFormatToString(format, TRUE), ULongToPtr( format ) );
 }
 
 
@@ -2326,7 +2269,7 @@ DXGI_FORMAT CD3DSettingsDlg::GetSelectedD3D10BackBufferFormat()
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_D3D10_BACK_BUFFER_FORMAT );
 
-    return ( DXGI_FORMAT )PtrToUlong( pComboBox->GetSelectedData() );
+    return (DXGI_FORMAT) PtrToUlong( pComboBox->GetSelectedData() );
 }
 
 
@@ -2334,9 +2277,9 @@ DXGI_FORMAT CD3DSettingsDlg::GetSelectedD3D10BackBufferFormat()
 void CD3DSettingsDlg::AddDepthStencilBufferFormat( D3DFORMAT format )
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_DEPTH_STENCIL );
-
-    if( !pComboBox->ContainsItem( DXUTD3DFormatToString( format, TRUE ) ) )
-        pComboBox->AddItem( DXUTD3DFormatToString( format, TRUE ), ULongToPtr( format ) );
+    
+    if( !pComboBox->ContainsItem( DXUTD3DFormatToString(format, TRUE) ) )
+        pComboBox->AddItem( DXUTD3DFormatToString(format, TRUE), ULongToPtr(format) );
 }
 
 
@@ -2344,8 +2287,8 @@ void CD3DSettingsDlg::AddDepthStencilBufferFormat( D3DFORMAT format )
 D3DFORMAT CD3DSettingsDlg::GetSelectedDepthStencilBufferFormat()
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_DEPTH_STENCIL );
-
-    return ( D3DFORMAT )PtrToUlong( pComboBox->GetSelectedData() );
+    
+    return (D3DFORMAT) PtrToUlong( pComboBox->GetSelectedData() ); 
 }
 
 
@@ -2353,9 +2296,9 @@ D3DFORMAT CD3DSettingsDlg::GetSelectedDepthStencilBufferFormat()
 void CD3DSettingsDlg::AddMultisampleType( D3DMULTISAMPLE_TYPE type )
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_MULTISAMPLE_TYPE );
-
-    if( !pComboBox->ContainsItem( DXUTMultisampleTypeToString( type ) ) )
-        pComboBox->AddItem( DXUTMultisampleTypeToString( type ), ULongToPtr( type ) );
+    
+    if( !pComboBox->ContainsItem( DXUTMultisampleTypeToString(type) ) )
+        pComboBox->AddItem( DXUTMultisampleTypeToString(type), ULongToPtr(type) );
 }
 
 
@@ -2363,8 +2306,8 @@ void CD3DSettingsDlg::AddMultisampleType( D3DMULTISAMPLE_TYPE type )
 D3DMULTISAMPLE_TYPE CD3DSettingsDlg::GetSelectedMultisampleType()
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_MULTISAMPLE_TYPE );
-
-    return ( D3DMULTISAMPLE_TYPE )PtrToUlong( pComboBox->GetSelectedData() );
+    
+    return (D3DMULTISAMPLE_TYPE) PtrToUlong( pComboBox->GetSelectedData() ); 
 }
 
 
@@ -2372,12 +2315,12 @@ D3DMULTISAMPLE_TYPE CD3DSettingsDlg::GetSelectedMultisampleType()
 void CD3DSettingsDlg::AddMultisampleQuality( DWORD dwQuality )
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_MULTISAMPLE_QUALITY );
-
+        
     WCHAR strQuality[50];
-    swprintf_s( strQuality, 50, L"%d", dwQuality );
+    StringCchPrintf( strQuality, 50, L"%d", dwQuality );
 
     if( !pComboBox->ContainsItem( strQuality ) )
-        pComboBox->AddItem( strQuality, ULongToPtr( dwQuality ) );
+        pComboBox->AddItem( strQuality, ULongToPtr(dwQuality) );
 }
 
 
@@ -2385,8 +2328,8 @@ void CD3DSettingsDlg::AddMultisampleQuality( DWORD dwQuality )
 DWORD CD3DSettingsDlg::GetSelectedMultisampleQuality()
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_MULTISAMPLE_QUALITY );
-
-    return PtrToUlong( pComboBox->GetSelectedData() );
+    
+    return PtrToUlong( pComboBox->GetSelectedData() ); 
 }
 
 
@@ -2394,12 +2337,12 @@ DWORD CD3DSettingsDlg::GetSelectedMultisampleQuality()
 void CD3DSettingsDlg::AddD3D10MultisampleCount( UINT Count )
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_D3D10_MULTISAMPLE_COUNT );
-
+    
     WCHAR str[50];
-    swprintf_s( str, 50, L"%u", Count );
+    StringCchPrintf( str, 50, L"%u", Count );
 
     if( !pComboBox->ContainsItem( str ) )
-        pComboBox->AddItem( str, ULongToPtr( Count ) );
+        pComboBox->AddItem( str, ULongToPtr(Count) );
 }
 
 
@@ -2407,8 +2350,8 @@ void CD3DSettingsDlg::AddD3D10MultisampleCount( UINT Count )
 UINT CD3DSettingsDlg::GetSelectedD3D10MultisampleCount()
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_D3D10_MULTISAMPLE_COUNT );
-
-    return ( UINT )PtrToUlong( pComboBox->GetSelectedData() );
+    
+    return (UINT) PtrToUlong( pComboBox->GetSelectedData() ); 
 }
 
 
@@ -2418,10 +2361,10 @@ void CD3DSettingsDlg::AddD3D10MultisampleQuality( UINT Quality )
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_D3D10_MULTISAMPLE_QUALITY );
 
     WCHAR strQuality[50];
-    swprintf_s( strQuality, 50, L"%d", Quality );
+    StringCchPrintf( strQuality, 50, L"%d", Quality );
 
     if( !pComboBox->ContainsItem( strQuality ) )
-        pComboBox->AddItem( strQuality, ULongToPtr( Quality ) );
+        pComboBox->AddItem( strQuality, ULongToPtr(Quality) );
 }
 
 
@@ -2430,7 +2373,7 @@ UINT CD3DSettingsDlg::GetSelectedD3D10MultisampleQuality()
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_D3D10_MULTISAMPLE_QUALITY );
 
-    return ( UINT )PtrToUlong( pComboBox->GetSelectedData() );
+    return (UINT)PtrToUlong( pComboBox->GetSelectedData() );
 }
 
 
@@ -2438,9 +2381,9 @@ UINT CD3DSettingsDlg::GetSelectedD3D10MultisampleQuality()
 void CD3DSettingsDlg::AddVertexProcessingType( DWORD dwType )
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_VERTEX_PROCESSING );
-
-    if( !pComboBox->ContainsItem( DXUTVertexProcessingTypeToString( dwType ) ) )
-        pComboBox->AddItem( DXUTVertexProcessingTypeToString( dwType ), ULongToPtr( dwType ) );
+    
+    if( !pComboBox->ContainsItem( DXUTVertexProcessingTypeToString(dwType) ) )
+        pComboBox->AddItem( DXUTVertexProcessingTypeToString(dwType), ULongToPtr(dwType) );
 }
 
 
@@ -2449,7 +2392,7 @@ DWORD CD3DSettingsDlg::GetSelectedVertexProcessingType()
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_VERTEX_PROCESSING );
 
-    return PtrToUlong( pComboBox->GetSelectedData() );
+    return PtrToUlong( pComboBox->GetSelectedData() ); 
 }
 
 
@@ -2457,8 +2400,8 @@ DWORD CD3DSettingsDlg::GetSelectedVertexProcessingType()
 DWORD CD3DSettingsDlg::GetSelectedPresentInterval()
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_PRESENT_INTERVAL );
-
-    return PtrToUlong( pComboBox->GetSelectedData() );
+    
+    return PtrToUlong( pComboBox->GetSelectedData() ); 
 }
 
 
@@ -2500,8 +2443,8 @@ void CD3DSettingsDlg::AddD3D10DeviceType( D3D10_DRIVER_TYPE devType )
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_DEVICE_TYPE );
 
-    if( !pComboBox->ContainsItem( DXUTD3DX10DeviceTypeToString( devType ) ) )
-        pComboBox->AddItem( DXUTD3DX10DeviceTypeToString( devType ), ULongToPtr( devType ) );
+    if( !pComboBox->ContainsItem( DXUTD3DX10DeviceTypeToString(devType) ) )
+        pComboBox->AddItem( DXUTD3DX10DeviceTypeToString(devType), ULongToPtr(devType) );
 }
 
 
@@ -2510,7 +2453,7 @@ D3D10_DRIVER_TYPE CD3DSettingsDlg::GetSelectedD3D10DeviceType()
 {
     CDXUTComboBox* pComboBox = m_Dialog.GetComboBox( DXUTSETTINGSDLG_DEVICE_TYPE );
 
-    return ( D3D10_DRIVER_TYPE )PtrToUlong( pComboBox->GetSelectedData() );
+    return (D3D10_DRIVER_TYPE) PtrToUlong( pComboBox->GetSelectedData() );
 }
 
 
@@ -2521,7 +2464,7 @@ void CD3DSettingsDlg::SetSelectedD3D10RefreshRate( DXGI_RATIONAL RefreshRate )
 
     for( UINT i = 0; i < pRefreshRateComboBox->GetNumItems(); ++i )
     {
-        DXGI_RATIONAL* pRate = ( DXGI_RATIONAL* )pRefreshRateComboBox->GetItemData( i );
+        DXGI_RATIONAL *pRate = (DXGI_RATIONAL *)pRefreshRateComboBox->GetItemData( i );
 
         if( pRate && pRate->Numerator == RefreshRate.Numerator && pRate->Denominator == RefreshRate.Denominator )
         {
@@ -2554,31 +2497,31 @@ HRESULT CD3DSettingsDlg::UpdateD3D10Resolutions()
     // Get the desktop aspect ratio
     DXGI_MODE_DESC dmDesktop;
     DXUTGetDesktopResolution( g_DeviceSettings.d3d10.AdapterOrdinal, &dmDesktop.Width, &dmDesktop.Height );
-    float fDesktopAspectRatio = dmDesktop.Width / ( float )dmDesktop.Height;
+    float fDesktopAspectRatio = dmDesktop.Width / (float)dmDesktop.Height;
 
     for( int idm = 0; idm < pOutputInfo->displayModeList.GetSize(); idm++ )
     {
         DXGI_MODE_DESC DisplayMode = pOutputInfo->displayModeList.GetAt( idm );
-        float fAspect = ( float )DisplayMode.Width / ( float )DisplayMode.Height;
+        float fAspect = (float)DisplayMode.Width / (float)DisplayMode.Height;
 
         if( DisplayMode.Format == g_DeviceSettings.d3d10.sd.BufferDesc.Format )
         {
             // If "Show All" is not checked, then hide all resolutions
             // that don't match the aspect ratio of the desktop resolution
-            if( bShowAll || ( !bShowAll && fabsf( fDesktopAspectRatio - fAspect ) < 0.05f ) )
+            if( bShowAll || (!bShowAll && fabsf(fDesktopAspectRatio - fAspect) < 0.05f) )
             {
                 AddD3D10Resolution( DisplayMode.Width, DisplayMode.Height );
             }
         }
     }
 
-    const DWORD dwCurResolution = MAKELONG( g_DeviceSettings.d3d10.sd.BufferDesc.Width,
+    const DWORD dwCurResolution = MAKELONG( g_DeviceSettings.d3d10.sd.BufferDesc.Width, 
                                             g_DeviceSettings.d3d10.sd.BufferDesc.Height );
 
-    pResolutionComboBox->SetSelectedByData( ULongToPtr( dwCurResolution ) );
+    pResolutionComboBox->SetSelectedByData( ULongToPtr(dwCurResolution) );
 
     hr = OnD3D10ResolutionChanged();
-    if( FAILED( hr ) )
+    if( FAILED(hr) )
         return hr;
 
     bool bWindowed = IsWindowed();
@@ -2587,10 +2530,10 @@ HRESULT CD3DSettingsDlg::UpdateD3D10Resolutions()
         pResolutionComboBox->RemoveAllItems();
         AddD3D10Resolution( dwWidth, dwHeight );
 
-        pResolutionComboBox->SetSelectedByData( ULongToPtr( MAKELONG( dwWidth, dwHeight ) ) );
+        pResolutionComboBox->SetSelectedByData( ULongToPtr( MAKELONG(dwWidth, dwHeight) ) );
 
         hr = OnD3D10ResolutionChanged();
-        if( FAILED( hr ) )
+        if( FAILED(hr) )
             return hr;
     }
 
@@ -2603,7 +2546,7 @@ void CD3DSettingsDlg::UpdateModeChangeTimeoutText( int nSecRemaining )
     const DWORD CchBuf = sizeof( StrTimeout ) / sizeof( WCHAR ) + 16;
     WCHAR buf[CchBuf];
 
-    swprintf_s( buf, CchBuf, StrTimeout, nSecRemaining );
+    StringCchPrintfW( buf, CchBuf, StrTimeout, nSecRemaining );
 
     CDXUTStatic* pStatic = m_RevertModeDialog.GetStatic( DXUTSETTINGSDLG_STATIC_MODE_CHANGE_TIMEOUT );
     pStatic->SetText( buf );
@@ -2616,12 +2559,9 @@ WCHAR* DXUTAPIVersionToString( DXUTDeviceVersion version )
 {
     switch( version )
     {
-        case DXUT_D3D9_DEVICE:
-            return L"Direct3D 9";
-        case DXUT_D3D10_DEVICE:
-            return L"Direct3D 10";
-        default:
-            return L"Unknown version";
+        case DXUT_D3D9_DEVICE: return L"Direct3D 9";
+        case DXUT_D3D10_DEVICE: return L"Direct3D 10";
+        default: return L"Unknown version";
     }
 }
 
@@ -2629,18 +2569,14 @@ WCHAR* DXUTAPIVersionToString( DXUTDeviceVersion version )
 //--------------------------------------------------------------------------------------
 // Returns the string for the given D3DDEVTYPE.
 //--------------------------------------------------------------------------------------
-WCHAR* DXUTD3DDeviceTypeToString( D3DDEVTYPE devType )
+WCHAR* DXUTD3DDeviceTypeToString(D3DDEVTYPE devType)
 {
-    switch( devType )
+    switch (devType)
     {
-        case D3DDEVTYPE_HAL:
-            return L"D3DDEVTYPE_HAL";
-        case D3DDEVTYPE_SW:
-            return L"D3DDEVTYPE_SW";
-        case D3DDEVTYPE_REF:
-            return L"D3DDEVTYPE_REF";
-        default:
-            return L"Unknown devType";
+        case D3DDEVTYPE_HAL:        return L"D3DDEVTYPE_HAL";
+        case D3DDEVTYPE_SW:         return L"D3DDEVTYPE_SW";
+        case D3DDEVTYPE_REF:        return L"D3DDEVTYPE_REF";
+        default:                    return L"Unknown devType";
     }
 }
 
@@ -2648,20 +2584,15 @@ WCHAR* DXUTD3DDeviceTypeToString( D3DDEVTYPE devType )
 //--------------------------------------------------------------------------------------
 // Returns the string for the given D3DDEVTYPE.
 //--------------------------------------------------------------------------------------
-WCHAR* DXUTD3DX10DeviceTypeToString( D3D10_DRIVER_TYPE devType )
+WCHAR* DXUTD3DX10DeviceTypeToString(D3D10_DRIVER_TYPE devType)
 {
-    switch( devType )
+    switch (devType)
     {
-        case D3D10_DRIVER_TYPE_HARDWARE:
-            return L"D3D10_DRIVER_TYPE_HARDWARE";
-        case D3D10_DRIVER_TYPE_REFERENCE:
-            return L"D3D10_DRIVER_TYPE_REFERENCE";
-        case D3D10_DRIVER_TYPE_SOFTWARE:
-            return L"D3D10_DRIVER_TYPE_WARP";
-        case D3D10_DRIVER_TYPE_NULL:
-            return L"D3D10_DRIVER_TYPE_NULL";
-        default:
-            return L"Unknown devType";
+        case D3D10_DRIVER_TYPE_HARDWARE:  return L"D3D10_DRIVER_TYPE_HARDWARE";
+        case D3D10_DRIVER_TYPE_REFERENCE: return L"D3D10_DRIVER_TYPE_REFERENCE";
+        case D3D10_DRIVER_TYPE_NULL:      return L"D3D10_DRIVER_TYPE_NULL";
+        case D3D10_DRIVER_TYPE_SOFTWARE:  return L"D3D10_DRIVER_TYPE_SOFTWARE";
+        default:                         return L"Unknown devType";
     }
 }
 
@@ -2669,46 +2600,28 @@ WCHAR* DXUTD3DX10DeviceTypeToString( D3D10_DRIVER_TYPE devType )
 //--------------------------------------------------------------------------------------
 // Returns the string for the given D3DMULTISAMPLE_TYPE.
 //--------------------------------------------------------------------------------------
-WCHAR* DXUTMultisampleTypeToString( D3DMULTISAMPLE_TYPE MultiSampleType )
+WCHAR* DXUTMultisampleTypeToString(D3DMULTISAMPLE_TYPE MultiSampleType)
 {
-    switch( MultiSampleType )
+    switch (MultiSampleType)
     {
-        case D3DMULTISAMPLE_NONE:
-            return L"D3DMULTISAMPLE_NONE";
-        case D3DMULTISAMPLE_NONMASKABLE:
-            return L"D3DMULTISAMPLE_NONMASKABLE";
-        case D3DMULTISAMPLE_2_SAMPLES:
-            return L"D3DMULTISAMPLE_2_SAMPLES";
-        case D3DMULTISAMPLE_3_SAMPLES:
-            return L"D3DMULTISAMPLE_3_SAMPLES";
-        case D3DMULTISAMPLE_4_SAMPLES:
-            return L"D3DMULTISAMPLE_4_SAMPLES";
-        case D3DMULTISAMPLE_5_SAMPLES:
-            return L"D3DMULTISAMPLE_5_SAMPLES";
-        case D3DMULTISAMPLE_6_SAMPLES:
-            return L"D3DMULTISAMPLE_6_SAMPLES";
-        case D3DMULTISAMPLE_7_SAMPLES:
-            return L"D3DMULTISAMPLE_7_SAMPLES";
-        case D3DMULTISAMPLE_8_SAMPLES:
-            return L"D3DMULTISAMPLE_8_SAMPLES";
-        case D3DMULTISAMPLE_9_SAMPLES:
-            return L"D3DMULTISAMPLE_9_SAMPLES";
-        case D3DMULTISAMPLE_10_SAMPLES:
-            return L"D3DMULTISAMPLE_10_SAMPLES";
-        case D3DMULTISAMPLE_11_SAMPLES:
-            return L"D3DMULTISAMPLE_11_SAMPLES";
-        case D3DMULTISAMPLE_12_SAMPLES:
-            return L"D3DMULTISAMPLE_12_SAMPLES";
-        case D3DMULTISAMPLE_13_SAMPLES:
-            return L"D3DMULTISAMPLE_13_SAMPLES";
-        case D3DMULTISAMPLE_14_SAMPLES:
-            return L"D3DMULTISAMPLE_14_SAMPLES";
-        case D3DMULTISAMPLE_15_SAMPLES:
-            return L"D3DMULTISAMPLE_15_SAMPLES";
-        case D3DMULTISAMPLE_16_SAMPLES:
-            return L"D3DMULTISAMPLE_16_SAMPLES";
-        default:
-            return L"Unknown Multisample Type";
+    case D3DMULTISAMPLE_NONE:       return L"D3DMULTISAMPLE_NONE";
+    case D3DMULTISAMPLE_NONMASKABLE: return L"D3DMULTISAMPLE_NONMASKABLE";
+    case D3DMULTISAMPLE_2_SAMPLES:  return L"D3DMULTISAMPLE_2_SAMPLES";
+    case D3DMULTISAMPLE_3_SAMPLES:  return L"D3DMULTISAMPLE_3_SAMPLES";
+    case D3DMULTISAMPLE_4_SAMPLES:  return L"D3DMULTISAMPLE_4_SAMPLES";
+    case D3DMULTISAMPLE_5_SAMPLES:  return L"D3DMULTISAMPLE_5_SAMPLES";
+    case D3DMULTISAMPLE_6_SAMPLES:  return L"D3DMULTISAMPLE_6_SAMPLES";
+    case D3DMULTISAMPLE_7_SAMPLES:  return L"D3DMULTISAMPLE_7_SAMPLES";
+    case D3DMULTISAMPLE_8_SAMPLES:  return L"D3DMULTISAMPLE_8_SAMPLES";
+    case D3DMULTISAMPLE_9_SAMPLES:  return L"D3DMULTISAMPLE_9_SAMPLES";
+    case D3DMULTISAMPLE_10_SAMPLES: return L"D3DMULTISAMPLE_10_SAMPLES";
+    case D3DMULTISAMPLE_11_SAMPLES: return L"D3DMULTISAMPLE_11_SAMPLES";
+    case D3DMULTISAMPLE_12_SAMPLES: return L"D3DMULTISAMPLE_12_SAMPLES";
+    case D3DMULTISAMPLE_13_SAMPLES: return L"D3DMULTISAMPLE_13_SAMPLES";
+    case D3DMULTISAMPLE_14_SAMPLES: return L"D3DMULTISAMPLE_14_SAMPLES";
+    case D3DMULTISAMPLE_15_SAMPLES: return L"D3DMULTISAMPLE_15_SAMPLES";
+    case D3DMULTISAMPLE_16_SAMPLES: return L"D3DMULTISAMPLE_16_SAMPLES";
+    default:                        return L"Unknown Multisample Type";
     }
 }
 
@@ -2716,20 +2629,15 @@ WCHAR* DXUTMultisampleTypeToString( D3DMULTISAMPLE_TYPE MultiSampleType )
 //--------------------------------------------------------------------------------------
 // Returns the string for the given vertex processing type
 //--------------------------------------------------------------------------------------
-WCHAR* DXUTVertexProcessingTypeToString( DWORD vpt )
+WCHAR* DXUTVertexProcessingTypeToString(DWORD vpt)
 {
-    switch( vpt )
+    switch (vpt)
     {
-        case D3DCREATE_SOFTWARE_VERTEXPROCESSING:
-            return L"Software vertex processing";
-        case D3DCREATE_MIXED_VERTEXPROCESSING:
-            return L"Mixed vertex processing";
-        case D3DCREATE_HARDWARE_VERTEXPROCESSING:
-            return L"Hardware vertex processing";
-        case D3DCREATE_PUREDEVICE:
-            return L"Pure hardware vertex processing";
-        default:
-            return L"Unknown vertex processing type";
+    case D3DCREATE_SOFTWARE_VERTEXPROCESSING: return L"Software vertex processing";
+    case D3DCREATE_MIXED_VERTEXPROCESSING:    return L"Mixed vertex processing";
+    case D3DCREATE_HARDWARE_VERTEXPROCESSING: return L"Hardware vertex processing";
+    case D3DCREATE_PUREDEVICE:                return L"Pure hardware vertex processing";
+    default:                                  return L"Unknown vertex processing type";
     }
 }
 
@@ -2741,20 +2649,13 @@ WCHAR* DXUTPresentIntervalToString( UINT pi )
 {
     switch( pi )
     {
-        case D3DPRESENT_INTERVAL_IMMEDIATE:
-            return L"D3DPRESENT_INTERVAL_IMMEDIATE";
-        case D3DPRESENT_INTERVAL_DEFAULT:
-            return L"D3DPRESENT_INTERVAL_DEFAULT";
-        case D3DPRESENT_INTERVAL_ONE:
-            return L"D3DPRESENT_INTERVAL_ONE";
-        case D3DPRESENT_INTERVAL_TWO:
-            return L"D3DPRESENT_INTERVAL_TWO";
-        case D3DPRESENT_INTERVAL_THREE:
-            return L"D3DPRESENT_INTERVAL_THREE";
-        case D3DPRESENT_INTERVAL_FOUR:
-            return L"D3DPRESENT_INTERVAL_FOUR";
-        default:
-            return L"Unknown PresentInterval";
+    case D3DPRESENT_INTERVAL_IMMEDIATE: return L"D3DPRESENT_INTERVAL_IMMEDIATE";
+    case D3DPRESENT_INTERVAL_DEFAULT:   return L"D3DPRESENT_INTERVAL_DEFAULT";
+    case D3DPRESENT_INTERVAL_ONE:       return L"D3DPRESENT_INTERVAL_ONE";
+    case D3DPRESENT_INTERVAL_TWO:       return L"D3DPRESENT_INTERVAL_TWO";
+    case D3DPRESENT_INTERVAL_THREE:     return L"D3DPRESENT_INTERVAL_THREE";
+    case D3DPRESENT_INTERVAL_FOUR:      return L"D3DPRESENT_INTERVAL_FOUR";
+    default:                            return L"Unknown PresentInterval";
     }
 }
 
