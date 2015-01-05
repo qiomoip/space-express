@@ -1,0 +1,39 @@
+#pragma once
+/*
+싱글턴 클래스
+
+사용법 : 싱글턴화 하려는 클래스에 
+싱글턴 클래스를 상속 받아서 사용.
+*/
+template<typename T>
+class Singleton
+{
+private:
+	
+	static T* pInstance;
+
+protected:
+	
+	Singleton(void){};
+	~Singleton(void){};
+
+public:
+
+	static T* GetInstance()		{
+		if(!pInstance)
+			pInstance = new T;
+		return pInstance;
+	};
+
+	static void KillInstance(){
+		SAFE_DELETE(pInstance);
+	};
+};
+
+//프로그램이 시작하자마자 인스턴스를 생성하는 싱글턴
+//Singleton* Singleton::pInstance = new Singleton();
+
+//아니면  NULL로 초기화하고 GetInstance()를 처음
+//호출할때 인스턴스를 생성하는 싱글턴.
+template<typename T>
+T* Singleton<T>::pInstance = NULL;
