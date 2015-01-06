@@ -26,7 +26,9 @@ public:
 	};
 
 	static void KillInstance(){
-		SAFE_DELETE(pInstance);
+		if(pInstance)
+			delete pInstance;
+		pInstance = NULL;
 	};
 };
 
@@ -36,4 +38,4 @@ public:
 //아니면  NULL로 초기화하고 GetInstance()를 처음
 //호출할때 인스턴스를 생성하는 싱글턴.
 template<typename T>
-T* CSingleton<T>::pInstance = NULL;
+T* CSingleton<T>::pInstance = 0;

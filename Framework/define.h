@@ -30,6 +30,9 @@
 
 using namespace std;
 
+#include "Struct.h"
+#include "Enum.h"
+
 #define _SINGLE(T)	T::GetInstance()
 
 template <typename T>
@@ -51,12 +54,3 @@ void Safe_Delete_Array(T& p)
 		p	= NULL;
 	}
 }
-
-//struct
-typedef struct _tagVertex
-{
-	D3DXVECTOR3 vPos;
-	DWORD		dwColor;
-}VERTEXCOLOR;
-
-#define	VTXCOLORFVF	D3DFVF_XYZ | D3DFVF_DIFFUSE

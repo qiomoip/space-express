@@ -1,4 +1,5 @@
 #include "Device.h"
+#include "CameraManager.h"
 
 CDevice::CDevice(void)
 {
@@ -43,7 +44,7 @@ HRESULT CDevice::CreateDevice(HWND hWnd)
     }
 
     // Device state would normally be set here
-
+	_SINGLE(CCameraManager)->AddCamera( "MainCamera");
     return S_OK;
 }
 

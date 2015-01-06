@@ -1,6 +1,5 @@
 #pragma once
-#include <string>
-#include "Enum.h"
+#include "define.h"
 /*
 엔티티 클래스
 용도 : 3D전체
@@ -11,7 +10,7 @@ class CEntity
 {
 private:
 	
-	std::string		Name;
+	string			Name;
 	eMESH_NUM		Mesh_num;
 	eTEXTURE_NUM	Texture_num;
 
