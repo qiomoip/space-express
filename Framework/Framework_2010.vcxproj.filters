@@ -32,6 +32,15 @@
     <Filter Include="App">
       <UniqueIdentifier>{fcc4865f-4f8f-48d7-98f1-f91daa844ffe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Director\Manager\Debug">
+      <UniqueIdentifier>{cfda95bb-6926-484b-8c06-3a5e59e170f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\DeviceRes">
+      <UniqueIdentifier>{23269790-02e1-4fd3-a10e-de39e117a1c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\DeviceRes\Terrain">
+      <UniqueIdentifier>{01320409-5efb-4e53-8ea6-48629ae3d6c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXUT\Optional\directx.ico">
@@ -54,6 +63,15 @@
     <ClCompile Include="App.cpp">
       <Filter>App</Filter>
     </ClCompile>
+    <ClCompile Include="DeviceResMgr.cpp">
+      <Filter>Engine\Director\DeviceRes</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug.cpp">
+      <Filter>Engine\Director\Manager\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainMesh.cpp">
+      <Filter>Engine\Director\DeviceRes\Terrain</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -73,6 +91,21 @@
     </ClInclude>
     <ClInclude Include="App.h">
       <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="function.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="struct.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="DeviceResMgr.h">
+      <Filter>Engine\Director\DeviceRes</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug.h">
+      <Filter>Engine\Director\Manager\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainMesh.h">
+      <Filter>Engine\Director\DeviceRes\Terrain</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
