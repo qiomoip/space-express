@@ -14,6 +14,7 @@ private:
 	CDevice*			m_pDevice;
 	LPDIRECT3DVERTEXBUFFER9		m_pVB;
 
+
 public:
 	HRESULT				Initialize(HWND hWnd);
 	VOID				Destroy();

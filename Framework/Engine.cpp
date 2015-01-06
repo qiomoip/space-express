@@ -10,7 +10,6 @@ CEngine::CEngine(void)
 {
 }
 
-
 CEngine::~CEngine(void)
 {
 }
