@@ -1,4 +1,5 @@
 #pragma once
+
 /*
 싱글턴 클래스
 
@@ -9,7 +10,6 @@ template<typename T>
 class CSingleton
 {
 private:
-	
 	static T* pInstance;
 
 protected:
@@ -26,7 +26,11 @@ public:
 	};
 
 	static void KillInstance(){
-		SAFE_DELETE(pInstance);
+		if(pInstance)
+		{
+			delete pInstance;
+			pInstance = NULL;
+		}
 	};
 };
 

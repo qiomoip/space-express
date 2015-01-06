@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <Windows.h>
 #include <list>
 #include <vector>
@@ -30,33 +29,26 @@
 
 using namespace std;
 
+
+#include "struct.h"
+#include "function.h"
+
+
+
+/*
+enum
+*/
+enum MESH_TYPE
+{
+	ET_ANI,
+	ET_STATIC,
+	ET_TERRAIN,
+	ET_END,
+};
+
+
+/*
+define
+*/
+
 #define _SINGLE(T)	T::GetInstance()
-
-template <typename T>
-void SAFE_DELETE(T& p)
-{
-	if(p)
-	{
-		delete	p;
-		p	= NULL;
-	}
-}
-
-template <typename T>
-void Safe_Delete_Array(T& p)
-{
-	if(p)
-	{
-		delete	[]	p;
-		p	= NULL;
-	}
-}
-
-//struct
-typedef struct _tagVertex
-{
-	D3DXVECTOR3 vPos;
-	DWORD		dwColor;
-}VERTEXCOLOR;
-
-#define	VTXCOLORFVF	D3DFVF_XYZ | D3DFVF_DIFFUSE

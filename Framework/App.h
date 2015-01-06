@@ -11,6 +11,7 @@ private:
 public:
 	HRESULT Initialize(HINSTANCE hInst, LPCWSTR lpClassName, LPCWSTR lpCWindowName,int iWidth, int iHeight);
 	VOID Run();
+	void Destroy();
 
 public:
 	ATOM RegisterWindow();

@@ -12,6 +12,7 @@ CApp::CApp(void)
 
 CApp::~CApp(void)
 {
+	Destroy();
 }
 
 HRESULT CApp::Initialize(HINSTANCE hInst, LPCWSTR lpClassName, LPCWSTR lpCWindowName, int iWidth, int iHeight)
@@ -96,4 +97,9 @@ ATOM CApp::RegisterWindow()
         m_lpClassName, NULL
     };
     return RegisterClassEx( &wc );
+}
+
+void CApp::Destroy()
+{
+	_SINGLE(CEngine)->KillInstance();
 }

@@ -25,13 +25,13 @@ INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
 
 	if(FAILED(pApp->Initialize(hInst, L"ExpressWork", L"qiomoip", 800, 600)))
 	{
-		SAFE_DELETE(pApp);
+		Safe_Delete(pApp);
 		return 0;
 	}
 
 	pApp->Run();
 
-	SAFE_DELETE(pApp);
+	Safe_Delete(pApp);
 	return 0;
 }
 
