@@ -11,13 +11,15 @@ private:
 	D3DXVECTOR3*				m_pPos;
 	D3DMATERIAL9				m_tMtrl;
 	string						m_strFileName;
+	int							m_iTriNum;
 
 public:
 	void Initialize();
 	void Render();
+	void Destroy();
 
 public:
-	bool CreateTerrainInfo();
+	bool CreateTerrainInfo(const TERRAININFO& tInfo);
 
 public:
 	CTerrainMesh(void);

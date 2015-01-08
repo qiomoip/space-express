@@ -19,10 +19,11 @@ typedef struct _tagVertex
 typedef struct _tagTerrainVertex
 {
 	D3DXVECTOR3 vPos;
+	D3DXVECTOR3 vNormal;
 	D3DXVECTOR2 vTex;
 }VERTEXTERRAIN;
 
-#define VTXTERRAINFVF	D3DFVF_XYZ | D3DFVF_TEX1
+#define VTXTERRAINFVF	D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1
 
 /*
 Index Format
@@ -30,10 +31,9 @@ Index Format
 
 typedef struct _tagIndex
 {
-
+	WORD _0, _1, _2;
 }INDEX;
 
-#define INDEXFVF	
 
 /*
 Data Info
@@ -42,10 +42,18 @@ Data Info
 typedef struct _tagTerrainInfo
 {
 	
-	int			m_iRow;
-	int			m_iCol;
-	int			m_iVtxNum;
-	int			m_iCellSpacing;	//셀 간의 간격
-	float		m_fHeightScale;	//높이 배율을 조정하는 값
+	int			iRow;
+	int			iCol;
+	int			iVtxNum;
+	float		fCellSpacing;	//셀 간의 간격
+	float		fHeightScale;	//높이 배율을 조정하는 값
 }TERRAININFO;
+
+typedef struct _tagKey
+{
+	int			iKey;		//key의 아스키코드
+	bool		bDown;		//꾹~~
+	bool		bPush;		//1번
+	bool		bUp;		//눌렀다가 뗐을 때
+}KEYINFO;
 

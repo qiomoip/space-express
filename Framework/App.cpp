@@ -49,7 +49,10 @@ VOID CApp::Run()
 
 			}
 			else
+			{
+				_SINGLE(CEngine)->Update();
 				_SINGLE(CEngine)->Render();
+			}
 		}
 	}
 

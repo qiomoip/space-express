@@ -1,9 +1,17 @@
 #include "Debug.h"
 #include "Device.h"
+#include "TerrainMesh.h"
+#include "CameraManager.h"
+#include "Camera.h"
+#include "KeyManager.h"
 
 
 CDebug::CDebug(void)
 	: m_pGridVB(NULL)
+	, m_pTerrain(NULL)
+	, m_pDevice(NULL)
+	, m_iCnt(0)
+	, m_pLineVB(NULL)
 {
 }
 
@@ -15,93 +23,96 @@ CDebug::~CDebug(void)
 
 void CDebug::Initialize()
 {
+	m_pDevice = _SINGLE(CDevice)->GetDevice();
+	if(!m_pDevice)
+		return;
 	CreateVertexBuffer();
+	m_pTerrain = new CTerrainMesh;
+
+	m_pTerrain->Initialize();
+
+	_SINGLE(CKeyManager)->SetKeyData(KEY_START, VK_SPACE);
 }
 
 void CDebug::CreateVertexBuffer()
 {
-	UINT   dwSize = ( 1280 + 12 ) * sizeof( VERTEXCOLOR );
-	_SINGLE(CDevice)->GetDevice()->CreateVertexBuffer( dwSize, 0, VTXCOLORFVF, D3DPOOL_MANAGED,
-      &m_pGridVB, NULL );
-	VERTEXCOLOR*   vertices = new VERTEXCOLOR[ dwSize ];
-	DWORD      dwCountHalfLine = 1280 / 8;
-   FLOAT      fMaxDist      = dwCountHalfLine * 1.0f;
-   FLOAT      fTmpDist      = -fMaxDist;
+	int x1 = -128;
+	int x2 = 128;
+	int y1 = -128;
+	int y2 = 128;
+	float stepX = 1.f;
+	float stepY = 1.f;
+	const DWORD gridColor = D3DCOLOR_XRGB(0, 0, 0);
 
-   for( DWORD i = 0 ; i < 1280 / 2 ; i += 2 )
-   {
-      if( i == 1280 / 4 ) fTmpDist += 1.0f;
-	  vertices[i].vPos = D3DXVECTOR3(-fMaxDist, 0.0f, fTmpDist);
-	  vertices[i].dwColor = D3DCOLOR_XRGB(125, 125, 125);
+	if(_SINGLE(CDevice)->GetDevice()->CreateVertexBuffer(
+		128 * 128 * sizeof(VERTEXCOLOR),
+		D3DUSAGE_WRITEONLY,	VTXTERRAINFVF, D3DPOOL_MANAGED, &m_pGridVB, 0))
+	{
+		return;
+	}
 
-	  vertices[i+1].vPos = D3DXVECTOR3(fMaxDist, 0.0f, fTmpDist);
-	  vertices[i+1].dwColor = D3DCOLOR_XRGB(125, 125, 125);
+	VERTEXCOLOR* tempVB = NULL;
 
-      fTmpDist += 1.0f;
-   }
+	m_pGridVB->Lock(0, 0, (void**)&tempVB, 0);
 
-   fTmpDist   = -fMaxDist;
-   for( DWORD i = 1280 / 2 ; i < 200 ; i += 2 )
-   {
-      if( i == 1280 / 4 *3 ) fTmpDist += 1.0f;
-	  vertices[i].vPos = D3DXVECTOR3(fTmpDist, 0.0f, -fMaxDist);
-	  vertices[i].dwColor = D3DCOLOR_XRGB(125, 125, 125);
-	  vertices[i+1].vPos = D3DXVECTOR3(fTmpDist, 0.0f, -fMaxDist);
-	  vertices[i+1].dwColor = D3DCOLOR_XRGB(125, 125, 125);
-      fTmpDist += 1.0f;
-   }
+    for ( float x = x1; x<=x2; x+= stepX )
+    {
+		tempVB[m_iCnt].vPos = D3DXVECTOR3(x, 0.f, y1);
+        tempVB[m_iCnt].dwColor = gridColor;
+        ++m_iCnt;
+        tempVB[m_iCnt].vPos = D3DXVECTOR3(x, 0.f, y2);
+        tempVB[m_iCnt].dwColor = gridColor;
+        ++m_iCnt;
+    }
 
-   vertices[1280 + 0].vPos = D3DXVECTOR3(0.f, 0.f, 0.f);
-   vertices[1280 + 0].dwColor = D3DCOLOR_XRGB(255, 0, 0);
+	m_pGridVB->Unlock();
+ 
+    for ( float y = y1; y<= y2; y+= stepY )
+    {
+        tempVB[m_iCnt].vPos = D3DXVECTOR3(x1, 0.f, y);
+        tempVB[m_iCnt].dwColor = gridColor;
+        ++m_iCnt;
+        tempVB[m_iCnt].vPos = D3DXVECTOR3(x2, 0.f, y);
+        tempVB[m_iCnt].dwColor = gridColor;
+        ++m_iCnt;
+    }
 
-   vertices[1280 + 1].vPos = D3DXVECTOR3(fMaxDist, 0.0f, 0.0f);
-   vertices[1280 + 1].dwColor = D3DCOLOR_XRGB(255, 0, 0);
+	if(_SINGLE(CDevice)->GetDevice()->CreateVertexBuffer(
+		6 * sizeof(VERTEXCOLOR),
+		D3DUSAGE_WRITEONLY,	VTXTERRAINFVF, D3DPOOL_MANAGED, &m_pLineVB, 0))
+	{
+		return;
+	}
 
-   vertices[1280 + 2].vPos = D3DXVECTOR3(0.f, 0.f, 0.f);
-   vertices[1280 + 2].dwColor = D3DCOLOR_XRGB(125, 125, 125);
+	VERTEXCOLOR colorVtx[] = { {D3DXVECTOR3(-200.0f, 0.0f, 0.0f),  0xffff0000 }, // red = +x Axis
+	{ D3DXVECTOR3(200.0f, 0.0f, 0.0f),  0xffff0000 },
+	{ D3DXVECTOR3(0.0f, -200.0f, 0.0f),  0xff00ff00 }, // green = +y Axis
+	{ D3DXVECTOR3(0.0f, 200.0f, 0.0f),  0xff00ff00 },
+	{ D3DXVECTOR3(0.0f, 0.0f, 200.0f),  0xff0000ff }, // blue = +z Axis
+	{ D3DXVECTOR3(0.0f, 0.0f, -200.0f),  0xff0000ff }};
 
-   vertices[1280 + 3].vPos = D3DXVECTOR3(-fMaxDist, 0.0f, 0.0f);
-   vertices[1280 + 3].dwColor = D3DCOLOR_XRGB(125, 125, 125);
+	void *pVertices = NULL;
 
-   vertices[1280 + 4].vPos = D3DXVECTOR3(0.f, 0.f, 0.f);
-   vertices[1280 + 4].dwColor = D3DCOLOR_XRGB(0, 255, 0);
-
-   vertices[1280 + 5].vPos = D3DXVECTOR3(0.0f,  fMaxDist, 0.0f);
-   vertices[1280 + 5].dwColor = D3DCOLOR_XRGB(0, 255, 0);
-
-   vertices[1280 + 6].vPos = D3DXVECTOR3(0.f, 0.f, 0.f);
-   vertices[1280 + 6].dwColor = D3DCOLOR_XRGB(125, 125, 125);
-
-   vertices[1280 + 7].vPos = D3DXVECTOR3(0.0f, -fMaxDist, 0.0f);
-   vertices[1280 + 7].dwColor = D3DCOLOR_XRGB(125, 125, 125);
-
-   vertices[1280 + 8].vPos = D3DXVECTOR3(0.f, 0.f, 0.f);
-   vertices[1280 + 8].dwColor = D3DCOLOR_XRGB(0, 0, 255);
-
-   vertices[1280 + 9].vPos = D3DXVECTOR3(0.0f, 0.0f,  fMaxDist);
-   vertices[1280 + 9].dwColor = D3DCOLOR_XRGB(0, 0, 255);
-
-   vertices[1280 + 10].vPos = D3DXVECTOR3(0.f, 0.f, 0.f);
-   vertices[1280 + 10].dwColor = D3DCOLOR_XRGB(125, 125, 125);
-
-   vertices[1280 + 11].vPos = D3DXVECTOR3(0.0f, 0.0f, -fMaxDist);
-   vertices[1280 + 11].dwColor = D3DCOLOR_XRGB(125, 125, 125);
-
-   // 3. Lock
-   VOID* pVertices;
-   m_pGridVB->Lock( 0, dwSize, &pVertices, 0 ) ;
-
-   memcpy( pVertices, vertices, dwSize );
-
-   // 4. Unlock
-   m_pGridVB->Unlock();
-
-   Safe_Delete_Array( vertices );
+    m_pLineVB->Lock( 0, sizeof(colorVtx), (void**)&pVertices, 0 );
+    memcpy( pVertices, colorVtx, sizeof(colorVtx) );
+    m_pLineVB->Unlock();
 }
 
 
 void CDebug::Update()
 {
+	/*if(_SINGLE(CKeyManager)->GetKey(KEY_START)->bUp)
+	{
+		int a = 10;
+	}
+	if(_SINGLE(CKeyManager)->GetKey(KEY_START)->bPush)
+	{
+		int b = 10;
+	}
+	if(_SINGLE(CKeyManager)->GetKey(KEY_START)->bDown)
+	{
+		int c = 10;
+	}*/
 }
 
 void CDebug::Render()
@@ -111,19 +122,32 @@ void CDebug::Render()
 
 void CDebug::DrawInfo()
 {
+	m_pTerrain->Render();
 	DrawGrid();
 }
 
 void CDebug::DrawGrid()
 {
-	D3DXMATRIX matIden;
-	D3DXMatrixIdentity(&matIden);
-	_SINGLE(CDevice)->GetDevice()->SetTransform(D3DTS_WORLD, &matIden);
-	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, false);
-	_SINGLE(CDevice)->GetDevice()->SetFVF(VTXCOLORFVF);
-	_SINGLE(CDevice)->GetDevice()->SetStreamSource( 0, m_pGridVB, 0, sizeof( VERTEXCOLOR ) );
-	_SINGLE(CDevice)->GetDevice()->DrawPrimitive( D3DPT_LINELIST, 0, ( 1280 + 12 ) / 2 );
-	_SINGLE(CDevice)->GetDevice()->SetRenderState( D3DRS_LIGHTING, TRUE );
+	D3DXMATRIX matWorld;
+	D3DXMatrixIdentity(&matWorld);
+
+	m_pDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	m_pDevice->SetTransform(D3DTS_VIEW, _SINGLE(CCameraManager)->GetCamera(CN_MAIN)->GetMatView());
+	m_pDevice->SetTransform(D3DTS_PROJECTION, _SINGLE(CCameraManager)->GetCamera(CN_MAIN)->GetMatProj());
+
+	m_pDevice->SetRenderState(D3DRS_LIGHTING, false);
+	m_pDevice->SetFVF(VTXCOLORFVF);
+	m_pDevice->SetStreamSource( 0, m_pGridVB, 0, sizeof( VERTEXCOLOR ) );
+	m_pDevice->DrawPrimitive(D3DPT_LINELIST, 0, m_iCnt/2);
+
+	m_pDevice->SetStreamSource( 0, m_pLineVB, 0, sizeof(VERTEXCOLOR) );
+	m_pDevice->SetFVF(VTXCOLORFVF);
+	m_pDevice->DrawPrimitive( D3DPT_LINELIST, 0, 3 );
+
+
+	m_pDevice->SetRenderState( D3DRS_LIGHTING, TRUE );
+
+
 }
 
 void CDebug::Destroy()

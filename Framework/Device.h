@@ -1,6 +1,5 @@
 #pragma once
 
-#include "define.h"
 #include "Singleton.h"
 
 class CDevice : public CSingleton<CDevice>
@@ -10,10 +9,12 @@ class CDevice : public CSingleton<CDevice>
 private:
 	LPDIRECT3D9			m_pD3D;
 	LPDIRECT3DDEVICE9	m_pd3dDevice;
+	LPD3DXLINE			m_pLine;
 
 //getter
 public:
 	LPDIRECT3DDEVICE9	GetDevice() const;
+	LPD3DXLINE			GetLine() const;
 
 public:
 	HRESULT Initialize(HWND hWnd);

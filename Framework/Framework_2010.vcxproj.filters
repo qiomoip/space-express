@@ -41,6 +41,18 @@
     <Filter Include="Engine\Director\DeviceRes\Terrain">
       <UniqueIdentifier>{01320409-5efb-4e53-8ea6-48629ae3d6c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Director\Manager\CameraManager">
+      <UniqueIdentifier>{5ed84f08-180e-4dc6-908f-ab5b63d04bb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\Manager\InputManager">
+      <UniqueIdentifier>{1564dec8-ed46-481b-85f3-598b121d34ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\Manager\InputManager\Key">
+      <UniqueIdentifier>{3b3e4143-f289-4906-bf37-cddb044cec13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\Manager\InputManager\Mouse">
+      <UniqueIdentifier>{1c9ebc79-018e-4a71-97ef-63c2dc4e0456}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXUT\Optional\directx.ico">
@@ -63,14 +75,23 @@
     <ClCompile Include="App.cpp">
       <Filter>App</Filter>
     </ClCompile>
-    <ClCompile Include="DeviceResMgr.cpp">
-      <Filter>Engine\Director\DeviceRes</Filter>
-    </ClCompile>
     <ClCompile Include="Debug.cpp">
       <Filter>Engine\Director\Manager\Debug</Filter>
     </ClCompile>
     <ClCompile Include="TerrainMesh.cpp">
       <Filter>Engine\Director\DeviceRes\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Engine\Director\Manager\CameraManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraManager.cpp">
+      <Filter>Engine\Director\Manager\CameraManager</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyManager.cpp">
+      <Filter>Engine\Director\Manager\InputManager\Key</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>Engine\Director\Manager\InputManager\Mouse</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -98,14 +119,26 @@
     <ClInclude Include="struct.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="DeviceResMgr.h">
-      <Filter>Engine\Director\DeviceRes</Filter>
-    </ClInclude>
     <ClInclude Include="Debug.h">
       <Filter>Engine\Director\Manager\Debug</Filter>
     </ClInclude>
     <ClInclude Include="TerrainMesh.h">
       <Filter>Engine\Director\DeviceRes\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="Enum.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Engine\Director\Manager\CameraManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraManager.h">
+      <Filter>Engine\Director\Manager\CameraManager</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyManager.h">
+      <Filter>Engine\Director\Manager\InputManager\Key</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>Engine\Director\Manager\InputManager\Mouse</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,9 @@
 #include "Device.h"
 
 CDevice::CDevice(void)
+	: m_pD3D(NULL)
+	, m_pd3dDevice(NULL)
+	, m_pLine(NULL)
 {
 }
 
@@ -44,6 +47,12 @@ HRESULT CDevice::CreateDevice(HWND hWnd)
 
     // Device state would normally be set here
 
+	//Create Line
+	if(FAILED(D3DXCreateLine(m_pd3dDevice, &m_pLine)))
+	{
+		return E_FAIL;
+	}
+
     return S_OK;
 }
 
@@ -59,6 +68,11 @@ VOID CDevice::Cleanup()
 LPDIRECT3DDEVICE9 CDevice::GetDevice() const
 {
 	return m_pd3dDevice;
+}
+
+LPD3DXLINE	CDevice::GetLine() const
+{
+	return m_pLine;
 }
 
 HRESULT CDevice::Initialize(HWND hWnd)

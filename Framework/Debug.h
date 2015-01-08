@@ -1,6 +1,9 @@
 #pragma once
-#include "define.h"
+
 #include "Singleton.h"
+
+class CTerrainMesh;
+
 
 class CDebug
 	: public CSingleton<CDebug>
@@ -8,7 +11,12 @@ class CDebug
 	friend CSingleton;
 private:
 	LPDIRECT3DVERTEXBUFFER9		m_pGridVB;
+	LPDIRECT3DVERTEXBUFFER9		m_pLineVB;
+	int							m_iCnt;
 
+private:
+	CTerrainMesh*		m_pTerrain;
+	LPDIRECT3DDEVICE9	m_pDevice;
 public:
 	void Initialize();
 	void Update();
