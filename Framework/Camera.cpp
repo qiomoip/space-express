@@ -18,7 +18,7 @@ void CCamera::Init()
 	D3DXMatrixIdentity( &m_matView);
 	D3DXMatrixIdentity( &m_matProj);
 
-	
+	m_vEyePt = D3DXVECTOR3( 0.0f, 0.0f, 0.0f );
 	m_vLookatPt = D3DXVECTOR3( 0.0f, 0.0f, 0.0f );
 	m_vUpVec = D3DXVECTOR3( 0.0f, 1.0f, 0.0f );
 
@@ -43,10 +43,14 @@ bool CCamera::ToggleFix()
 
 void CCamera::MoveCamera (D3DXVECTOR3 vPos)
 {
+	D3DXVECTOR3 Dest = vPos + m_vEyePt;
+	
 	//자유시점이라면 바라보는 방향도 갱신
 	if ( !m_isFixed )
-		m_vLookatPt = m_vLookatPt - m_vEyePt + vPos; //차벡터
-	m_vEyePt = vPos;
+		m_vLookatPt = m_vLookatPt - m_vEyePt + Dest; //차벡터
+
+	m_vEyePt = Dest;
+
 	D3DXMatrixLookAtLH( &m_matView, &m_vEyePt, &m_vLookatPt, &m_vUpVec );
 	D3DXMatrixPerspectiveFovLH( &m_matProj, D3DX_PI / 4, 1.0f, 1.0f, 1000.0f );	
 }

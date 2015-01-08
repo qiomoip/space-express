@@ -1,3 +1,5 @@
+#include "InputManager.h"
+#include "CameraManager.h"
 #include "App.h"
 #include "Engine.h"
 
@@ -74,13 +76,8 @@ LRESULT CApp::MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
             PostQuitMessage( 0 );
             return 0;
 		case WM_KEYDOWN:
-			switch(wParam)
-			{
-			case VK_ESCAPE:
-				_SINGLE(CEngine)->Destroy();
-				PostQuitMessage( 0 );
-				break;
-			}
+			_SINGLE(CInputManager)->UpdateKeyInput();
+			_SINGLE(CCameraManager)->MoveCamera();
 			break;
     }
 

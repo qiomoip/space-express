@@ -1,8 +1,9 @@
 #include "CameraManager.h"
+#include "InputManager.h"
 #include "Device.h"
 #include "Camera.h"
 
-CCameraManager::CCameraManager(void)
+CCameraManager::CCameraManager(void) : m_mapCamera(NULL), m_CurCamera(NULL)
 {
 	Init();
 }
@@ -19,8 +20,9 @@ void CCameraManager::Init()
 
 CCamera* CCameraManager::GetCamera(eCAMERA_NUM _CameraName)
 {
-	if( m_mapCamera->find(_CameraName) != m_mapCamera->end() )	
-		return m_mapCamera->find(_CameraName)->second;
+	map<eCAMERA_NUM, CCamera*>::iterator it_find = m_mapCamera->find(_CameraName) ;
+	if( it_find != m_mapCamera->end() )	
+		return it_find->second;
 	//존재하지 않는 카메라 접근
 	return 0;
 }
@@ -40,28 +42,36 @@ HRESULT	CCameraManager::SetTransform(eCAMERA_NUM _CameraName)
 
 HRESULT CCameraManager::AddCamera(eCAMERA_NUM _CameraName)
 {
-	if(! (m_mapCamera->insert ( 
-		map<eCAMERA_NUM, CCamera*>::value_type (_CameraName, 
-												new CCamera() 
-												) ).second) )
+	bool result =  m_mapCamera->insert ( 
+		map<eCAMERA_NUM, CCamera*>::value_type (
+		_CameraName, new CCamera() )
+		).second;
+	
+	if( result )
+	{
+		SetTransform(_CameraName);
 		return S_OK;
+	}
 	//키값이 있으면 FALSE;
 	return S_FALSE;
 }
 
-HRESULT CCameraManager::MoveCamera(eCAMERA_NUM _CameraName, D3DXVECTOR3 _vPos)
+HRESULT CCameraManager::MoveCamera(eCAMERA_NUM _CameraName/*, D3DXVECTOR3 _vPos*/)
 {
-	CCamera* camera = GetCamera(_CameraName) ;
-
-	if(camera)
+	CCamera* curCamera = GetCamera(_CameraName) ;
+	if(curCamera )
 	{	
-		camera->MoveCamera(_vPos);
+		if(_SINGLE(CInputManager)->GetKeyInput(KEY_LEFT) )
+			curCamera->MoveCamera(D3DXVECTOR3(-0.1f, 0.0f, 0.0f));
+		if(_SINGLE(CInputManager)->GetKeyInput(KEY_RIGHT) )
+			curCamera->MoveCamera(D3DXVECTOR3(0.1f, 0.0f, 0.0f));
+		return S_OK;
 	}
 	return S_FALSE;
 }
 
-HRESULT CCameraManager::ChangeCamera(eCAMERA_NUM _CameraName)
-{
-
-	return S_OK;
-}
+//HRESULT CCameraManager::ChangeCamera(eCAMERA_NUM _CameraName)
+//{
+//
+//	return S_OK;
+//}

@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include "Device.h"
+#include "CameraManager.h"
 
 CEngine::CEngine(void)
 	: m_pDevice(NULL)
@@ -150,6 +151,8 @@ void CEngine::DrawInfo()
 
 void CEngine::DrawGrid()
 {
+	_SINGLE(CCameraManager)->SetTransform( CAMERA_MAIN );
+	
 	D3DXMATRIX matIden;
 	D3DXMatrixIdentity(&matIden);
 	m_pDevice->GetDevice()->SetTransform(D3DTS_WORLD, &matIden);
@@ -158,5 +161,7 @@ void CEngine::DrawGrid()
 	m_pDevice->GetDevice()->SetStreamSource( 0, m_pVB, 0, sizeof( VERTEXCOLOR ) );
    m_pDevice->GetDevice()->DrawPrimitive( D3DPT_LINELIST, 0, ( 1280 + 12 ) / 2 );
    m_pDevice->GetDevice()->SetRenderState( D3DRS_LIGHTING, TRUE );
+   	
+	
 }
 #endif

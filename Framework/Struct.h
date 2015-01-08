@@ -68,3 +68,13 @@ typedef struct _tagTextureInfo
 
 
 
+typedef struct _tagKeyInfo
+{
+	int		keyCode;
+	bool	isPressed;
+
+	_tagKeyInfo(int _keycode){
+		keyCode = _keycode;
+		isPressed = false;
+	}
+}KEY_INFO;
