@@ -3,6 +3,7 @@
 
 CCamera::CCamera(void)
 {
+	Init();
 }
 
 
@@ -15,7 +16,7 @@ void CCamera::Init()
 	D3DXMatrixIdentity( &matView);
 	D3DXMatrixIdentity( &matProj);
 
-	vEyePt = D3DXVECTOR3( 0.0f, 3.0f,-5.0f );
+	vEyePt = D3DXVECTOR3( 3.0f, 3.0f,-3.0f );
 	vLookatPt = D3DXVECTOR3( 0.0f, 0.0f, 0.0f );
 	vUpVec = D3DXVECTOR3( 0.0f, 1.0f, 0.0f );
 
