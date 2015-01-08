@@ -10,9 +10,9 @@ class CEntity
 {
 private:
 	
-	string			Name;
-	eMESH_NUM		Mesh_num;
-	eTEXTURE_NUM	Texture_num;
+	string			m_sName;
+	eMESH_NUM		m_eMesh_num;
+	eTEXTURE_NUM	m_eTexture_num;
 
 public:
 	CEntity(void);

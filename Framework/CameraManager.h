@@ -1,6 +1,5 @@
 #pragma once
 #include "Singleton.h"
-#include "define.h"
 
 class CCamera;
 
@@ -13,17 +12,21 @@ private:
 	~CCameraManager(void);
 
 	map<eCAMERA_NUM, CCamera*>*		m_mapCamera;
+	string							m_CurCamera;
 
 public:
-
-	void						Init();
-
-	CCamera*					GetCamera(eCAMERA_NUM _CameraName);
-	void						SetTransform(eCAMERA_NUM _CameraName);
-
-	void						AddCamera(eCAMERA_NUM _CameraName);
-
-	void						MoveCamera(eCAMERA_NUM _CameraName, 
-		D3DXVECTOR3 _vPos);
+	//초기화
+	void							Init();
+	//카메라 반환(존재하지 않는 카메라면 0반환)
+	CCamera*						GetCamera(eCAMERA_NUM _CameraName);
+	//카메라 관련 행렬 적용(VIEW, PROJ)
+	HRESULT							SetTransform(eCAMERA_NUM _CameraName);
+	//카메라 추가
+	HRESULT							AddCamera(eCAMERA_NUM _CameraName);
+	//카메라 이동(보간X, 해당 위치로 순간이동)
+	HRESULT							MoveCamera(eCAMERA_NUM _CameraName, 
+												D3DXVECTOR3 _vPos);
+	//카메라 전환(보간X, 해당 위치로 순간이동)
+	HRESULT							ChangeCamera(eCAMERA_NUM _CameraName);
 };
 

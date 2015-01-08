@@ -44,7 +44,8 @@ HRESULT CDevice::CreateDevice(HWND hWnd)
     }
 
     // Device state would normally be set here
-	_SINGLE(CCameraManager)->AddCamera( "MainCamera");
+	_SINGLE(CCameraManager)->AddCamera( CAMERA_MAIN);
+	_SINGLE(CCameraManager)->SetTransform( CAMERA_MAIN );
     return S_OK;
 }
 

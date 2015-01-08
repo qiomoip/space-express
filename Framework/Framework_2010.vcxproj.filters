@@ -44,6 +44,9 @@
     <Filter Include="Engine\Director\Manager\CameraMgr">
       <UniqueIdentifier>{650d1a4e-483c-4529-9293-d4338754ac5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Director\Manager\CameraMgr\Camera">
+      <UniqueIdentifier>{6a280adb-b14a-434d-b16a-237a78dcda8b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXUT\Optional\directx.ico">
@@ -72,9 +75,11 @@
     <ClCompile Include="App.cpp">
       <Filter>App</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraManager.cpp">
       <Filter>Engine\Director\Manager\CameraMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Engine\Director\Manager\CameraMgr\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -108,9 +113,11 @@
     <ClInclude Include="App.h">
       <Filter>App</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraManager.h">
       <Filter>Engine\Director\Manager\CameraMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Engine\Director\Manager\CameraMgr\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

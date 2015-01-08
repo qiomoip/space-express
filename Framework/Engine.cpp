@@ -20,7 +20,7 @@ VOID CEngine::Render()
         return;
 
     // Clear the backbuffer to a blue color
-    m_pDevice->GetDevice()->Clear( 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB( 0, 0, 255 ), 1.0f, 0 );
+    m_pDevice->GetDevice()->Clear( 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB( 200, 200, 200 ), 1.0f, 0 );
 
     // Begin the scene
     if( SUCCEEDED( m_pDevice->GetDevice()->BeginScene() ) )

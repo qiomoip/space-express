@@ -1,8 +1,5 @@
 #pragma once
-
 #include "Singleton.h"
-#include "Define.h"
-
 /*
 오브젝트 매니저
 오브젝트를 관리하오...

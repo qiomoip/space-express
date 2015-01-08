@@ -1,4 +1,5 @@
 #pragma once
+#include "define.h"
 /*
 싱글턴 클래스
 

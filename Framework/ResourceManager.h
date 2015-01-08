@@ -1,6 +1,5 @@
 #pragma once
 
-#include "define.h"
 #include "Singleton.h"
 
 class CResourceManager : public CSingleton<CResourceManager>
