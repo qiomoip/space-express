@@ -13,7 +13,7 @@ CObjectManager::~CObjectManager(void)
 
 void CObjectManager::Init()
 {
-	m_Objects = new map<eTYPE, map<string, CEntity*>>;
+	m_Objects = new map<eTYPE, map<LPTSTR, CEntity*>>;
 }
 
 void CObjectManager::CleanUp()

@@ -30,6 +30,9 @@ VOID CEngine::Render()
 #ifdef _DEBUG
 		DrawInfo();
 #endif
+
+		//Print Log
+		
         // End the scene
         m_pDevice->GetDevice()->EndScene();
     }
@@ -50,6 +53,11 @@ HRESULT CEngine::Initialize(HWND hWnd)
 #ifdef _DEBUG
 	CreateVertexBuffer();
 #endif
+
+	
+	_SINGLE(CCameraManager)->AddCamera( CAMERA_MAIN, D3DXVECTOR3(3.0f, 3.0f, -3.0f), D3DXVECTOR3(0.f, 0.f, 0.f), D3DXVECTOR3(0.f, 1.f, 0.f), true);
+	_SINGLE(CCameraManager)->AddCamera( CAMERA_SUB, D3DXVECTOR3(-3.f, 3.f, -3.f), D3DXVECTOR3(0.f, 1.f, 0.f), D3DXVECTOR3(0.f, 1.f, 0.f), false);
+	_SINGLE(CCameraManager)->SetTransform( CAMERA_MAIN );
 
 	return S_OK;
 }
@@ -151,7 +159,7 @@ void CEngine::DrawInfo()
 
 void CEngine::DrawGrid()
 {
-	_SINGLE(CCameraManager)->SetTransform( CAMERA_MAIN );
+	_SINGLE(CCameraManager)->SetTransform();
 	
 	D3DXMATRIX matIden;
 	D3DXMatrixIdentity(&matIden);

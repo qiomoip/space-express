@@ -35,6 +35,10 @@ using namespace std;
 
 #define _SINGLE(T)	T::GetInstance()
 
+//Enum to string.(열겨형을 문자열로 변환 해준다.)
+#define EtoS(t)	_T(#t)
+
+
 template <typename T>
 void SAFE_DELETE(T& p)
 {

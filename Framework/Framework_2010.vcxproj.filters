@@ -84,7 +84,10 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Engine\Director\Manager\CameraMgr\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="InputManager.cpp">
+      <Filter>Engine\Director\Manager\InputMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="Info.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -123,7 +126,10 @@
     <ClInclude Include="Camera.h">
       <Filter>Engine\Director\Manager\CameraMgr\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="InputManager.h">
+      <Filter>Engine\Director\Manager\InputMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="Info.h" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

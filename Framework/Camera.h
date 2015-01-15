@@ -39,6 +39,8 @@ public:
 	bool				ToggleFix();
 	//카메라 이동
 	void				MoveCamera(D3DXVECTOR3 vPos);
+	//카메라 설정
+	HRESULT				SetCamera(D3DXVECTOR3 _vEye, D3DXVECTOR3 _vLookat, D3DXVECTOR3 _vUpVec, bool _isFixed);
 
 };
 

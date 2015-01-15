@@ -14,8 +14,8 @@ private:
 	friend CSingleton;
 	CObjectManager(void);
 	~CObjectManager(void);
-
-	map<eTYPE, map<string, CEntity*>>*	m_Objects;
+	
+	map<eTYPE, map<LPTSTR, CEntity*>>*	m_Objects;
 
 public:
 

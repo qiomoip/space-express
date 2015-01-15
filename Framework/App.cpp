@@ -78,6 +78,7 @@ LRESULT CApp::MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 		case WM_KEYDOWN:
 			_SINGLE(CInputManager)->UpdateKeyInput();
 			_SINGLE(CCameraManager)->MoveCamera();
+
 			break;
     }
 

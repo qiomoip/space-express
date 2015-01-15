@@ -21,13 +21,14 @@ void CResourceManager::Init()
 
 void CResourceManager::CleanUp()
 {
+	MESH_INFO* mesh = (*m_MeshArray)[0];
 	for(UINT i = 0; i < m_MeshArray->size(); ++i)
-		delete (*m_MeshArray)[i];
+		SAFE_DELETE( (*m_MeshArray)[i] );
 	m_MeshArray->clear();
 	SAFE_DELETE( m_MeshArray );
 
 	for(UINT i = 0; i < m_TextureArray->size(); ++i)
-		delete (*m_TextureArray)[i];
+		SAFE_DELETE( (*m_TextureArray)[i] );
 	m_TextureArray->clear();
 	SAFE_DELETE( m_TextureArray );
 }

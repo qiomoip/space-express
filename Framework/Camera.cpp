@@ -22,7 +22,6 @@ void CCamera::Init()
 	m_vLookatPt = D3DXVECTOR3( 0.0f, 0.0f, 0.0f );
 	m_vUpVec = D3DXVECTOR3( 0.0f, 1.0f, 0.0f );
 
-	MoveCamera(D3DXVECTOR3(3.0f, 3.0f,-3.0f ) );
 }
 
 
@@ -55,3 +54,15 @@ void CCamera::MoveCamera (D3DXVECTOR3 vPos)
 	D3DXMatrixPerspectiveFovLH( &m_matProj, D3DX_PI / 4, 1.0f, 1.0f, 1000.0f );	
 }
 
+HRESULT	 CCamera::SetCamera(D3DXVECTOR3 _vEye, D3DXVECTOR3 _vLookat, D3DXVECTOR3 _vUpVec, bool _isFixed)
+{
+	m_vEyePt = _vEye;
+	m_vLookatPt = _vLookat;
+	m_vUpVec = _vUpVec;
+	m_isFixed = _isFixed;
+
+	D3DXMatrixLookAtLH( &m_matView, &m_vEyePt, &m_vLookatPt, &m_vUpVec );
+	D3DXMatrixPerspectiveFovLH( &m_matProj, D3DX_PI / 4, 1.0f, 1.0f, 1000.0f );	
+
+	return S_OK;
+}
