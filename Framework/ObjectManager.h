@@ -25,5 +25,9 @@ public:
 
 	bool								Load();
 	
+#ifdef _DEBUG
+private:	
+	CInfo*									m_Info;
+#endif
 };
 

@@ -24,6 +24,8 @@ private:
 	bool					m_isFixed;
 	//시점을 고정하는 오브젝트.(NULL이라면 현재 바라보는 위치로 고정)
 	CEntity*				m_LookatObj;
+	//회전 값
+	float					m_Angle;
 	
 
 public:
@@ -39,6 +41,8 @@ public:
 	bool				ToggleFix();
 	//카메라 이동
 	void				MoveCamera(D3DXVECTOR3 vPos);
+	//카메라 회전
+	void				RotateCamera(float _fAngle);
 	//카메라 설정
 	HRESULT				SetCamera(D3DXVECTOR3 _vEye, D3DXVECTOR3 _vLookat, D3DXVECTOR3 _vUpVec, bool _isFixed);
 

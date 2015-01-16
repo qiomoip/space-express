@@ -19,6 +19,9 @@
 //-----------------------------------------------------------------------------
 INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
 {
+#ifdef _DEBUG
+	_CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
 	UNREFERENCED_PARAMETER( hInst );
 
 	CApp* pApp = new CApp();
@@ -32,6 +35,10 @@ INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
 	pApp->Run();
 
 	SAFE_DELETE(pApp);
+
+#ifdef _DEBUG
+	_CrtDumpMemoryLeaks();
+#endif
 	return 0;
 }
 

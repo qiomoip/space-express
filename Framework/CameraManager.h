@@ -15,12 +15,10 @@ private:
 	map<eCAMERA_NUM, CCamera*>*				m_mapCamera;
 	map<eCAMERA_NUM, CCamera*>::iterator	m_CurCamera;
 
-	CInfo*									m_Info;
-
 public:
 	//초기화
 	void							Init();
-	void							Clean();
+	void							CleanUp();
 	//특정 카메라 반환(존재하지 않는 카메라면 0반환)
 	CCamera*						GetCamera(eCAMERA_NUM _CameraName);
 	//현재 카메라 변경
@@ -39,5 +37,10 @@ public:
 	HRESULT							ChangeCamera();
 
 	vector<LPTSTR>*							GetCameraInfo();
+
+#ifdef _DEBUG
+private:	
+	CInfo*									m_Info;
+#endif
 };
 

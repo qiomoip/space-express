@@ -22,7 +22,10 @@ public:
 
 	static T* GetInstance()		{
 		if(!pInstance)
+		{
 			pInstance = new T;
+		}
+		atexit(KillInstance);
 		return pInstance;
 	};
 

@@ -12,24 +12,30 @@ CCameraManager::CCameraManager(void) : m_mapCamera(NULL)//, m_CurCamera(NULL)
 
 CCameraManager::~CCameraManager(void)
 {
-	Clean();
+	CleanUp();
 }
 
 void CCameraManager::Init()
 {
 	m_mapCamera = new map<eCAMERA_NUM, CCamera*>;
 	m_CurCamera = m_mapCamera->begin();
+	
+#ifdef _DEBUG
 	m_Info = new CInfo();
+#endif
 }
 
-void CCameraManager::Clean()
+void CCameraManager::CleanUp()
 {
 	m_CurCamera = m_mapCamera->begin();
 	for(; m_CurCamera != m_mapCamera->end(); ++m_CurCamera)
 		SAFE_DELETE(m_CurCamera->second );
 	m_mapCamera->clear();
 	SAFE_DELETE(m_mapCamera);
-	SAFE_DELETE(m_Info);
+
+#ifdef _DEBUG
+	SAFE_DELETE(m_Info );
+#endif
 }
 
 
@@ -37,9 +43,7 @@ CCamera* CCameraManager::GetCamera(eCAMERA_NUM _CameraName)
 {
 	map<eCAMERA_NUM, CCamera*>::iterator it_find = m_mapCamera->find(_CameraName) ;
 	if( it_find != m_mapCamera->end() )	
-	{
 		return  it_find->second;
-	}
 	//존재하지 않는 카메라 접근
 	return 0;
 }
@@ -93,13 +97,17 @@ HRESULT CCameraManager::AddCamera(eCAMERA_NUM _CameraName, D3DXVECTOR3 _vEye, D3
 		_CameraName, new CCamera() )
 		).second;
 	
-	LPTSTR info = new TCHAR[255];
-	//TCHAR info[]= _T("Camera-");
-	TCHAR num [10];
-	_tcscpy_s(info, _tcslen(info), _T("Camera-") );
-	_itot_s(_CameraName, num, 10);
-	_tcscat_s(info, _tcslen(info) + _tcslen(num)+2 , num);
-	m_Info->m_AddInfo( info );
+#ifdef _DEBUG
+	
+	//TCHAR info [100];
+	//
+	//TCHAR num [10];
+	//_tcscpy_s(info, _tcslen(info), _T("Camera-") );
+	//_itot_s(_CameraName, num, 10);
+	//_tcscat_s(info, _tcslen(info) + _tcslen(num)+2 , num);
+	//m_Info->m_AddInfo( info );
+
+#endif
 
 	if( result )
 	{
@@ -116,19 +124,23 @@ HRESULT CCameraManager::MoveCamera(/*, D3DXVECTOR3 _vPos*/)
 	CCamera* curCamera = m_CurCamera->second;
 	if( curCamera )
 	{	
-		if(_SINGLE(CInputManager)->GetKeyInput(_T("KEY_LEFT") ) )
+		if(_SINGLE(CInputManager)->GetKeyInput(KEY_LEFT ) )
 			curCamera ->MoveCamera(D3DXVECTOR3(-0.1f, 0.0f, 0.0f));
-		if(_SINGLE(CInputManager)->GetKeyInput(_T("KEY_RIGHT")) )
+		if(_SINGLE(CInputManager)->GetKeyInput(KEY_RIGHT) )
 			curCamera ->MoveCamera(D3DXVECTOR3(0.1f, 0.0f, 0.0f));
 
-		if(_SINGLE(CInputManager)->GetKeyInput(_T("KEY_UP")) )
+		if(_SINGLE(CInputManager)->GetKeyInput(KEY_UP) )
 			curCamera ->MoveCamera(D3DXVECTOR3(0.0f, 0.0f, 0.1f));
-		if(_SINGLE(CInputManager)->GetKeyInput(_T("KEY_DOWN")) )
+		if(_SINGLE(CInputManager)->GetKeyInput(KEY_DOWN) )
 			curCamera ->MoveCamera(D3DXVECTOR3(0.0f, 0.0f, -0.1f));
 
-		if(_SINGLE(CInputManager)->GetKeyInput(_T("KEY_ACTION")) )
+		if(_SINGLE(CInputManager)->GetKeyInput(KEY_ACTION) )
 			ChangeCamera();
 
+		if(_SINGLE(CInputManager)->GetKeyInput(KEY_TURN_L) )
+			curCamera ->RotateCamera(0.01f );
+		else if(_SINGLE(CInputManager)->GetKeyInput(KEY_TURN_R) )
+			curCamera ->RotateCamera(-0.01f);
 		return S_OK;
 	}
 	return S_FALSE;

@@ -24,12 +24,14 @@ enum eCAMERA_TYPE{
 	CAM_TYPE_FIXED,
 	CAM_TYPE_FREE
 };
-/*
+
 enum eKEY_NAME{
 	KEY_RIGHT,
 	KEY_UP,
 	KEY_LEFT,
 	KEY_DOWN,
 	KEY_ACTION,
-};*/
+	KEY_TURN_L,
+	KEY_TURN_R
+};
 

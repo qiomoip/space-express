@@ -1,6 +1,9 @@
 #include "Engine.h"
 #include "Device.h"
 #include "CameraManager.h"
+#include "InputManager.h"
+#include "ResourceManager.h"
+#include "ObjectManager.h"
 
 CEngine::CEngine(void)
 	: m_pDevice(NULL)
@@ -54,7 +57,10 @@ HRESULT CEngine::Initialize(HWND hWnd)
 	CreateVertexBuffer();
 #endif
 
-	
+	_SINGLE(CInputManager);
+	_SINGLE(CResourceManager);
+	_SINGLE(CObjectManager);
+
 	_SINGLE(CCameraManager)->AddCamera( CAMERA_MAIN, D3DXVECTOR3(3.0f, 3.0f, -3.0f), D3DXVECTOR3(0.f, 0.f, 0.f), D3DXVECTOR3(0.f, 1.f, 0.f), true);
 	_SINGLE(CCameraManager)->AddCamera( CAMERA_SUB, D3DXVECTOR3(-3.f, 3.f, -3.f), D3DXVECTOR3(0.f, 1.f, 0.f), D3DXVECTOR3(0.f, 1.f, 0.f), false);
 	_SINGLE(CCameraManager)->SetTransform( CAMERA_MAIN );

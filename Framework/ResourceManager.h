@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include "Singleton.h"
 
 class CResourceManager : public CSingleton<CResourceManager>
@@ -23,5 +24,10 @@ public:
 	void							CleanUp();
 
 	void							Load();
+
+#ifdef _DEBUG
+private:	
+	CInfo*									m_Info;
+#endif
 };
 

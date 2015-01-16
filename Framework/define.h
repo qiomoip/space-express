@@ -14,9 +14,6 @@
 #include <string>
 #include <sstream>
 
-#ifdef	_DEBUG
-#include <crtdbg.h>
-#endif
 
 #include <stdlib.h>
 #include <malloc.h>
@@ -32,6 +29,12 @@ using namespace std;
 
 #include "Struct.h"
 #include "Enum.h"
+
+#ifdef _DEBUG
+#include <crtdbg.h>
+#include "Info.h"
+#define new new(_CLIENT_BLOCK, __FILE__, __LINE__)
+#endif 
 
 #define _SINGLE(T)	T::GetInstance()
 
