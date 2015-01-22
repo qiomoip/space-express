@@ -8,7 +8,7 @@ enum eTYPE{
 };
 
 enum eMESH_NUM{
-
+	MN_TIGER
 };
 
 enum eTEXTURE_NUM{

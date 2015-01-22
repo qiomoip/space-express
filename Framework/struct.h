@@ -68,3 +68,25 @@ typedef struct _tagCamera
 	int		iDir;
 	int		iAngle;
 }CAMERA;
+
+/*
+Mesh Info
+*/
+
+typedef struct _tagMeshInfo
+{
+	LPTSTR				pName;
+	LPD3DXMESH			pMesh ; // Our mesh object in sysmem
+	D3DMATERIAL9*		pMaterials ; // Materials for our mesh
+	LPDIRECT3DTEXTURE9*	pTextures ; // Textures for our mesh
+	DWORD				dwNumMaterials ;   // Number of mesh materials
+
+}MESH_INFO;
+
+
+typedef struct _tagTextureInfo
+{
+	LPDIRECT3DTEXTURE9*	pTextures ; // Textures for our mesh
+
+}TEXTURE_INFO;
+
