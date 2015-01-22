@@ -63,14 +63,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Device.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>Engine\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine.cpp">
-      <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source</Filter>
@@ -78,23 +72,32 @@
     <ClCompile Include="App.cpp">
       <Filter>App</Filter>
     </ClCompile>
-    <ClCompile Include="Debug.cpp">
-      <Filter>Engine\Director\Manager\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="TerrainMesh.cpp">
-      <Filter>Engine\Director\DeviceRes\Terrain</Filter>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Engine\Director\Manager\CameraManager\Camera</Filter>
     </ClCompile>
     <ClCompile Include="CameraManager.cpp">
       <Filter>Engine\Director\Manager\CameraManager</Filter>
     </ClCompile>
-    <ClCompile Include="KeyManager.cpp">
-      <Filter>Engine\Director\Manager\InputManager\Key</Filter>
+    <ClCompile Include="Debug.cpp">
+      <Filter>Engine\Director\Manager\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="DeviceResMgr.cpp">
+      <Filter>Engine\Director\DeviceRes</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainMesh.cpp">
+      <Filter>Engine\Director\DeviceRes\Terrain</Filter>
     </ClCompile>
     <ClCompile Include="Mouse.cpp">
       <Filter>Engine\Director\Manager\InputManager\Mouse</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Engine\Director\Manager\CameraManager\Camera</Filter>
+    <ClCompile Include="KeyManager.cpp">
+      <Filter>Engine\Director\Manager\InputManager\Key</Filter>
     </ClCompile>
     <ClCompile Include="ThirdCam.cpp">
       <Filter>Engine\Director\Manager\CameraManager\Camera</Filter>
@@ -104,14 +107,8 @@
     <ClInclude Include="Singleton.h">
       <Filter>Engine\DesignPattern\Singleton</Filter>
     </ClInclude>
-    <ClInclude Include="Device.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Entity.h">
       <Filter>Engine\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine.h">
-      <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="define.h">
       <Filter>Header</Filter>
@@ -119,32 +116,41 @@
     <ClInclude Include="App.h">
       <Filter>App</Filter>
     </ClInclude>
-    <ClInclude Include="function.h">
+    <ClInclude Include="Camera.h">
+      <Filter>Engine\Director\Manager\CameraManager\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraManager.h">
+      <Filter>Engine\Director\Manager\CameraManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug.h">
+      <Filter>Engine\Director\Manager\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DeviceResMgr.h">
+      <Filter>Engine\Director\DeviceRes</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Enum.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="struct.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="Debug.h">
-      <Filter>Engine\Director\Manager\Debug</Filter>
+    <ClInclude Include="function.h">
+      <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="TerrainMesh.h">
       <Filter>Engine\Director\DeviceRes\Terrain</Filter>
     </ClInclude>
-    <ClInclude Include="Enum.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraManager.h">
-      <Filter>Engine\Director\Manager\CameraManager</Filter>
-    </ClInclude>
-    <ClInclude Include="KeyManager.h">
-      <Filter>Engine\Director\Manager\InputManager\Key</Filter>
-    </ClInclude>
     <ClInclude Include="Mouse.h">
       <Filter>Engine\Director\Manager\InputManager\Mouse</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Engine\Director\Manager\CameraManager\Camera</Filter>
+    <ClInclude Include="KeyManager.h">
+      <Filter>Engine\Director\Manager\InputManager\Key</Filter>
     </ClInclude>
     <ClInclude Include="ThirdCam.h">
       <Filter>Engine\Director\Manager\CameraManager\Camera</Filter>
