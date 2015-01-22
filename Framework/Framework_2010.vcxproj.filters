@@ -38,9 +38,6 @@
     <Filter Include="Engine\Director\Manager\ResourceMgr">
       <UniqueIdentifier>{3c2c1b5d-c236-42b1-8d1a-aa293e9193a8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Camera">
-      <UniqueIdentifier>{bc02adc4-aa0b-41e8-897e-f7124994179f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Director\Manager\CameraMgr">
       <UniqueIdentifier>{650d1a4e-483c-4529-9293-d4338754ac5b}</UniqueIdentifier>
     </Filter>
@@ -69,14 +66,24 @@
     <ClCompile Include="main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CameraManager.cpp" />
     <ClCompile Include="Info.cpp" />
-    <ClCompile Include="InputManager.cpp" />
-    <ClCompile Include="ObjectManager.cpp" />
-    <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="App.cpp">
       <Filter>App</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Engine\Director\Manager\CameraMgr\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraManager.cpp">
+      <Filter>Engine\Director\Manager\CameraMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>Engine\Director\Manager\InputMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>Engine\Director\Manager\ObjectMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Engine\Director\Manager\ResourceMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -95,16 +102,30 @@
     <ClInclude Include="define.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="CameraManager.h" />
-    <ClInclude Include="Enum.h" />
     <ClInclude Include="Info.h" />
-    <ClInclude Include="InputManager.h" />
-    <ClInclude Include="ObjectManager.h" />
-    <ClInclude Include="ResourceManager.h" />
-    <ClInclude Include="Struct.h" />
     <ClInclude Include="App.h">
       <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Engine\Director\Manager\CameraMgr\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraManager.h">
+      <Filter>Engine\Director\Manager\CameraMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>Engine\Director\Manager\InputMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManager.h">
+      <Filter>Engine\Director\Manager\ObjectMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Engine\Director\Manager\ResourceMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="Enum.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Struct.h">
+      <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

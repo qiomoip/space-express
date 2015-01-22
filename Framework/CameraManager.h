@@ -1,5 +1,6 @@
 #pragma once
 #include "Singleton.h"
+//카메라 회전 구현중...
 
 class CCamera;
 class CInfo;
