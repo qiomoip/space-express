@@ -1,9 +1,5 @@
 #pragma once
-#include <iostream>
-#include <Windows.h>
-#include <mmsystem.h>
-#include <d3dx9.h>
-using namespace std;
+#include "Singleton.h"
 
 typedef struct _tagRay
 {
@@ -13,11 +9,14 @@ typedef struct _tagRay
 }RAY;
 
 class CMouse
+	: public CSingleton<CMouse>
 {
+	friend CSingleton;
 private:
 	static CMouse* m_pInstance;
 	POINT	m_pt;
 	RAY		m_tRay;
+	HWND	m_hWnd;
 
 public:
 	void CaculateMousePos();
@@ -26,26 +25,11 @@ public:
 	bool IntersectRayToSphere(RAY* pRay, const D3DXVECTOR3& vPos, const float fRadius);
 
 public:
+	void SetHwnd(const HWND& hWnd);
+//Getter
+public:
 	const RAY& GetRay() const;
 
-//Singleton
-public:
-	static CMouse* GetInstance()
-	{
-		if(!m_pInstance)
-		{
-			m_pInstance = new CMouse;
-		}
-		return m_pInstance;
-	}
-	void DestroyInstance()
-	{
-		if(m_pInstance)
-		{
-			delete m_pInstance;
-			m_pInstance = 0;
-		}
-	}
 private:
 	CMouse(void);
 	~CMouse(void);

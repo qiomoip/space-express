@@ -29,6 +29,7 @@ public:
 	bool						SetMainCamera(const string& strName);
 
 	CCamera*					GetCamera(const string& _CameraName);
+	const CCamera*				GetCurCam() const;
 	void						SetTransform(const string& _CameraName);
 	void						SetTransform();
 

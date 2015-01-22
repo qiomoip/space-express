@@ -127,3 +127,8 @@ void CCameraManager::Destroy()
 {
 	Safe_Delete_Array_Map(m_mapCamera);
 }
+
+const CCamera*	CCameraManager::GetCurCam() const
+{
+	return m_pCurCam;
+}

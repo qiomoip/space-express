@@ -20,7 +20,6 @@ public:
 public:
 	static LRESULT WINAPI MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
 
-
 public:
 	CApp(void);
 	~CApp(void);

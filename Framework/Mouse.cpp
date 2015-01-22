@@ -1,9 +1,8 @@
 #include "Mouse.h"
+#include "CameraManager.h"
+#include "Device.h"
 
 CMouse* CMouse::m_pInstance = 0;
-
-extern LPDIRECT3DDEVICE9   g_pd3dDevice;
-extern HWND g_hWnd;
 
 CMouse::CMouse(void)
 {
@@ -19,7 +18,7 @@ CMouse::~CMouse(void)
 void CMouse::CaculateMousePos()
 {
 	GetCursorPos(&m_pt);
-	ScreenToClient(g_hWnd, &m_pt);
+	ScreenToClient(m_hWnd, &m_pt);
 }
 
 void CMouse::CaculateRay()
@@ -28,10 +27,10 @@ void CMouse::CaculateRay()
 	float fY = 0.f;
 
 	D3DVIEWPORT9 vp;
-	g_pd3dDevice->GetViewport(&vp);
+	_SINGLE(CDevice)->GetDevice()->GetViewport(&vp);
 
 	D3DXMATRIX matProj;
-	g_pd3dDevice->GetTransform(D3DTS_PROJECTION, &matProj);
+	_SINGLE(CDevice)->GetDevice()->GetTransform(D3DTS_PROJECTION, &matProj);
 
 	fX = (((2.f * m_pt.x) / vp.Width) - 1.f) / matProj(0, 0);
 	fY = (((-2.f * m_pt.y) / vp.Height) + 1.f) / matProj(1, 1);
@@ -106,4 +105,9 @@ bool CMouse::IntersectRayToSphere(RAY* pRay, const D3DXVECTOR3& vPos, const floa
 const RAY& CMouse::GetRay() const
 {
 	return m_tRay;
+}
+
+void CMouse::SetHwnd(const HWND& hWnd)
+{
+	m_hWnd = hWnd;
 }
