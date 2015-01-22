@@ -8,7 +8,6 @@ private:
 	LPDIRECT3DINDEXBUFFER9		m_pIB;
 
 	TERRAININFO					m_tInfo;
-	D3DXVECTOR3*				m_pPos;
 	D3DMATERIAL9				m_tMtrl;
 	string						m_strFileName;
 	int							m_iTriNum;

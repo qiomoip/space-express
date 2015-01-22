@@ -57,3 +57,14 @@ typedef struct _tagKey
 	bool		bUp;		//¥≠∑∂¥Ÿ∞° ∂√¿ª ∂ß
 }KEYINFO;
 
+typedef struct _tagCamera
+{
+	D3DXMATRIX matView;
+	D3DXMATRIX matProj;
+	D3DXVECTOR3 vPos;
+	D3DXVECTOR3 vLook;
+	D3DXVECTOR3 vUp;
+	D3DXVECTOR3 vRight;
+	int		iDir;
+	int		iAngle;
+}CAMERA;

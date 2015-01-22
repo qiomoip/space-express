@@ -6,7 +6,6 @@
 CTerrainMesh::CTerrainMesh(void)
 	: m_pVB(NULL)
 	, m_pIB(NULL)
-	, m_pPos(NULL)
 	, m_strFileName("")
 {
 	memset(&m_tInfo, 0, sizeof(m_tInfo));
@@ -16,6 +15,7 @@ CTerrainMesh::CTerrainMesh(void)
 
 CTerrainMesh::~CTerrainMesh(void)
 {
+	Destroy();
 }
 
 void CTerrainMesh::Initialize()
@@ -39,8 +39,6 @@ void CTerrainMesh::Render()
 	D3DXMatrixIdentity(&matWorld);
 
 	_SINGLE(CDevice)->GetDevice()->SetTransform(D3DTS_WORLD, &matWorld);
-	_SINGLE(CDevice)->GetDevice()->SetTransform(D3DTS_VIEW, _SINGLE(CCameraManager)->GetCamera(CN_MAIN)->GetMatView());
-	_SINGLE(CDevice)->GetDevice()->SetTransform(D3DTS_PROJECTION, _SINGLE(CCameraManager)->GetCamera(CN_MAIN)->GetMatProj());
 
 	_SINGLE(CDevice)->GetDevice()->SetStreamSource(0, m_pVB, 0, sizeof(_tagTerrainVertex));
 	_SINGLE(CDevice)->GetDevice()->SetFVF(VTXTERRAINFVF);

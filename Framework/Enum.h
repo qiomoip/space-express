@@ -19,12 +19,6 @@ enum eCAMERA_NUM
 {
 	CN_DEFAULT,
 	CN_MAIN,
+	CN_THIRD,
 	CN_END,
-};
-
-enum KEY_STATE
-{
-	KEY_START,
-	KEY_RIGHT,
-	KEY_LEFT,
 };

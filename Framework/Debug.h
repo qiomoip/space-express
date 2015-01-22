@@ -10,18 +10,24 @@ class CDebug
 {
 	friend CSingleton;
 private:
-	LPDIRECT3DVERTEXBUFFER9		m_pGridVB;
-	LPDIRECT3DVERTEXBUFFER9		m_pLineVB;
-	int							m_iCnt;
-
-private:
-	CTerrainMesh*		m_pTerrain;
 	LPDIRECT3DDEVICE9	m_pDevice;
+	
 public:
 	void Initialize();
 	void Update();
 	void Render();
 	void Destroy();
+	void Input();
+
+//Debug & Test
+private:
+	LPDIRECT3DVERTEXBUFFER9		m_pGridVB;
+	LPDIRECT3DVERTEXBUFFER9		m_pLineVB;
+	int							m_iCnt;
+
+	CTerrainMesh*		m_pTerrain;
+
+	
 
 public:
 	void CreateVertexBuffer();

@@ -9,6 +9,7 @@ CDevice::CDevice(void)
 
 CDevice::~CDevice(void)
 {
+	Cleanup();
 }
 
 
@@ -58,6 +59,9 @@ HRESULT CDevice::CreateDevice(HWND hWnd)
 
 VOID CDevice::Cleanup()
 {
+	if( m_pLine != NULL)
+		m_pLine->Release();
+
 	if( m_pd3dDevice != NULL )
         m_pd3dDevice->Release();
 

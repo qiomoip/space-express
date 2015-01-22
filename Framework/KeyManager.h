@@ -6,15 +6,19 @@ class CKeyManager
 {
 	friend CSingleton;
 private:
-	map<KEY_STATE, KEYINFO*>		m_mapKey;
+	map<string, KEYINFO*>		m_mapKey;
+
+public:
+	void Initialize();
+	void Destroy();
 
 public:
 	void SetKeyState();
-	bool SetKeyData(const KEY_STATE& eKeyName, const int& iKey);
-	void CheckKey(map<KEY_STATE, KEYINFO*>::iterator iter);
+	bool SetKeyData(const string& eKeyName, const int& iKey);
+	void CheckKey(map<string, KEYINFO*>::iterator iter);
 
 public:
-	const KEYINFO* GetKey(const KEY_STATE& eKey) const;
+	const KEYINFO* GetKey(const string& eKey) const;
 
 private:
 	CKeyManager(void);

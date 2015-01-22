@@ -15,6 +15,43 @@ CEngine::~CEngine(void)
 {
 }
 
+
+
+HRESULT CEngine::Initialize(HWND hWnd)
+{
+	m_pDevice = _SINGLE(CDevice);
+
+	if(FAILED(m_pDevice->Initialize(hWnd)))
+	{
+		return E_FAIL;
+	}
+
+	//Camera
+	CCamera* pCam = _SINGLE(CCameraManager)->CreateCamera(CN_THIRD);
+	_SINGLE(CCameraManager)->AddCamera("MainCamera", pCam);
+	_SINGLE(CCameraManager)->SetMainCamera("MainCamera");
+
+	//Camera
+	CCamera* pCam1 = _SINGLE(CCameraManager)->CreateCamera(CN_THIRD);
+	pCam1->SetPos(D3DXVECTOR3(10.f, 0.f, -10.f));
+	_SINGLE(CCameraManager)->AddCamera("ThirdTestCam", pCam1);
+
+	//Key
+	_SINGLE(CKeyManager)->Initialize();
+
+#ifdef _DEBUG
+	_SINGLE(CDebug)->Initialize();
+#endif
+
+	return S_OK;
+}
+
+void CEngine::Update()
+{
+	_SINGLE(CCameraManager)->Update();
+	_SINGLE(CDebug)->Update();
+}
+
 VOID CEngine::Render()
 {
 	if( NULL == m_pDevice->GetDevice() )
@@ -28,7 +65,11 @@ VOID CEngine::Render()
     {
         // Rendering of scene objects can happen here
 
+		//Camera Transform
+		_SINGLE(CCameraManager)->SetTransform();
+
 		//Debug Render
+		
 		_SINGLE(CDebug)->Render();
 
         // End the scene
@@ -39,39 +80,25 @@ VOID CEngine::Render()
     m_pDevice->GetDevice()->Present( NULL, NULL, NULL, NULL );
 }
 
-HRESULT CEngine::Initialize(HWND hWnd)
-{
-	m_pDevice = _SINGLE(CDevice);
-
-	if(FAILED(m_pDevice->Initialize(hWnd)))
-	{
-		return E_FAIL;
-	}
-
-	//Camera
-	_SINGLE(CCameraManager)->AddCamera(CN_MAIN);
-	_SINGLE(CCameraManager)->SetTransform(CN_MAIN);
-
-#ifdef _DEBUG
-	_SINGLE(CDebug)->Initialize();
-#endif
-
-	return S_OK;
-}
-
-void CEngine::Update()
-{
-	_SINGLE(CKeyManager)->SetKeyState();
-	_SINGLE(CCameraManager)->Update();
-	_SINGLE(CDebug)->Update();
-}
-
 VOID CEngine::Destroy()
 {
-	if(m_pDevice)
-		m_pDevice->Cleanup();
+	_SINGLE(CCameraManager)->KillInstance();
+	_SINGLE(CKeyManager)->KillInstance();
 
 #ifdef _DEBUG
 	_SINGLE(CDebug)->KillInstance();
+#endif
+
+	if(m_pDevice)
+		m_pDevice->KillInstance();
+}
+
+void CEngine::Input()
+{
+	_SINGLE(CKeyManager)->SetKeyState();
+	_SINGLE(CCameraManager)->Input();
+
+#ifdef _DEBUG
+	_SINGLE(CDebug)->Input();
 #endif
 }

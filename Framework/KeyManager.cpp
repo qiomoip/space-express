@@ -8,20 +8,30 @@ CKeyManager::CKeyManager(void)
 
 CKeyManager::~CKeyManager(void)
 {
+	Destroy();
 }
 
+void CKeyManager::Initialize()
+{
+	SetKeyData("KEY_RIGHT", VK_RIGHT);
+	SetKeyData("KEY_LEFT", VK_LEFT);
+	SetKeyData("KEY_START", VK_SPACE);
+	SetKeyData("KEY_UP", VK_UP);
+	SetKeyData("KEY_DOWN", VK_DOWN);
+	SetKeyData("KEY_SPACE", VK_SPACE);
+}
 void CKeyManager::SetKeyState()
 {
-	map<KEY_STATE, KEYINFO*>::iterator iter = m_mapKey.begin();
+	map<string, KEYINFO*>::iterator iter = m_mapKey.begin();
 	for(int i = 0; i < m_mapKey.size(); ++i, ++iter)
 	{
 		CheckKey(iter);
 	}
 }
 
-bool CKeyManager::SetKeyData(const KEY_STATE& eKeyName, const int& iKey)
+bool CKeyManager::SetKeyData(const string& eKeyName, const int& iKey)
 {
-	map<KEY_STATE, KEYINFO*>::iterator iter = m_mapKey.find(eKeyName);
+	map<string, KEYINFO*>::iterator iter = m_mapKey.find(eKeyName);
 	if(iter != m_mapKey.end())
 	{
 		return false;
@@ -30,13 +40,13 @@ bool CKeyManager::SetKeyData(const KEY_STATE& eKeyName, const int& iKey)
 	memset(pKey, 0, sizeof(KEYINFO));
 	
 	pKey->iKey = iKey;
-	m_mapKey.insert(map<KEY_STATE, KEYINFO*>::value_type(eKeyName, pKey));
+	m_mapKey.insert(map<string, KEYINFO*>::value_type(eKeyName, pKey));
 	return true;
 }
 
-const KEYINFO* CKeyManager::GetKey(const KEY_STATE& eKey) const
+const KEYINFO* CKeyManager::GetKey(const string& eKey) const
 {
-	map<KEY_STATE, KEYINFO*>::const_iterator iter = m_mapKey.find(eKey);
+	map<string, KEYINFO*>::const_iterator iter = m_mapKey.find(eKey);
 
 	if(iter == m_mapKey.end())
 	{
@@ -45,24 +55,23 @@ const KEYINFO* CKeyManager::GetKey(const KEY_STATE& eKey) const
 	return iter->second;
 }
 
-void CKeyManager::CheckKey(map<KEY_STATE, KEYINFO*>::iterator iter)
+void CKeyManager::CheckKey(map<string, KEYINFO*>::iterator iter)
 {
-	static int iCnt = 0;
 	if(GetAsyncKeyState(iter->second->iKey) & 0x8000)
 	{
 		iter->second->bUp = false;
 		if(!iter->second->bPush)
 		{
-			iter->second->bPush = true;
-			iter->second->bDown = false;
-			
+			if(!iter->second->bDown)
+			{
+				iter->second->bPush = true;
+				iter->second->bDown = false;
+			}
 		}
 		else
 		{
 			iter->second->bPush = false;
 			iter->second->bDown = true;
-			++iCnt;
-			int a = 10;
 		}
 	}
 	else
@@ -74,9 +83,13 @@ void CKeyManager::CheckKey(map<KEY_STATE, KEYINFO*>::iterator iter)
 		else
 		{
 			iter->second->bUp = false;
-			iCnt = 0;
 		}
 		iter->second->bPush = false;
 		iter->second->bDown = false;
 	}
+}
+
+void CKeyManager::Destroy()
+{
+	Safe_Delete_Array_Map(m_mapKey);
 }

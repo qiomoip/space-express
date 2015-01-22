@@ -50,6 +50,7 @@ VOID CApp::Run()
 			}
 			else
 			{
+				_SINGLE(CEngine)->Input();
 				_SINGLE(CEngine)->Update();
 				_SINGLE(CEngine)->Render();
 			}

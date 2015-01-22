@@ -31,7 +31,7 @@ void CDebug::Initialize()
 
 	m_pTerrain->Initialize();
 
-	_SINGLE(CKeyManager)->SetKeyData(KEY_START, VK_SPACE);
+	
 }
 
 void CDebug::CreateVertexBuffer()
@@ -101,18 +101,7 @@ void CDebug::CreateVertexBuffer()
 
 void CDebug::Update()
 {
-	/*if(_SINGLE(CKeyManager)->GetKey(KEY_START)->bUp)
-	{
-		int a = 10;
-	}
-	if(_SINGLE(CKeyManager)->GetKey(KEY_START)->bPush)
-	{
-		int b = 10;
-	}
-	if(_SINGLE(CKeyManager)->GetKey(KEY_START)->bDown)
-	{
-		int c = 10;
-	}*/
+
 }
 
 void CDebug::Render()
@@ -132,8 +121,7 @@ void CDebug::DrawGrid()
 	D3DXMatrixIdentity(&matWorld);
 
 	m_pDevice->SetTransform(D3DTS_WORLD, &matWorld);
-	m_pDevice->SetTransform(D3DTS_VIEW, _SINGLE(CCameraManager)->GetCamera(CN_MAIN)->GetMatView());
-	m_pDevice->SetTransform(D3DTS_PROJECTION, _SINGLE(CCameraManager)->GetCamera(CN_MAIN)->GetMatProj());
+	
 
 	m_pDevice->SetRenderState(D3DRS_LIGHTING, false);
 	m_pDevice->SetFVF(VTXCOLORFVF);
@@ -144,13 +132,16 @@ void CDebug::DrawGrid()
 	m_pDevice->SetFVF(VTXCOLORFVF);
 	m_pDevice->DrawPrimitive( D3DPT_LINELIST, 0, 3 );
 
-
 	m_pDevice->SetRenderState( D3DRS_LIGHTING, TRUE );
-
-
 }
 
 void CDebug::Destroy()
 {
 	Safe_Release(m_pGridVB);
+	Safe_Delete(m_pTerrain);
+	Safe_Release(m_pLineVB);
+}
+
+void CDebug::Input()
+{
 }

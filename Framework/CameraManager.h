@@ -12,19 +12,31 @@ private:
 	CCameraManager(void);
 	~CCameraManager(void);
 
-	map<eCAMERA_NUM, CCamera*>*		m_mapCamera;
+	map<string, CCamera*>				m_mapCamera;
+	CCamera*							m_pCurCam;
+
+	bool								m_bChange;
 
 public:
 
 	void						Init();
 	void						Update();
+	void						Input();
+	void						Destroy();
 
-	CCamera*					GetCamera(eCAMERA_NUM _CameraName);
-	void						SetTransform(eCAMERA_NUM _CameraName);
+	void						CheckKey();
 
-	void						AddCamera(eCAMERA_NUM _CameraName);
+	bool						SetMainCamera(const string& strName);
 
-	void						MoveCamera(eCAMERA_NUM _CameraName, 
+	CCamera*					GetCamera(const string& _CameraName);
+	void						SetTransform(const string& _CameraName);
+	void						SetTransform();
+
+	CCamera* 					CreateCamera(const eCAMERA_NUM& eCam);
+
+	void						AddCamera(const string& _CameraName, CCamera* pCam);
+
+	void						MoveCamera(const string& _CameraName, 
 		D3DXVECTOR3 _vPos);
 };
 
