@@ -69,25 +69,15 @@
     <ClCompile Include="main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectManager.cpp">
-      <Filter>Engine\Director\Manager\ObjectMgr</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
-      <Filter>Engine\Director\Manager\ResourceMgr</Filter>
-    </ClCompile>
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CameraManager.cpp" />
+    <ClCompile Include="Info.cpp" />
+    <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="ObjectManager.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="App.cpp">
       <Filter>App</Filter>
     </ClCompile>
-    <ClCompile Include="CameraManager.cpp">
-      <Filter>Engine\Director\Manager\CameraMgr</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Engine\Director\Manager\CameraMgr\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="InputManager.cpp">
-      <Filter>Engine\Director\Manager\InputMgr</Filter>
-    </ClCompile>
-    <ClCompile Include="Info.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -105,31 +95,17 @@
     <ClInclude Include="define.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectManager.h">
-      <Filter>Engine\Director\Manager\ObjectMgr</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceManager.h">
-      <Filter>Engine\Director\Manager\ResourceMgr</Filter>
-    </ClInclude>
-    <ClInclude Include="Enum.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Struct.h">
-      <Filter>Header</Filter>
-    </ClInclude>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraManager.h" />
+    <ClInclude Include="Enum.h" />
+    <ClInclude Include="Info.h" />
+    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="Struct.h" />
     <ClInclude Include="App.h">
       <Filter>App</Filter>
     </ClInclude>
-    <ClInclude Include="CameraManager.h">
-      <Filter>Engine\Director\Manager\CameraMgr</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Engine\Director\Manager\CameraMgr\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="InputManager.h">
-      <Filter>Engine\Director\Manager\InputMgr</Filter>
-    </ClInclude>
-    <ClInclude Include="Info.h" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
