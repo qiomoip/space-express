@@ -13,17 +13,19 @@ CKeyManager::~CKeyManager(void)
 
 void CKeyManager::Initialize()
 {
-	SetKeyData("KEY_RIGHT", VK_RIGHT);
-	SetKeyData("KEY_LEFT", VK_LEFT);
+	SetKeyData("KEY_RIGHT", 'D');
+	SetKeyData("KEY_LEFT", 'A');
 	SetKeyData("KEY_START", VK_SPACE);
 	SetKeyData("KEY_UP", VK_UP);
 	SetKeyData("KEY_DOWN", VK_DOWN);
 	SetKeyData("KEY_SPACE", VK_SPACE);
+	SetKeyData("KEY_ROT_Y_UP", 'W');
+	SetKeyData("KEY_ROT_Y_DOWN", 'S');
 }
 void CKeyManager::SetKeyState()
 {
 	map<string, KEYINFO*>::iterator iter = m_mapKey.begin();
-	for(int i = 0; i < m_mapKey.size(); ++i, ++iter)
+	for(; iter != m_mapKey.end() ; ++iter)
 	{
 		CheckKey(iter);
 	}

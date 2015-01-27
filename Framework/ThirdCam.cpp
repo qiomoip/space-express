@@ -19,7 +19,7 @@ CThirdCam::CThirdCam(void)
 
 CThirdCam::~CThirdCam(void)
 {
-	int a = 10;
+
 }
 
 void CThirdCam::Init()
@@ -64,6 +64,20 @@ void CThirdCam::Input()
 		Yaw();
 	}
 
+	pInfo = _SINGLE(CKeyManager)->GetKey("KEY_ROT_Y_UP");
+	if(pInfo->bPush || pInfo->bDown)
+	{
+		m_tCam.iAngle = -1;
+		Pitch();
+	}
+
+	pInfo = _SINGLE(CKeyManager)->GetKey("KEY_ROT_Y_DOWN");
+	if(pInfo->bPush || pInfo->bDown)
+	{
+		m_tCam.iAngle = 1;
+		Pitch();
+	}
+
 }
 
 void CThirdCam::Yaw()
@@ -93,8 +107,8 @@ void CThirdCam::Roll()
 void CThirdCam::Move()
 {
 	D3DXVECTOR3 vDir;
-	D3DXVec3Cross(&vDir, &m_tCam.vRight, &D3DXVECTOR3(0.f, 1.f, 0.f));
+	D3DXVec3Cross(&vDir, &m_tCam.vRight, &m_tCam.vUp);
 	D3DXVec3Normalize(&vDir, &vDir);
-	m_tCam.vPos += D3DXVECTOR3(vDir.x, 0.f, vDir.z) * 0.05f * m_tCam.iDir;
+	m_tCam.vPos += D3DXVECTOR3(vDir.x, 0.f, vDir.z) * 0.05f * (float)m_tCam.iDir;
 	//m_tCam.vPos += m_tCam.vLook * 0.01f * m_tCam.iDir;
 }

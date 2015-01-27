@@ -25,8 +25,7 @@
 #include <strsafe.h>
 
 #pragma warning( disable : 4996 ) // disable deprecated warning 
-
-#pragma warning( default : 4996 )
+//#pragma warning( disable : 4244 )
 
 using namespace std;
 

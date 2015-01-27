@@ -36,10 +36,10 @@ void CDebug::Initialize()
 
 void CDebug::CreateVertexBuffer()
 {
-	int x1 = -128;
-	int x2 = 128;
-	int y1 = -128;
-	int y2 = 128;
+	float x1 = -128;
+	float x2 = 128;
+	float y1 = -128;
+	float y2 = 128;
 	float stepX = 1.f;
 	float stepY = 1.f;
 	const DWORD gridColor = D3DCOLOR_XRGB(0, 0, 0);
@@ -84,13 +84,15 @@ void CDebug::CreateVertexBuffer()
 		return;
 	}
 
-	VERTEXCOLOR colorVtx[] = { {D3DXVECTOR3(-200.0f, 0.0f, 0.0f),  0xffff0000 }, // red = +x Axis
+	//VERTEXCOLOR colorVtx[] = { {D3DXVECTOR3(-200.0f, 0.0f, 0.0f),  0xffff0000 }, // red = +x Axis
+	VERTEXCOLOR colorVtx[] = { {D3DXVECTOR3(0.f, 0.0f, 0.0f),  0xffff0000 }, // red = +x Axis
 	{ D3DXVECTOR3(200.0f, 0.0f, 0.0f),  0xffff0000 },
-	{ D3DXVECTOR3(0.0f, -200.0f, 0.0f),  0xff00ff00 }, // green = +y Axis
+	//{ D3DXVECTOR3(0.0f, -200.0f, 0.0f),  0xff00ff00 }, // green = +y Axis
+	{ D3DXVECTOR3(0.0f, 0.f, 0.0f),  0xff00ff00 }, // green = +y Axis
 	{ D3DXVECTOR3(0.0f, 200.0f, 0.0f),  0xff00ff00 },
 	{ D3DXVECTOR3(0.0f, 0.0f, 200.0f),  0xff0000ff }, // blue = +z Axis
-	{ D3DXVECTOR3(0.0f, 0.0f, -200.0f),  0xff0000ff }};
-
+	//{ D3DXVECTOR3(0.0f, 0.0f, -200.0f),  0xff0000ff }};
+	{ D3DXVECTOR3(0.0f, 0.0f, 0.f),  0xff0000ff }};
 	void *pVertices = NULL;
 
     m_pLineVB->Lock( 0, sizeof(colorVtx), (void**)&pVertices, 0 );
