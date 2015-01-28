@@ -4,6 +4,8 @@
 #include "Camera.h"
 #include "CameraManager.h"
 #include "KeyManager.h"
+#include "ResourceManager.h"
+#include "ObjectManager.h"
 
 CEngine::CEngine(void)
 	: m_pDevice(NULL)
@@ -42,6 +44,8 @@ HRESULT CEngine::Initialize(HWND hWnd)
 #ifdef _DEBUG
 	_SINGLE(CDebug)->Initialize();
 #endif
+
+	_SINGLE(CResourceManager)->Load();
 
 	return S_OK;
 }
@@ -82,6 +86,8 @@ VOID CEngine::Render()
 
 VOID CEngine::Destroy()
 {
+	_SINGLE(CObjectManager)->KillInstance();
+	_SINGLE(CResourceManager)->KillInstance();
 	_SINGLE(CCameraManager)->KillInstance();
 	_SINGLE(CKeyManager)->KillInstance();
 	
