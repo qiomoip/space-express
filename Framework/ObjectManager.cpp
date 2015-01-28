@@ -1,5 +1,6 @@
 #include "ObjectManager.h"
 #include "ResourceManager.h"
+#include "Entity.h"
 
 
 CObjectManager::CObjectManager(void)
