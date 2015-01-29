@@ -4,6 +4,7 @@
 #include "CameraManager.h"
 #include "Camera.h"
 #include "KeyManager.h"
+#include "ResourceManager.h"
 
 
 CDebug::CDebug(void)
@@ -30,6 +31,8 @@ void CDebug::Initialize()
 	m_pTerrain = new CTerrainMesh;
 
 	m_pTerrain->Initialize();
+
+	//m_pTerrain = _SINGLE(CResourceManager)->LoadMesh(MT_TERRAIN);
 
 	
 }

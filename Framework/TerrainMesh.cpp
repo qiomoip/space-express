@@ -34,6 +34,10 @@ void CTerrainMesh::Initialize()
 	CreateTerrainInfo(tInfo);
 }
 
+void CTerrainMesh::Update()
+{
+}
+
 void CTerrainMesh::Render()
 {
 	D3DXMATRIX matWorld;
@@ -159,15 +163,15 @@ bool CTerrainMesh::CreateIndexInfo()
 	{
 		for(int j = 0; j < m_tInfo.iRow - 1; ++j)
 		{
-			int iIndex = i * m_tInfo.iRow + j;
+			WORD iIndex = WORD(i * m_tInfo.iRow + j);
 			//인덱스는 삼각형 그리는 순서를 셋팅하는 것
 			//x, z가 한 번씩 증가할 때 사각형 하나가 만들어지므로 for문 한 번에 두 개 정의
-			pI[iTriNum]._0 = iIndex + m_tInfo.iRow;
-			pI[iTriNum]._1 = iIndex + m_tInfo.iRow + 1;
+			pI[iTriNum]._0 = iIndex + (WORD)m_tInfo.iRow;
+			pI[iTriNum]._1 = iIndex + (WORD)m_tInfo.iRow + 1;
 			pI[iTriNum]._2 = iIndex + 1;
 			++iTriNum;
  
-			pI[iTriNum]._0 = iIndex + m_tInfo.iRow;
+			pI[iTriNum]._0 = iIndex + (WORD)m_tInfo.iRow;
 			pI[iTriNum]._1 = iIndex + 1;
 			pI[iTriNum]._2 = iIndex;
 			++iTriNum;

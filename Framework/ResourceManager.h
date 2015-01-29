@@ -13,8 +13,6 @@ private:
 	~CResourceManager(void);
 
 	vector<MESH_INFO*>*				m_MeshArray;
-
-	MESH_INFO*						m_pMesh ;
 	
 	LPD3DXBUFFER					m_pD3DXMtrlBuffer ;
 
@@ -28,12 +26,12 @@ public:
 
 	void							Load();
 
-	HRESULT								LoadMesh(LPTSTR _meshName);
+	MESH_INFO*						LoadMesh(const eMESH_TYPE& eMeshType, const LPTSTR _meshName = NULL);
 
-	int								LoadTexture(LPTSTR _meshName);
+	HRESULT							LoadTexture(MESH_INFO* pMeshInfo);
 
-	LPSTR							GetResourcePath( LPSTR _str_);
-	TCHAR*							GetResourcePathT( LPTSTR _str_);
+	LPSTR							GetResourcePath(const LPSTR _str_);
+	TCHAR*							GetResourcePathT(const LPTSTR _str_);
 
 	vector<MESH_INFO*>*				GetMeshArray();
 

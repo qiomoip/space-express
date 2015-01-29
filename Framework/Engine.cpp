@@ -6,6 +6,7 @@
 #include "KeyManager.h"
 #include "ResourceManager.h"
 #include "ObjectManager.h"
+#include "TString.h"
 
 CEngine::CEngine(void)
 	: m_pDevice(NULL)
@@ -15,6 +16,7 @@ CEngine::CEngine(void)
 
 CEngine::~CEngine(void)
 {
+	Destroy();
 }
 
 
@@ -86,6 +88,7 @@ VOID CEngine::Render()
 
 VOID CEngine::Destroy()
 {
+	_SINGLE(CTString)->KillInstance();
 	_SINGLE(CObjectManager)->KillInstance();
 	_SINGLE(CResourceManager)->KillInstance();
 	_SINGLE(CCameraManager)->KillInstance();

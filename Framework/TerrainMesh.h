@@ -1,7 +1,8 @@
 #pragma once
-#include "define.h"
+#include "Mesh.h"
 
 class CTerrainMesh
+	: public CMesh
 {
 private:
 	LPDIRECT3DVERTEXBUFFER9		m_pVB;
@@ -15,6 +16,7 @@ private:
 
 public:
 	void Initialize();
+	void Update();
 	void Render();
 	void Destroy();
 

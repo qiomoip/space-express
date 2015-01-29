@@ -94,6 +94,6 @@ typedef struct _tagTextureInfo
 // Filename을 TCHAR형으로 변경한 D3DXMATERIAL 메테리얼 구조체
 typedef struct _tagD3dMaterial
 {
-	D3DMATERIAL9  MatD3D;
-	LPTSTR         pTextureFilename;
+	D3DMATERIAL9	MatD3D;
+	LPTSTR			pTextureFilename;
 }_TD3DXMATERIAL;
