@@ -16,7 +16,7 @@ CApp::~CApp(void)
 	Destroy();
 }
 
-HRESULT CApp::Initialize(HINSTANCE hInst, LPCWSTR lpClassName, LPCWSTR lpCWindowName, int iWidth, int iHeight)
+HRESULT CApp::Initialize(HINSTANCE hInst, LPCTSTR lpClassName, LPCTSTR lpCWindowName, int iWidth, int iHeight)
 {
 	m_hInst = hInst;
 	m_lpClassName = lpClassName;
@@ -62,7 +62,7 @@ VOID CApp::Run()
 	UnregisterClass( m_lpClassName, m_hInst );
 }
 
-void CApp::CreateWnd(LPCWSTR lpCWindowName, int iWidth, int iHeight)
+void CApp::CreateWnd(LPCTSTR lpCWindowName, int iWidth, int iHeight)
 {
 	RegisterWindow();
 

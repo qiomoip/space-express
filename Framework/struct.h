@@ -97,3 +97,6 @@ typedef struct _tagD3dMaterial
 	D3DMATERIAL9	MatD3D;
 	LPTSTR			pTextureFilename;
 }_TD3DXMATERIAL;
+
+
+
