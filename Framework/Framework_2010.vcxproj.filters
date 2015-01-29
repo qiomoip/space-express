@@ -38,9 +38,6 @@
     <Filter Include="Engine\Director\DeviceRes">
       <UniqueIdentifier>{23269790-02e1-4fd3-a10e-de39e117a1c2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Director\DeviceRes\Terrain">
-      <UniqueIdentifier>{01320409-5efb-4e53-8ea6-48629ae3d6c2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Director\Manager\CameraManager">
       <UniqueIdentifier>{5ed84f08-180e-4dc6-908f-ab5b63d04bb7}</UniqueIdentifier>
     </Filter>
@@ -55,6 +52,30 @@
     </Filter>
     <Filter Include="Engine\Director\Manager\CameraManager\Camera">
       <UniqueIdentifier>{df9db895-47e6-4746-a600-44f9f7ae8002}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\FileUtils">
+      <UniqueIdentifier>{7a55e1eb-ee96-4bf6-a680-f865eb6b5d0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\FileUtils\String">
+      <UniqueIdentifier>{02660ec8-5663-414d-a274-b2cfbf49e27e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\DeviceRes\Mesh">
+      <UniqueIdentifier>{607c7dca-906c-418a-933b-0e9e735fc82d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\DeviceRes\Mesh\TerrainMesh">
+      <UniqueIdentifier>{01320409-5efb-4e53-8ea6-48629ae3d6c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\DeviceRes\Mesh\StaticMesh">
+      <UniqueIdentifier>{35d8bcad-bd61-4e7e-ae51-9eed8341ec43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\DeviceRes\Mesh\TextureMesh">
+      <UniqueIdentifier>{af8c62c5-1252-4018-b978-74b5d6165989}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\ObjeceManager">
+      <UniqueIdentifier>{72aa8e84-55e4-401b-a933-68fb96d829f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\DeviceRes\Texture">
+      <UniqueIdentifier>{c3b7ac5f-d18b-4167-bbbb-625ceeee18ef}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -85,14 +106,11 @@
     <ClCompile Include="Device.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="DeviceResMgr.cpp">
-      <Filter>Engine\Director\DeviceRes</Filter>
-    </ClCompile>
     <ClCompile Include="Engine.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="TerrainMesh.cpp">
-      <Filter>Engine\Director\DeviceRes\Terrain</Filter>
+      <Filter>Engine\Director\DeviceRes\Mesh\TerrainMesh</Filter>
     </ClCompile>
     <ClCompile Include="Mouse.cpp">
       <Filter>Engine\Director\Manager\InputManager\Mouse</Filter>
@@ -102,6 +120,24 @@
     </ClCompile>
     <ClCompile Include="ThirdCam.cpp">
       <Filter>Engine\Director\Manager\CameraManager\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="TString.cpp">
+      <Filter>Engine\Director\FileUtils\String</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Engine\Director\DeviceRes</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>Engine\Director\ObjeceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Engine\Director\DeviceRes\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Engine\Director\DeviceRes\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticMesh.cpp">
+      <Filter>Engine\Director\DeviceRes\Mesh\StaticMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -129,9 +165,6 @@
     <ClInclude Include="Device.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="DeviceResMgr.h">
-      <Filter>Engine\Director\DeviceRes</Filter>
-    </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -145,7 +178,7 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="TerrainMesh.h">
-      <Filter>Engine\Director\DeviceRes\Terrain</Filter>
+      <Filter>Engine\Director\DeviceRes\Mesh\TerrainMesh</Filter>
     </ClInclude>
     <ClInclude Include="Mouse.h">
       <Filter>Engine\Director\Manager\InputManager\Mouse</Filter>
@@ -155,6 +188,24 @@
     </ClInclude>
     <ClInclude Include="ThirdCam.h">
       <Filter>Engine\Director\Manager\CameraManager\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="TString.h">
+      <Filter>Engine\Director\FileUtils\String</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Engine\Director\DeviceRes</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManager.h">
+      <Filter>Engine\Director\ObjeceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Engine\Director\DeviceRes\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Engine\Director\DeviceRes\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticMesh.h">
+      <Filter>Engine\Director\DeviceRes\Mesh\StaticMesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

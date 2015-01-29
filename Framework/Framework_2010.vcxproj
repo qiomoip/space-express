@@ -372,23 +372,55 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="DXUT\Optional\directx.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="App.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CameraManager.cpp" />
+    <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="KeyManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="ObjectManager.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="StaticMesh.cpp" />
+    <ClCompile Include="TerrainMesh.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="ThirdCam.cpp" />
+    <ClCompile Include="TString.cpp" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="App.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraManager.h" />
+    <ClInclude Include="Debug.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="Enum.h" />
+    <ClInclude Include="function.h" />
+    <ClInclude Include="KeyManager.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Mouse.h" />
+    <ClInclude Include="ObjectManager.h" />
     <CLInclude Include="resource.h" />
+    <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="StaticMesh.h" />
+    <ClInclude Include="struct.h" />
+    <ClInclude Include="TerrainMesh.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="ThirdCam.h" />
+    <ClInclude Include="TString.h" />
     <ResourceCompile Include="Framework.rc" />
   </ItemGroup>
   <ItemGroup>
