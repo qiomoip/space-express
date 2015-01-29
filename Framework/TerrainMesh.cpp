@@ -53,7 +53,6 @@ void CTerrainMesh::Render()
 	_SINGLE(CDevice)->GetDevice()->SetIndices(m_pIB);
 	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, false);
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
-	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 	_SINGLE(CDevice)->GetDevice()->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_tInfo.iVtxNum,
 		0, m_iTriNum);
 	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, true);

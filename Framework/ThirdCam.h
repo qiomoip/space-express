@@ -14,6 +14,7 @@ public:
 	void Pitch();
 	void Roll();
 	void Move();
+	void Rotation();
 
 public:
 	CThirdCam(void);

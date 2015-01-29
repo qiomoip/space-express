@@ -77,14 +77,12 @@ LRESULT CApp::MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 	switch( msg )
     {
         case WM_DESTROY:
-            _SINGLE(CEngine)->Destroy();
             PostQuitMessage( 0 );
             return 0;
 		case WM_KEYDOWN:
 			switch(wParam)
 			{
 			case VK_ESCAPE:
-				_SINGLE(CEngine)->Destroy();
 				PostQuitMessage( 0 );
 				break;
 			}

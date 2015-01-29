@@ -66,7 +66,7 @@ typedef struct _tagCamera
 	D3DXVECTOR3 vUp;
 	D3DXVECTOR3 vRight;
 	int		iDir;
-	int		iAngle;
+	int		iAngle[AT_MAX];
 }CAMERA;
 
 /*

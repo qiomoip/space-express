@@ -13,8 +13,8 @@ CKeyManager::~CKeyManager(void)
 
 void CKeyManager::Initialize()
 {
-	SetKeyData("KEY_RIGHT", 'D');
-	SetKeyData("KEY_LEFT", 'A');
+	SetKeyData("KEY_ROT_X_RIGHT", 'D');
+	SetKeyData("KEY_ROT_X_LEFT", 'A');
 	SetKeyData("KEY_START", VK_SPACE);
 	SetKeyData("KEY_UP", VK_UP);
 	SetKeyData("KEY_DOWN", VK_DOWN);

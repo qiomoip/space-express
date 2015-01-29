@@ -64,7 +64,8 @@ VOID CEngine::Render()
         return;
 
     // Clear the backbuffer to a blue color
-    m_pDevice->GetDevice()->Clear( 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB( 200, 200, 200 ), 1.0f, 0 );
+	m_pDevice->GetDevice()->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | 
+		D3DCLEAR_STENCIL, D3DCOLOR_XRGB( 200, 200, 200 ), 1.0f, 0 );
 
     // Begin the scene
     if( SUCCEEDED( m_pDevice->GetDevice()->BeginScene() ) )
@@ -74,11 +75,11 @@ VOID CEngine::Render()
 		//Camera Transform
 		_SINGLE(CCameraManager)->SetTransform();
 
-		//ObjectRender
-		_SINGLE(CObjectManager)->Render();
-
 		//Debug Render
 		_SINGLE(CDebug)->Render();
+
+		//ObjectRender
+		_SINGLE(CObjectManager)->Render();
 
         // End the scene
         m_pDevice->GetDevice()->EndScene();

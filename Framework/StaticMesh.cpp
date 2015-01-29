@@ -132,6 +132,7 @@ void CStaticMesh::Render()
             // Draw the mesh subset
 			m_pMeshInfo->pMesh->DrawSubset( i );
         }
+	 _SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 void CStaticMesh::Destroy()
