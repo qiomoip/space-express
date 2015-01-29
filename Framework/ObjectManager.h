@@ -15,15 +15,21 @@ private:
 	CObjectManager(void);
 	~CObjectManager(void);
 	
-	map<eTYPE, map<LPTSTR, CEntity*>*>*	m_Objects;
+	map<string, CEntity*>	m_mapObject;
+	list<CEntity*>			m_listRenderList[RTYPE_MAX];
 
 public:
-
 	void								Init();
-	
+	void								Update();
 	void								CleanUp();
-
 	HRESULT								Render();
+
+public:
+	CEntity*			CreateEntity(const eMESH_TYPE& eMeshType, const eRENDER_TYPE& eRender, const string& strMeshKey, const LPTSTR szMeshName = NULL);
+	CEntity*			CreateEntity(const string& strEntityKey);
+
+public:
+	void Push_RenderList(CEntity* pEntity);
 	
 };
 

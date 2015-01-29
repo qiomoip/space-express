@@ -3,7 +3,7 @@
 #include "Singleton.h"
 
 class CMesh;
-
+class CTexture;
 
 class CResourceManager : public CSingleton<CResourceManager>
 {
@@ -15,6 +15,7 @@ private:
 	~CResourceManager(void);
 
 	map<string, CMesh*>*			m_mapMesh;
+	map<string, CTexture*>			m_mapTexture;
 	
 	//LPD3DXBUFFER					m_pD3DXMtrlBuffer ;
 
@@ -26,11 +27,11 @@ public:
 
 	void							CleanUp();
 
-	void							Load(const eMESH_TYPE& eMeshType, const string& strMeshKey, const LPTSTR szMeshName);
+	CMesh*							Load(const eMESH_TYPE& eMeshType, const string& strMeshKey, const LPTSTR szMeshName);
 
 	CMesh*							LoadMesh(const eMESH_TYPE& eMeshType, const string& strMeshKey, const LPTSTR _meshName = NULL);
 
-	HRESULT							LoadTexture(CMesh* pMeshInfo);
+	CTexture*						LoadTexture(const string& strTextureKey, const LPTSTR _texname);
 
 	LPSTR							GetResourcePath(const LPSTR _str_);
 	TCHAR*							GetResourcePathT(const LPTSTR _str_);

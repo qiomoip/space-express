@@ -47,7 +47,10 @@ HRESULT CEngine::Initialize(HWND hWnd)
 	_SINGLE(CDebug)->Initialize();
 #endif
 
-	_SINGLE(CResourceManager)->Load(MT_STATIC, "Tiger", _T("tiger.x"));
+	//_SINGLE(CResourceManager)->Load(MT_STATIC, "Tiger", _T("tiger.x"));
+	_SINGLE(CObjectManager)->CreateEntity(MT_STATIC, RTYPE_ENTITY, "Tiger", _T("tiger.x"));
+	_SINGLE(CObjectManager)->CreateEntity(MT_STATIC, RTYPE_ENTITY, "Tiger1", _T("tiger.x"));
+	_SINGLE(CObjectManager)->CreateEntity(MT_STATIC, RTYPE_ENTITY, "Tiger2", _T("tiger.x"));
 
 	return S_OK;
 }
@@ -55,6 +58,7 @@ HRESULT CEngine::Initialize(HWND hWnd)
 void CEngine::Update()
 {
 	_SINGLE(CCameraManager)->Update();
+	_SINGLE(CObjectManager)->Update();
 	_SINGLE(CDebug)->Update();
 }
 
@@ -64,8 +68,8 @@ VOID CEngine::Render()
         return;
 
     // Clear the backbuffer to a blue color
-	m_pDevice->GetDevice()->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | 
-		D3DCLEAR_STENCIL, D3DCOLOR_XRGB( 200, 200, 200 ), 1.0f, 0 );
+	m_pDevice->GetDevice()->Clear( 0, NULL, D3DCLEAR_TARGET /*| D3DCLEAR_ZBUFFER | 
+		D3DCLEAR_STENCIL*/, D3DCOLOR_XRGB( 200, 200, 200 ), 1.0f, 0 );
 
     // Begin the scene
     if( SUCCEEDED( m_pDevice->GetDevice()->BeginScene() ) )

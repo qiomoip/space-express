@@ -1,5 +1,6 @@
 #pragma once
 #include "Mesh.h"
+class CTexture;
 
 class CTerrainMesh
 	: public CMesh
@@ -7,7 +8,7 @@ class CTerrainMesh
 private:
 	LPDIRECT3DVERTEXBUFFER9		m_pVB;
 	LPDIRECT3DINDEXBUFFER9		m_pIB;
-	LPDIRECT3DTEXTURE9			m_pTexture;
+	CTexture*					m_pTexture;
 
 	TERRAININFO					m_tInfo;
 	D3DMATERIAL9				m_tMtrl;

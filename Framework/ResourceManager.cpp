@@ -3,6 +3,7 @@
 #include "TString.h"
 #include "TerrainMesh.h"
 #include "StaticMesh.h"
+#include "Texture.h"
 
 CResourceManager::CResourceManager(void)
 {
@@ -22,46 +23,31 @@ void CResourceManager::Init()
 
 void CResourceManager::CleanUp()
 {
-	/*for(UINT i = 0; i < m_MeshArray->size(); ++i)
-	{
-		if( (*m_MeshArray)[i]->pMaterials )
-			Safe_Delete_Array( (*m_MeshArray)[i]->pMaterials );
-		if( (*m_MeshArray)[i]->pName)
-			Safe_Delete_Array((*m_MeshArray)[i]->pName);
-		if( (*m_MeshArray)[i]->pTextures )
-		{
-			for( DWORD j = 0; j < (*m_MeshArray)[i]->dwNumMaterials; ++j)
-			{
-				if( (*m_MeshArray)[i]->pTextures[j] )
-					Safe_Release( (*m_MeshArray)[i]->pTextures[j] );
-			}
-			Safe_Delete_Array( (*m_MeshArray)[i]->pTextures );
-		}
-		if( (*m_MeshArray)[i]->pMesh )
-		{
-			
-			Safe_Release( (*m_MeshArray)[i]->pMesh );
-		}
-
-		Safe_Delete( (*m_MeshArray)[i] );
-	}
-	m_MeshArray->clear();
-	Safe_Delete( m_MeshArray );*/
-
+	Safe_Delete_Map(m_mapTexture);
 	Safe_Delete_Map(*m_mapMesh);
 	Safe_Delete(m_mapMesh);
 }
 
-void CResourceManager::Load(const eMESH_TYPE& eMeshType, const string& strMeshKey, const LPTSTR szMeshName)
+CMesh* CResourceManager::Load(const eMESH_TYPE& eMeshType, const string& strMeshKey, const LPTSTR szMeshName)
 {
 	CMesh* pMesh = LoadMesh(eMeshType, strMeshKey, szMeshName);
 	if(!pMesh)
-		return;
+	{
+		return NULL;
+	}
 
-	if( SUCCEEDED(LoadTexture(LoadMesh(MT_STATIC, strMeshKey, szMeshName )) ) )
-			MessageBox(NULL, _T("Mesh/Texture Load Ok!"), _T("tiger.x"), MB_OK);
-		else
-			assert(false);
+	//if( SUCCEEDED(LoadTexture(pMesh) ))
+	//{
+	//	MessageBox(NULL, _T("Mesh/Texture Load Ok!"), szMeshName, MB_OK);
+	//	return pMesh;
+	//}
+	//else
+	//{
+	//	Safe_Delete(pMesh);
+	//	assert(false);
+	//	return NULL;
+	//}
+	return pMesh;
 }
 
 /*
@@ -71,8 +57,6 @@ void CResourceManager::Load(const eMESH_TYPE& eMeshType, const string& strMeshKe
 */
 CMesh* CResourceManager::LoadMesh(const eMESH_TYPE& eMeshType, const string& strMeshKey, const LPTSTR _meshName)
 {
-	
-	
 	map<string, CMesh*>::iterator iter = m_mapMesh->find(strMeshKey);
 	if(iter != m_mapMesh->end())
 		return iter->second;
@@ -132,77 +116,29 @@ CMesh* CResourceManager::LoadMesh(const eMESH_TYPE& eMeshType, const string& str
 	return pMesh;
 }
 
-HRESULT	CResourceManager::LoadTexture(CMesh* pMesh)
+CTexture*	CResourceManager::LoadTexture(const string& strTextureKey, const LPTSTR _texname)
 {
-	return S_OK;
-	//if(!pMesh)
-	//	return E_FAIL;
+	map<string, CTexture*>::iterator iter = m_mapTexture.find(strTextureKey);
+	if(iter != m_mapTexture.end())
+		return iter->second;
+	CTexture* pTexture = new CTexture;
+	LPDIRECT3DTEXTURE9 pTex = NULL;
+	// Create the texture
+	LPTSTR szPath = GetResourcePathT(_texname);
+	if( FAILED( D3DXCreateTextureFromFile( _SINGLE(CDevice)->GetDevice(),
+		szPath,
+		&pTex ) ) )
+	{
+		MessageBox( NULL, _T("Could not find texture map"), _texname, MB_OK );
+		Safe_Delete(pTexture);
+		Safe_Delete_Array(szPath);
+		return NULL;
+	}
+	Safe_Delete_Array(szPath);
+	pTexture->SetTextureInfo(pTex);
+	m_mapTexture.insert(map<string, CTexture*>::value_type(strTextureKey, pTexture));
+	return pTexture;
 
-	//if(!pMeshInfo)
-	//	return E_FAIL;
-	//// We need to extract the material properties and texture names from the 
- //   // pD3DXMtrlBuffer
- //   D3DXMATERIAL* d3dxMaterials = ( D3DXMATERIAL* )m_pD3DXMtrlBuffer->GetBufferPointer();
-	//_TD3DXMATERIAL mMaterial;
-	//memset(&mMaterial, 0, sizeof(_TD3DXMATERIAL));
-	//mMaterial.MatD3D = d3dxMaterials->MatD3D;
-	///*MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, d3dxMaterials->pTextureFilename, strlen(d3dxMaterials->pTextureFilename) + 1,
-	//	mMaterial.pTextureFilename, _tcslen(mMaterial.pTextureFilename) + 1);*/
-	//mMaterial.pTextureFilename = _SINGLE(CTString)->CharToTCHAR(d3dxMaterials->pTextureFilename);
-
-	//pMeshInfo->pMaterials = new D3DMATERIAL9[pMeshInfo->dwNumMaterials];
- //   pMeshInfo->pTextures = new LPDIRECT3DTEXTURE9[pMeshInfo->dwNumMaterials];
-
- //   if( !pMeshInfo->pMaterials || !pMeshInfo->pMaterials )
-	//{
-	//	Safe_Delete(pMeshInfo);
- //       return E_OUTOFMEMORY;
-	//}
-
- //   for( DWORD i = 0; i < pMeshInfo->dwNumMaterials; i++ )
- //   {
- //       // Copy the material
- //       pMeshInfo->pMaterials[i] = d3dxMaterials[i].MatD3D;
-
- //       // Set the ambient color for the material (D3DX does not do this)
- //       pMeshInfo->pMaterials[i].Ambient = pMeshInfo->pMaterials[i].Diffuse;
-
-	//	pMeshInfo->pTextures[i] = NULL;
-
- //       if( d3dxMaterials[i].pTextureFilename &&
- //           lstrlenA( d3dxMaterials[i].pTextureFilename ) > 0 )
- //       {
-	//		//텍스쳐 이름 앞에도 경로 추가
-	//		/*CHAR* preFix = "Resources\\Mesh_Texture\\";
-	//		CHAR filename[255];	
-	//		strcpy_s(filename, 255, preFix);
-	//		strcat_s(filename, 255, d3dxMaterials[i].pTextureFilename);*/
-	//		
-	//		
- //           // Create the texture
-	//		LPTSTR szPath = GetResourcePathT( mMaterial.pTextureFilename);
- //           if( FAILED( D3DXCreateTextureFromFile( _SINGLE(CDevice)->GetDevice(),
-	//			szPath,
-	//						&pMeshInfo->pTextures[i] ) ) )
- //           {
-	//			MessageBox( NULL, _T("Could not find texture map"), pMeshInfo->pName, MB_OK );
-	//			Safe_Delete(pMeshInfo);
-	//			Safe_Delete(szPath);
-	//			return E_FAIL;
- //           }
-	//		Safe_Delete_Array(szPath);
- //       }
- //   }
-
-	//m_MeshArray->push_back(pMeshInfo);
- //   // Done with the material buffer
-	//
-	//Safe_Release(m_pD3DXMtrlBuffer);
-
-	//Safe_Delete_Array(mMaterial.pTextureFilename);
-	//
-	//return S_OK;
-	
 }
 
 LPSTR CResourceManager::GetResourcePath(const LPSTR _str)
@@ -223,7 +159,7 @@ TCHAR* CResourceManager::GetResourcePathT(const LPTSTR _str)
 	TCHAR* pFileName = new TCHAR[256];
 	_tcscpy_s(pFileName, 256, preFix);
 	_tcscat_s(pFileName, 256, _str);
-	
+
 	return pFileName;
 }
 

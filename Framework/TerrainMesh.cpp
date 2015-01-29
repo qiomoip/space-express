@@ -2,6 +2,8 @@
 #include "Device.h"
 #include "CameraManager.h"
 #include "Camera.h"
+#include "Texture.h"
+#include "ResourceManager.h"
 
 CTerrainMesh::CTerrainMesh(void)
 	: m_pVB(NULL)
@@ -43,7 +45,7 @@ void CTerrainMesh::Render()
 	D3DXMatrixIdentity(&matWorld);
 
 	_SINGLE(CDevice)->GetDevice()->SetTransform(D3DTS_WORLD, &matWorld);
-	_SINGLE(CDevice)->GetDevice()->SetTexture(0, m_pTexture);
+	_SINGLE(CDevice)->GetDevice()->SetTexture(0, m_pTexture->GetTextureInfo());
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_NEVER);
@@ -84,14 +86,15 @@ bool CTerrainMesh::CreateVertexInfo()
 		return false;
 	}
 
-	if(FAILED(D3DXCreateTextureFromFile(_SINGLE(CDevice)->GetDevice(), L"heightmap.bmp", &m_pTexture)))
-	{
-		if(FAILED(D3DXCreateTextureFromFile(_SINGLE(CDevice)->GetDevice(), L"..\\heightmap.bmp", &m_pTexture)))
-		{
-			Safe_Release(m_pTexture);
-			return false;
-		}
-	}
+	//if(FAILED(D3DXCreateTextureFromFile(_SINGLE(CDevice)->GetDevice(), L"heightmap.bmp", &m_pTexture)))
+	//{
+	//	if(FAILED(D3DXCreateTextureFromFile(_SINGLE(CDevice)->GetDevice(), L"..\\heightmap.bmp", &m_pTexture)))
+	//	{
+	//		Safe_Release(m_pTexture);
+	//		return false;
+	//	}
+	//}
+	m_pTexture = _SINGLE(CResourceManager)->LoadTexture("Height", L"heightmap.bmp");
 
 	BITMAPFILEHEADER	fh;
 	BITMAPINFOHEADER	ih;
@@ -182,7 +185,6 @@ bool CTerrainMesh::CreateIndexInfo()
 
 void CTerrainMesh::Destroy()
 {
-	Safe_Release(m_pTexture);
 	Safe_Release(m_pVB);
 	Safe_Release(m_pIB);
 

@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include "Enum.h"
+
+class CMesh;
 /*
 엔티티 클래스
 용도 : 3D전체
@@ -14,6 +16,23 @@ private:
 	std::string		Name;
 	eMESH_NUM		Mesh_num;
 	eTEXTURE_NUM	Texture_num;
+	CMesh*			m_pMesh;
+	eRENDER_TYPE	m_eRenderType;
+
+public:
+	void Initialize();
+	void Update();
+	void Render();
+
+//Setter
+public:
+	void SetRenderType(const eRENDER_TYPE& eRender);
+	void PushMesh(CMesh* pMesh);
+
+//Getter
+public:
+	const eRENDER_TYPE& GetRenderType() const;
+	const CMesh*		GetMesh() const;
 
 public:
 	CEntity(void);

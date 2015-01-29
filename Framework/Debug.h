@@ -2,7 +2,7 @@
 
 #include "Singleton.h"
 
-class CTerrainMesh;
+class CEntity;
 
 
 class CDebug
@@ -25,7 +25,7 @@ private:
 	LPDIRECT3DVERTEXBUFFER9		m_pLineVB;
 	int							m_iCnt;
 
-	CTerrainMesh*		m_pTerrain;
+	CEntity*		m_pTerrain;
 
 	
 

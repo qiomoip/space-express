@@ -2,6 +2,7 @@
 #include "Device.h"
 #include "ResourceManager.h"
 #include "TString.h"
+#include "Texture.h"
 
 CStaticMesh::CStaticMesh(void)
 	: m_pMeshInfo(NULL)
@@ -63,8 +64,7 @@ HRESULT CStaticMesh::LoadTexture()
 	_TD3DXMATERIAL mMaterial;
 	memset(&mMaterial, 0, sizeof(_TD3DXMATERIAL));
 	mMaterial.MatD3D = d3dxMaterials->MatD3D;
-	/*MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, d3dxMaterials->pTextureFilename, strlen(d3dxMaterials->pTextureFilename) + 1,
-	mMaterial.pTextureFilename, _tcslen(mMaterial.pTextureFilename) + 1);*/
+
 	mMaterial.pTextureFilename = _SINGLE(CTString)->CharToTCHAR(d3dxMaterials->pTextureFilename);
 
 	m_pMeshInfo->pMaterials = new D3DMATERIAL9[m_pMeshInfo->dwNumMaterials];
@@ -89,25 +89,25 @@ HRESULT CStaticMesh::LoadTexture()
 		if( d3dxMaterials[i].pTextureFilename &&
 			lstrlenA( d3dxMaterials[i].pTextureFilename ) > 0 )
 		{
-			//텍스쳐 이름 앞에도 경로 추가
-			/*CHAR* preFix = "Resources\\Mesh_Texture\\";
-			CHAR filename[255];	
-			strcpy_s(filename, 255, preFix);
-			strcat_s(filename, 255, d3dxMaterials[i].pTextureFilename);*/
+			LPSTR szRet = _SINGLE(CTString)->TCHARToChar(mMaterial.pTextureFilename);
+			
+			/*new CHAR[256];
+			memset(szRet, 0, sizeof(char) * 256);
+			int len = WideCharToMultiByte( CP_ACP, 0, mMaterial.pTextureFilename, -1, NULL, 0, NULL, NULL );	
+			WideCharToMultiByte( CP_ACP, 0, mMaterial.pTextureFilename, -1, szRet, len, NULL, NULL );*/
 
+			//WideCharToMultiByte(CP_ACP, MB_PRECOMPOSED, mMaterial.pTextureFilename, _tcslen(mMaterial.pTextureFilename) + 1,
+			//	szRet, 256 , NULL, NULL);
 
-			// Create the texture
-			LPTSTR szPath = _SINGLE(CResourceManager)->GetResourcePathT( mMaterial.pTextureFilename);
-			if( FAILED( D3DXCreateTextureFromFile( _SINGLE(CDevice)->GetDevice(),
-				szPath,
-				&m_pMeshInfo->pTextures[i] ) ) )
+			CTexture* pTexture = _SINGLE(CResourceManager)->LoadTexture(szRet, mMaterial.pTextureFilename);
+			if(!pTexture)
 			{
-				MessageBox( NULL, _T("Could not find texture map"), m_pMeshInfo->pName, MB_OK );
-				Safe_Delete(m_pMeshInfo);
-				Safe_Delete(szPath);
+				Safe_Delete_Array(szRet);
+				Safe_Delete(pTexture);
 				return E_FAIL;
 			}
-			Safe_Delete_Array(szPath);
+			Safe_Delete_Array(szRet);
+			m_vecTexture.push_back(pTexture);
 		}
 	}
 
@@ -123,16 +123,18 @@ HRESULT CStaticMesh::LoadTexture()
 void CStaticMesh::Render()
 {
 	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
-	 for( DWORD i = 0; i < m_pMeshInfo->dwNumMaterials; i++ )
-        {
-            // Set the material and texture for this subset
-			_SINGLE(CDevice)->GetDevice()->SetMaterial( &m_pMeshInfo->pMaterials[i] );
-            _SINGLE(CDevice)->GetDevice()->SetTexture( 0, m_pMeshInfo->pTextures[i] );
+	
+	for( DWORD i = 0; i < m_pMeshInfo->dwNumMaterials; i++ )
+	{
+		// Set the material and texture for this subset
+		_SINGLE(CDevice)->GetDevice()->SetMaterial( &m_pMeshInfo->pMaterials[i] );
+		// _SINGLE(CDevice)->GetDevice()->SetTexture( 0, m_pMeshInfo->pTextures[i] );
+		m_vecTexture[i]->SetTexture();
 
-            // Draw the mesh subset
-			m_pMeshInfo->pMesh->DrawSubset( i );
-        }
-	 _SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, TRUE);
+		// Draw the mesh subset
+		m_pMeshInfo->pMesh->DrawSubset( i );
+	}
+	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 void CStaticMesh::Destroy()

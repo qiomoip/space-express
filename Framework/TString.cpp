@@ -23,9 +23,9 @@ LPTSTR	CTString::CharToTCHAR(LPSTR szStr)
 LPSTR	CTString::TCHARToChar(LPTSTR szStr)
 {
 	LPSTR szRet = new CHAR[256];
-
-	WideCharToMultiByte(CP_ACP, MB_PRECOMPOSED, szStr, _tcslen(szStr) + 1,
-		szRet, strlen(szRet) + 1 , NULL, NULL);
+			memset(szRet, 0, sizeof(char) * 256);
+			int len = WideCharToMultiByte( CP_ACP, 0, szStr, -1, NULL, 0, NULL, NULL );	
+			WideCharToMultiByte( CP_ACP, 0, szStr, -1, szRet, len, NULL, NULL );
 
 	return szRet;
 }
