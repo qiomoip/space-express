@@ -3,11 +3,13 @@
 
 class CMesh
 {
+protected:
+	
 public:
-	virtual void Initialize();
-	virtual void Update();
-	virtual void Render();
+	virtual void Render()PURE;
 	virtual void Destroy();
+
+	virtual HRESULT LoadResource(const LPTSTR szMeshName)PURE;
 
 public:
 	CMesh(void);

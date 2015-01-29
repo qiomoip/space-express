@@ -2,6 +2,8 @@
 
 #include "Singleton.h"
 
+class CMesh;
+
 
 class CResourceManager : public CSingleton<CResourceManager>
 {
@@ -12,9 +14,9 @@ private:
 	CResourceManager(void);
 	~CResourceManager(void);
 
-	vector<MESH_INFO*>*				m_MeshArray;
+	map<string, CMesh*>*			m_mapMesh;
 	
-	LPD3DXBUFFER					m_pD3DXMtrlBuffer ;
+	//LPD3DXBUFFER					m_pD3DXMtrlBuffer ;
 
 	LPTSTR							m_tResourceStr;
 
@@ -24,16 +26,16 @@ public:
 
 	void							CleanUp();
 
-	void							Load();
+	void							Load(const eMESH_TYPE& eMeshType, const string& strMeshKey, const LPTSTR szMeshName);
 
-	MESH_INFO*						LoadMesh(const eMESH_TYPE& eMeshType, const LPTSTR _meshName = NULL);
+	CMesh*							LoadMesh(const eMESH_TYPE& eMeshType, const string& strMeshKey, const LPTSTR _meshName = NULL);
 
-	HRESULT							LoadTexture(MESH_INFO* pMeshInfo);
+	HRESULT							LoadTexture(CMesh* pMeshInfo);
 
 	LPSTR							GetResourcePath(const LPSTR _str_);
 	TCHAR*							GetResourcePathT(const LPTSTR _str_);
 
-	vector<MESH_INFO*>*				GetMeshArray();
+	const map<string, CMesh*>*		GetMeshList() const;
 
 };
 

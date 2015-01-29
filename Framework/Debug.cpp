@@ -28,12 +28,11 @@ void CDebug::Initialize()
 	if(!m_pDevice)
 		return;
 	CreateVertexBuffer();
-	m_pTerrain = new CTerrainMesh;
+	//m_pTerrain = new CTerrainMesh;
 
-	m_pTerrain->Initialize();
+	//m_pTerrain->Initialize();
 
-	//m_pTerrain = _SINGLE(CResourceManager)->LoadMesh(MT_TERRAIN);
-
+	m_pTerrain = (CTerrainMesh*)_SINGLE(CResourceManager)->LoadMesh(MT_TERRAIN, "MainTerrain");
 	
 }
 
@@ -116,7 +115,7 @@ void CDebug::Render()
 
 void CDebug::DrawInfo()
 {
-	m_pTerrain->Render();
+	//m_pTerrain->Render();
 	DrawGrid();
 }
 
@@ -143,7 +142,6 @@ void CDebug::DrawGrid()
 void CDebug::Destroy()
 {
 	Safe_Release(m_pGridVB);
-	Safe_Delete(m_pTerrain);
 	Safe_Release(m_pLineVB);
 }
 

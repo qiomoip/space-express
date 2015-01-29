@@ -23,7 +23,7 @@ public:
 	
 	void								CleanUp();
 
-	HRESULT								DrawObj();
+	HRESULT								Render();
 	
 };
 

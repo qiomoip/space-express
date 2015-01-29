@@ -19,7 +19,7 @@ CTerrainMesh::~CTerrainMesh(void)
 	Destroy();
 }
 
-void CTerrainMesh::Initialize()
+HRESULT CTerrainMesh::LoadResource(const LPTSTR _meshName)
 {
 	TERRAININFO tInfo;
 	memset(&tInfo, 0, sizeof(tInfo));
@@ -31,11 +31,10 @@ void CTerrainMesh::Initialize()
 
 	m_iTriNum = (tInfo.iCol - 1 ) * (tInfo.iRow - 1) * 2;
 
-	CreateTerrainInfo(tInfo);
-}
+	if(!CreateTerrainInfo(tInfo))
+		return E_FAIL;
 
-void CTerrainMesh::Update()
-{
+	return S_OK;
 }
 
 void CTerrainMesh::Render()
@@ -70,7 +69,7 @@ bool CTerrainMesh::CreateTerrainInfo(const TERRAININFO& tInfo)
 	if(!CreateVertexInfo())
 		return false;
 
-	if(CreateIndexInfo())
+	if(!CreateIndexInfo())
 		return false;
 
 	return true;

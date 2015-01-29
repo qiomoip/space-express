@@ -47,7 +47,7 @@ HRESULT CEngine::Initialize(HWND hWnd)
 	_SINGLE(CDebug)->Initialize();
 #endif
 
-	_SINGLE(CResourceManager)->Load();
+	_SINGLE(CResourceManager)->Load(MT_STATIC, "Tiger", _T("tiger.x"));
 
 	return S_OK;
 }
@@ -74,8 +74,10 @@ VOID CEngine::Render()
 		//Camera Transform
 		_SINGLE(CCameraManager)->SetTransform();
 
+		//ObjectRender
+		_SINGLE(CObjectManager)->Render();
+
 		//Debug Render
-		
 		_SINGLE(CDebug)->Render();
 
         // End the scene

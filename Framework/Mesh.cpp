@@ -12,17 +12,6 @@ CMesh::~CMesh(void)
 	Destroy();
 }
 
-
-void CMesh::Initialize()
-{
-}
-void CMesh::Update()
-{
-}
-
-void CMesh::Render()
-{
-}
 void CMesh::Destroy()
 {
 }

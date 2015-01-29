@@ -15,10 +15,11 @@ private:
 	int							m_iTriNum;
 
 public:
-	void Initialize();
-	void Update();
 	void Render();
 	void Destroy();
+
+public:
+	HRESULT LoadResource(const LPTSTR szMeshName);
 
 public:
 	bool CreateVertexInfo();

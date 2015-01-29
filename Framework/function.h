@@ -55,6 +55,20 @@ void Safe_Release_Map(T& p)
 }
 
 template <typename T>
+void Safe_Delete_Map(T& p)
+{
+	T::iterator	iter = p.begin();
+
+	while(iter != p.end())
+	{
+		Safe_Delete(iter->second);
+		++iter;
+	}
+
+	p.clear();
+}
+
+template <typename T>
 void Safe_Delete_Array_Map(T& p)
 {
 	T::iterator	iter = p.begin();

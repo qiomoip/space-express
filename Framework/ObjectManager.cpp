@@ -2,6 +2,9 @@
 #include "ResourceManager.h"
 #include "Entity.h"
 
+//юс╫ц
+#include "Mesh.h"
+
 
 CObjectManager::CObjectManager(void)
 {
@@ -41,8 +44,13 @@ void CObjectManager::CleanUp()
 	Safe_Delete(m_Objects);
 }
 
-HRESULT CObjectManager::DrawObj()
+HRESULT CObjectManager::Render()
 {
-	_SINGLE(CResourceManager)->GetMeshArray();
-	return E_FAIL;
+	const map<string, CMesh*>* mapMesh = _SINGLE(CResourceManager)->GetMeshList();
+
+	for(map<string, CMesh*>::const_iterator iter = mapMesh->begin(); iter != mapMesh->end(); ++iter)
+	{
+		iter->second->Render();
+	}
+	return S_OK;
 }
