@@ -53,12 +53,6 @@
     <Filter Include="Engine\Director\Manager\CameraManager\Camera">
       <UniqueIdentifier>{df9db895-47e6-4746-a600-44f9f7ae8002}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Director\FileUtils">
-      <UniqueIdentifier>{7a55e1eb-ee96-4bf6-a680-f865eb6b5d0c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Director\FileUtils\String">
-      <UniqueIdentifier>{02660ec8-5663-414d-a274-b2cfbf49e27e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Director\DeviceRes\Mesh">
       <UniqueIdentifier>{607c7dca-906c-418a-933b-0e9e735fc82d}</UniqueIdentifier>
     </Filter>
@@ -71,11 +65,20 @@
     <Filter Include="Engine\Director\DeviceRes\Mesh\TextureMesh">
       <UniqueIdentifier>{af8c62c5-1252-4018-b978-74b5d6165989}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Director\ObjeceManager">
-      <UniqueIdentifier>{72aa8e84-55e4-401b-a933-68fb96d829f3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Director\DeviceRes\Texture">
       <UniqueIdentifier>{c3b7ac5f-d18b-4167-bbbb-625ceeee18ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\Manager\ResourceManager">
+      <UniqueIdentifier>{0d9ae6ea-64ad-4d1f-a59f-52712ebb3db7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FileUtils">
+      <UniqueIdentifier>{7a55e1eb-ee96-4bf6-a680-f865eb6b5d0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FileUtils\String">
+      <UniqueIdentifier>{02660ec8-5663-414d-a274-b2cfbf49e27e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\Manager\ObjeceManager">
+      <UniqueIdentifier>{72aa8e84-55e4-401b-a933-68fb96d829f3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -96,20 +99,48 @@
     <ClCompile Include="Engine.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="App.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CameraManager.cpp" />
-    <ClCompile Include="Debug.cpp" />
-    <ClCompile Include="KeyManager.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Mouse.cpp" />
-    <ClCompile Include="ObjectManager.cpp" />
-    <ClCompile Include="ResourceManager.cpp" />
-    <ClCompile Include="StaticMesh.cpp" />
-    <ClCompile Include="TerrainMesh.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="ThirdCam.cpp" />
-    <ClCompile Include="TString.cpp" />
+    <ClCompile Include="App.cpp">
+      <Filter>App</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraManager.cpp">
+      <Filter>Engine\Director\Manager\CameraManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Engine\Director\Manager\CameraManager\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug.cpp">
+      <Filter>Engine\Director\Manager\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>Engine\Director\Manager\InputManager\Mouse</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Engine\Director\DeviceRes\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticMesh.cpp">
+      <Filter>Engine\Director\DeviceRes\Mesh\StaticMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainMesh.cpp">
+      <Filter>Engine\Director\DeviceRes\Mesh\TerrainMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>Engine\Director\Manager\ObjeceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdCam.cpp">
+      <Filter>Engine\Director\Manager\CameraManager\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="TString.cpp">
+      <Filter>FileUtils\String</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Engine\Director\Manager\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyManager.cpp">
+      <Filter>Engine\Director\Manager\InputManager\Key</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Engine\Director\DeviceRes\Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -127,23 +158,57 @@
     <ClInclude Include="Engine.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="App.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="CameraManager.h" />
-    <ClInclude Include="Debug.h" />
-    <ClInclude Include="Enum.h" />
-    <ClInclude Include="function.h" />
-    <ClInclude Include="KeyManager.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Mouse.h" />
-    <ClInclude Include="ObjectManager.h" />
-    <ClInclude Include="ResourceManager.h" />
-    <ClInclude Include="StaticMesh.h" />
-    <ClInclude Include="struct.h" />
-    <ClInclude Include="TerrainMesh.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="ThirdCam.h" />
-    <ClInclude Include="TString.h" />
+    <ClInclude Include="App.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraManager.h">
+      <Filter>Engine\Director\Manager\CameraManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Engine\Director\Manager\CameraManager\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug.h">
+      <Filter>Engine\Director\Manager\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Enum.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="function.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="struct.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>Engine\Director\Manager\InputManager\Mouse</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Engine\Director\DeviceRes\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticMesh.h">
+      <Filter>Engine\Director\DeviceRes\Mesh\StaticMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainMesh.h">
+      <Filter>Engine\Director\DeviceRes\Mesh\TerrainMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManager.h">
+      <Filter>Engine\Director\Manager\ObjeceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdCam.h">
+      <Filter>Engine\Director\Manager\CameraManager\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="TString.h">
+      <Filter>FileUtils\String</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Engine\Director\Manager\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyManager.h">
+      <Filter>Engine\Director\Manager\InputManager\Key</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Engine\Director\DeviceRes\Texture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
