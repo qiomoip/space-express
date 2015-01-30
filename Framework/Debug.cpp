@@ -29,12 +29,8 @@ void CDebug::Initialize()
 	if(!m_pDevice)
 		return;
 	CreateVertexBuffer();
-	//m_pTerrain = new CTerrainMesh;
-
-	//m_pTerrain->Initialize();
-
-	//m_pTerrain = (CTerrainMesh*)_SINGLE(CResourceManager)->LoadMesh(MT_TERRAIN, "MainTerrain");
-	m_pTerrain = _SINGLE(CObjectManager)->CreateEntity(MT_TERRAIN, RTYPE_TERRAIN, "MainTerrain");
+	
+	//m_pTerrain = _SINGLE(CObjectManager)->CreateEntity(MT_TERRAIN, RTYPE_TERRAIN, "MainTerrain");
 }
 
 void CDebug::CreateVertexBuffer()
@@ -126,9 +122,7 @@ void CDebug::DrawGrid()
 	D3DXMatrixIdentity(&matWorld);
 
 	m_pDevice->SetTransform(D3DTS_WORLD, &matWorld);
-	
 
-	m_pDevice->SetRenderState(D3DRS_LIGHTING, false);
 	m_pDevice->SetFVF(VTXCOLORFVF);
 	m_pDevice->SetStreamSource( 0, m_pGridVB, 0, sizeof( VERTEXCOLOR ) );
 	m_pDevice->DrawPrimitive(D3DPT_LINELIST, 0, m_iCnt/2);
@@ -136,8 +130,6 @@ void CDebug::DrawGrid()
 	m_pDevice->SetStreamSource( 0, m_pLineVB, 0, sizeof(VERTEXCOLOR) );
 	m_pDevice->SetFVF(VTXCOLORFVF);
 	m_pDevice->DrawPrimitive( D3DPT_LINELIST, 0, 3 );
-
-	m_pDevice->SetRenderState( D3DRS_LIGHTING, TRUE );
 }
 
 void CDebug::Destroy()

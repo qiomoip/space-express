@@ -20,6 +20,7 @@ private:
 
 public:
 	void								Init();
+	void								Input();
 	void								Update();
 	void								CleanUp();
 	HRESULT								Render();

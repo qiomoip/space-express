@@ -136,6 +136,7 @@ CTexture*	CResourceManager::LoadTexture(const string& strTextureKey, const LPTST
 	}
 	Safe_Delete_Array(szPath);
 	pTexture->SetTextureInfo(pTex);
+	pTexture->SetTextureName(strTextureKey);
 	m_mapTexture.insert(map<string, CTexture*>::value_type(strTextureKey, pTexture));
 	return pTexture;
 

@@ -61,11 +61,11 @@ HRESULT CStaticMesh::LoadTexture()
 	// We need to extract the material properties and texture names from the 
 	// pD3DXMtrlBuffer
 	D3DXMATERIAL* d3dxMaterials = ( D3DXMATERIAL* )m_pD3DXMtrlBuffer->GetBufferPointer();
-	_TD3DXMATERIAL mMaterial;
-	memset(&mMaterial, 0, sizeof(_TD3DXMATERIAL));
-	mMaterial.MatD3D = d3dxMaterials->MatD3D;
+	//_TD3DXMATERIAL mMaterial;
+	//memset(&mMaterial, 0, sizeof(_TD3DXMATERIAL));
+	//mMaterial.MatD3D = d3dxMaterials->MatD3D;
 
-	mMaterial.pTextureFilename = _SINGLE(CTString)->CharToTCHAR(d3dxMaterials->pTextureFilename);
+	//mMaterial.pTextureFilename = _SINGLE(CTString)->CharToTCHAR(d3dxMaterials->pTextureFilename);
 
 	m_pMeshInfo->pMaterials = new D3DMATERIAL9[m_pMeshInfo->dwNumMaterials];
 	m_pMeshInfo->pTextures = new LPDIRECT3DTEXTURE9[m_pMeshInfo->dwNumMaterials];
@@ -89,24 +89,20 @@ HRESULT CStaticMesh::LoadTexture()
 		if( d3dxMaterials[i].pTextureFilename &&
 			lstrlenA( d3dxMaterials[i].pTextureFilename ) > 0 )
 		{
-			LPSTR szRet = _SINGLE(CTString)->TCHARToChar(mMaterial.pTextureFilename);
-			
-			/*new CHAR[256];
-			memset(szRet, 0, sizeof(char) * 256);
-			int len = WideCharToMultiByte( CP_ACP, 0, mMaterial.pTextureFilename, -1, NULL, 0, NULL, NULL );	
-			WideCharToMultiByte( CP_ACP, 0, mMaterial.pTextureFilename, -1, szRet, len, NULL, NULL );*/
+			LPSTR szRet = new char[100];
+			strcpy(szRet, d3dxMaterials[i].pTextureFilename);
+			LPTSTR szFileName = _SINGLE(CTString)->CharToTCHAR(d3dxMaterials[i].pTextureFilename);
 
-			//WideCharToMultiByte(CP_ACP, MB_PRECOMPOSED, mMaterial.pTextureFilename, _tcslen(mMaterial.pTextureFilename) + 1,
-			//	szRet, 256 , NULL, NULL);
-
-			CTexture* pTexture = _SINGLE(CResourceManager)->LoadTexture(szRet, mMaterial.pTextureFilename);
+			CTexture* pTexture = _SINGLE(CResourceManager)->LoadTexture(szRet, szFileName);
 			if(!pTexture)
 			{
 				Safe_Delete_Array(szRet);
+				Safe_Delete_Array(szFileName);
 				Safe_Delete(pTexture);
 				return E_FAIL;
 			}
 			Safe_Delete_Array(szRet);
+			Safe_Delete_Array(szFileName);
 			m_vecTexture.push_back(pTexture);
 		}
 	}
@@ -115,14 +111,12 @@ HRESULT CStaticMesh::LoadTexture()
 
 	Safe_Release(m_pD3DXMtrlBuffer);
 
-	Safe_Delete_Array(mMaterial.pTextureFilename);
-
 	return S_OK;
 }
 
 void CStaticMesh::Render()
 {
-	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
+	
 	
 	for( DWORD i = 0; i < m_pMeshInfo->dwNumMaterials; i++ )
 	{
@@ -134,7 +128,6 @@ void CStaticMesh::Render()
 		// Draw the mesh subset
 		m_pMeshInfo->pMesh->DrawSubset( i );
 	}
-	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 void CStaticMesh::Destroy()

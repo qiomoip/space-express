@@ -1,20 +1,31 @@
-﻿빌드 시작: 2015-01-05 오후 7:09:14
-     1>2 노드의 "C:\Users\B407-01\Desktop\space-express\Framework\Framework_2010.vcxproj" 프로젝트(Build 대상)입니다.
+﻿빌드 시작: 2015-01-30 오후 4:36:14
+     1>2 노드의 "C:\Users\B407-01\Desktop\Project_Express\trunk\Framework\Framework_2010.vcxproj" 프로젝트(Build 대상)입니다.
      1>ClCompile:
-         C:\Program Files\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /IDXUT\Core /IDXUT\Optional /ZI /nologo /W4 /WX- /Od /Oi /Oy- /D WIN32 /D _DEBUG /D DEBUG /D PROFILE /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MDd /GS /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt  Device.cpp Framework.cpp
-         Device.cpp
-         Framework.cpp
-         코드를 생성하고 있습니다...
-       ResourceCompile:
-         C:\Program Files\Windows Kits\8.0\bin\x86\rc.exe /D _UNICODE /D UNICODE /l"0x0409" /nologo /fo"Debug\Framework.res" Framework.rc 
+         C:\Program Files\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /IDXUT\Core /IDXUT\Optional /ZI /nologo /W4 /WX- /Od /Oi /Oy- /D WIN32 /D _DEBUG /D DEBUG /D PROFILE /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MDd /GS /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt  Debug.cpp
+         Debug.cpp
        Link:
-         C:\Program Files\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\B407-01\Desktop\space-express\Framework\Debug\Framework.exe" /INCREMENTAL /NOLOGO d3d9.lib d3dx10d.lib d3dx9d.lib dxerr.lib dxguid.lib winmm.lib comctl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"C:\Program Files\Microsoft Visual Studio 11.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"C:\Users\B407-01\Desktop\space-express\Framework\Debug\Framework.pdb" /SUBSYSTEM:WINDOWS /LARGEADDRESSAWARE:NO /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\B407-01\Desktop\space-express\Framework\Debug\Framework.lib" /MACHINE:X86 /SAFESEH  Debug\Framework.res
+         C:\Program Files\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\B407-01\Desktop\Project_Express\trunk\Framework\Debug\Framework.exe" /INCREMENTAL /NOLOGO d3d9.lib d3dx10d.lib d3dx9d.lib dxerr.lib dxguid.lib winmm.lib comctl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"C:\Program Files\Microsoft Visual Studio 11.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"C:\Users\B407-01\Desktop\Project_Express\trunk\Framework\Debug\Framework.pdb" /SUBSYSTEM:WINDOWS /LARGEADDRESSAWARE:NO /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\B407-01\Desktop\Project_Express\trunk\Framework\Debug\Framework.lib" /MACHINE:X86 /SAFESEH  Debug\Framework.res
+         Debug\App.obj
+         Debug\Camera.obj
+         Debug\CameraManager.obj
+         Debug\Debug.obj
          Debug\Device.obj
-         Debug\Framework.obj
-     1>Device.obj : warning LNK4075: '/EDITANDCONTINUE'이(가) '/SAFESEH' 사양으로 인해 무시됩니다.
-         Framework_2010.vcxproj -> C:\Users\B407-01\Desktop\space-express\Framework\Debug\Framework.exe
-     1>"C:\Users\B407-01\Desktop\space-express\Framework\Framework_2010.vcxproj" 프로젝트를 빌드했습니다(Build 대상).
+         Debug\Engine.obj
+         Debug\Entity.obj
+         Debug\KeyManager.obj
+         Debug\main.obj
+         Debug\Mesh.obj
+         Debug\Mouse.obj
+         Debug\ObjectManager.obj
+         Debug\ResourceManager.obj
+         Debug\StaticMesh.obj
+         Debug\TerrainMesh.obj
+         Debug\Texture.obj
+         Debug\ThirdCam.obj
+         Debug\TString.obj
+         Framework_2010.vcxproj -> C:\Users\B407-01\Desktop\Project_Express\trunk\Framework\Debug\Framework.exe
+     1>"C:\Users\B407-01\Desktop\Project_Express\trunk\Framework\Framework_2010.vcxproj" 프로젝트를 빌드했습니다(Build 대상).
 
 빌드했습니다.
 
-경과 시간: 00:00:02.51
+경과 시간: 00:00:01.92

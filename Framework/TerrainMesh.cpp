@@ -53,11 +53,11 @@ void CTerrainMesh::Render()
 	_SINGLE(CDevice)->GetDevice()->SetStreamSource(0, m_pVB, 0, sizeof(_tagTerrainVertex));
 	_SINGLE(CDevice)->GetDevice()->SetFVF(VTXTERRAINFVF);
 	_SINGLE(CDevice)->GetDevice()->SetIndices(m_pIB);
-	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, false);
+
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 	_SINGLE(CDevice)->GetDevice()->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_tInfo.iVtxNum,
 		0, m_iTriNum);
-	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, true);
+
 	_SINGLE(CDevice)->GetDevice()->SetTexture(0, NULL);
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
 

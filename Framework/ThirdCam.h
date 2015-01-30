@@ -1,9 +1,13 @@
 #pragma once
 #include "Camera.h"
 
+class CEntity;
+
 class CThirdCam
 	: public CCamera
 {
+private:
+	CEntity*		m_pLookObject;
 public:
 	virtual void Init();
 	virtual void Update();
@@ -15,6 +19,9 @@ public:
 	void Roll();
 	void Move();
 	void Rotation();
+
+public:
+	void SetLookObject(CEntity* pEntity);
 
 public:
 	CThirdCam(void);

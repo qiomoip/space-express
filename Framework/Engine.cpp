@@ -7,6 +7,8 @@
 #include "ResourceManager.h"
 #include "ObjectManager.h"
 #include "TString.h"
+#include "Entity.h"
+#include "ThirdCam.h"
 
 CEngine::CEngine(void)
 	: m_pDevice(NULL)
@@ -48,10 +50,12 @@ HRESULT CEngine::Initialize(HWND hWnd)
 #endif
 
 	//_SINGLE(CResourceManager)->Load(MT_STATIC, "Tiger", _T("tiger.x"));
-	_SINGLE(CObjectManager)->CreateEntity(MT_STATIC, RTYPE_ENTITY, "Tiger", _T("tiger.x"));
-	_SINGLE(CObjectManager)->CreateEntity(MT_STATIC, RTYPE_ENTITY, "Tiger1", _T("tiger.x"));
-	_SINGLE(CObjectManager)->CreateEntity(MT_STATIC, RTYPE_ENTITY, "Tiger2", _T("tiger.x"));
-
+	CEntity* pSylva = _SINGLE(CObjectManager)->CreateEntity(MT_STATIC, RTYPE_ENTITY, "Tiger", _T("tiger.x"));
+	pSylva->SetPos(D3DXVECTOR3(0.f, 0.f, 0.f));
+	((CThirdCam*)pCam)->SetLookObject(pSylva);
+	CEntity* pEnvi = _SINGLE(CObjectManager)->CreateEntity(MT_STATIC, RTYPE_ENVIRONMENT, "Envi", _T("Environment.X"));
+	pEnvi->SetPos(D3DXVECTOR3(0.f, 10.f, 0.f));
+	pEnvi->SetScale(0.5f, 0.5f, 0.5f);
 	return S_OK;
 }
 
@@ -68,24 +72,27 @@ VOID CEngine::Render()
         return;
 
     // Clear the backbuffer to a blue color
-	m_pDevice->GetDevice()->Clear( 0, NULL, D3DCLEAR_TARGET /*| D3DCLEAR_ZBUFFER | 
+	m_pDevice->GetDevice()->Clear( 0, NULL, D3DCLEAR_TARGET/* | D3DCLEAR_ZBUFFER | 
 		D3DCLEAR_STENCIL*/, D3DCOLOR_XRGB( 200, 200, 200 ), 1.0f, 0 );
 
     // Begin the scene
     if( SUCCEEDED( m_pDevice->GetDevice()->BeginScene() ) )
     {
         // Rendering of scene objects can happen here
+		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_ZENABLE,TRUE);
 
 		//Camera Transform
 		_SINGLE(CCameraManager)->SetTransform();
 
 		//Debug Render
+		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
 		_SINGLE(CDebug)->Render();
 
 		_SINGLE(CTString)->DrawFont( _T("테스트 로그") );
 		_SINGLE(CTString)->DrawLog();
 		//ObjectRender
 		_SINGLE(CObjectManager)->Render();
+		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, TRUE);
 
         // End the scene
         m_pDevice->GetDevice()->EndScene();
@@ -116,6 +123,7 @@ void CEngine::Input()
 {
 	_SINGLE(CKeyManager)->SetKeyState();
 	_SINGLE(CCameraManager)->Input();
+	_SINGLE(CObjectManager)->Input();
 
 #ifdef _DEBUG
 	_SINGLE(CDebug)->Input();

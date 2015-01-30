@@ -157,8 +157,8 @@ HRESULT CTString::AddLog(LPTSTR _log)
 	else
 	{
 		//아닐 경우 그냥 로그 카운트에 넣는다
-		Tstrcpy(m_Log[m_LogCount], _log);
-		++m_LogCount;
+		Tstrcpy(m_Log[m_LogCount++], _log);
+		//++m_LogCount;
 	}
 
 	return S_OK;
