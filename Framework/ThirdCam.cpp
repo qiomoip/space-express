@@ -1,5 +1,6 @@
 #include "ThirdCam.h"
 #include "KeyManager.h"
+#include "Entity.h"
 
 //typedef struct _tagCamera
 //{
@@ -13,6 +14,7 @@
 
 CThirdCam::CThirdCam(void)
 	: CCamera()
+	, m_pLookObject(NULL)
 {
 }
 
@@ -44,20 +46,20 @@ void CThirdCam::Rotation()
 }
 void CThirdCam::Input()
 {
-	m_tCam.iDir = 0;
+	memset(m_tCam.iDir, 0, sizeof(int) * AT_MAX);
 	memset(m_tCam.iAngle, 0, sizeof(int) * AT_MAX);
 	const KEYINFO* pInfo = _SINGLE(CKeyManager)->GetKey("KEY_UP");
 	if(!pInfo)
 		return;
 	if(pInfo->bPush || pInfo->bDown)
 	{
-		m_tCam.iDir = 1;
+		m_tCam.iDir[AT_Y] = 1;
 	}
 
 	pInfo = _SINGLE(CKeyManager)->GetKey("KEY_DOWN");
 	if(pInfo->bPush || pInfo->bDown)
 	{
-		m_tCam.iDir = -1;
+		m_tCam.iDir[AT_Y] = -1;
 	}
 
 	pInfo = _SINGLE(CKeyManager)->GetKey("KEY_ROT_X_RIGHT");
@@ -84,6 +86,17 @@ void CThirdCam::Input()
 		m_tCam.iAngle[AT_X] = 1;
 	}
 
+	pInfo = _SINGLE(CKeyManager)->GetKey("KEY_RIGHT");
+	if(pInfo->bPush || pInfo->bDown)
+	{
+		m_tCam.iDir[AT_X] = 1;
+	}
+
+	pInfo = _SINGLE(CKeyManager)->GetKey("KEY_LEFT");
+	if(pInfo->bPush || pInfo->bDown)
+	{
+		m_tCam.iDir[AT_X] = -1;
+	}
 }
 
 void CThirdCam::Yaw()
@@ -113,8 +126,36 @@ void CThirdCam::Roll()
 void CThirdCam::Move()
 {
 	D3DXVECTOR3 vDir;
-	D3DXVec3Cross(&vDir, &m_tCam.vRight, &m_tCam.vUp);
-	D3DXVec3Normalize(&vDir, &vDir);
-	m_tCam.vPos += /*D3DXVECTOR3(vDir.x, 0.f, vDir.z)*/vDir * 0.05f * (float)m_tCam.iDir;
+
+	if(m_tCam.iDir[AT_X])
+	{
+		D3DXVec3Cross(&vDir, &m_tCam.vUp, &m_tCam.vLook);
+		D3DXVec3Normalize(&vDir, &vDir);
+
+		m_tCam.vPos += vDir * 0.05f * (float)m_tCam.iDir[AT_X];
+	}
+	if(m_tCam.iDir[AT_Y])
+	{
+		//D3DXVec3Cross(&vDir, &m_tCam.vLook, &m_tCam.vRight);
+		//D3DXVec3Normalize(&vDir, &vDir);
+
+		//m_tCam.vPos += vDir * 0.05f * (float)m_tCam.iDir[AT_Y];
+		m_tCam.vPos += D3DXVECTOR3(0.f, 0.2f, 0.f) * m_tCam.iDir[AT_Y];
+	}
+
+	if(m_tCam.iDir[AT_Z])
+	{
+		D3DXVec3Cross(&vDir, &m_tCam.vRight, &m_tCam.vUp);
+		D3DXVec3Normalize(&vDir, &vDir);
+
+		m_tCam.vPos += vDir * 0.05f * (float)m_tCam.iDir[AT_Z];
+	}
+	
+	
 	//m_tCam.vPos += m_tCam.vLook * 0.01f * m_tCam.iDir;
+}
+
+void CThirdCam::SetLookObject(CEntity* pEntity)
+{
+	m_pLookObject = pEntity;
 }
