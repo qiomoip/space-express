@@ -1,6 +1,6 @@
 #pragma once
-#include <string>
-#include "Enum.h"
+
+#include "define.h"
 
 class CMesh;
 /*
@@ -13,7 +13,7 @@ class CEntity
 {
 private:
 	
-	std::string		Name;
+	std::string		m_strName;
 	eMESH_NUM		Mesh_num;
 	eTEXTURE_NUM	Texture_num;
 	CMesh*			m_pMesh;
@@ -28,11 +28,13 @@ public:
 public:
 	void SetRenderType(const eRENDER_TYPE& eRender);
 	void PushMesh(CMesh* pMesh);
+	void SetName(const string& strName);
 
 //Getter
 public:
 	const eRENDER_TYPE& GetRenderType() const;
 	const CMesh*		GetMesh() const;
+	const string&		GetName() const;
 
 public:
 	CEntity(void);

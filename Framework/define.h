@@ -23,6 +23,7 @@
 #include <memory.h>
 #include <tchar.h>
 #include <strsafe.h>
+#include <string.h>
 #include <locale.h>
 
 #pragma warning( disable : 4996 ) // disable deprecated warning 

@@ -39,7 +39,7 @@ CEntity* CObjectManager::CreateEntity(const eMESH_TYPE& eMeshType, const eRENDER
 	CEntity* pEntity = new CEntity;
 	pEntity->Initialize();
 	pEntity->SetRenderType(eRender);
-
+	pEntity->SetName(strMeshKey);
 	CMesh* pMesh = NULL;
 
 	if(eRender != RTYPE_NONE)
@@ -62,6 +62,7 @@ CEntity* CObjectManager::CreateEntity(const string& strEntityKey)
 
 	CEntity* pEntity = new CEntity;
 	pEntity->Initialize();
+	pEntity->SetName(strEntityKey);
 
 	return pEntity;
 }
