@@ -1,7 +1,11 @@
 #pragma once
 #include "define.h"
 /*
-DirectX용 문자열 클래스
+문자열 클래스
+
+분리 헤더 필요한 헤더
+tchar.h
+windows.h
 */
 
 class CTString
