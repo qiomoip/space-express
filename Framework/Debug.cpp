@@ -37,7 +37,7 @@ void CDebug::Initialize()
 	//m_pTerrain = (CTerrainMesh*)_SINGLE(CResourceManager)->LoadMesh(MT_TERRAIN, "MainTerrain");
 	m_pTerrain = _SINGLE(CObjectManager)->CreateEntity(MT_TERRAIN, RTYPE_TERRAIN, "MainTerrain");
 
-	_SINGLE(CDevice)->AddLog( _T("테스트 로그 입니다.") );
+	_SINGLE(CDevice)->AddLog( _S("테스트 로그 입니다.") );
 	
 }
 
@@ -124,7 +124,7 @@ void CDebug::DrawInfo()
 	//m_pTerrain->Render();
 	DrawGrid();
 
-	_SINGLE(CDevice)->DrawFont( CTString::Tvprintf(_T("%d으하하 가변 길이 인자"), 1234 ) );
+	_SINGLE(CDevice)->DrawFont( CTString::Tvprintf(_S("%d으하하 가변 길이 인자"), 1234 ) );
 	_SINGLE(CDevice)->DrawLog();
 }
 

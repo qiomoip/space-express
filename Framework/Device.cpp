@@ -37,18 +37,7 @@ HRESULT CDevice::CreateDevice(HWND hWnd)
     ZeroMemory( &d3dpp, sizeof( d3dpp ) );
     d3dpp.Windowed = TRUE;
     d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-    d3dpp.BackBufferFormat = D3DFMT_A8R8G8B8;
-	d3dpp.EnableAutoDepthStencil = true;
-	d3dpp.AutoDepthStencilFormat	= D3DFMT_D24S8;
-	d3dpp.FullScreen_RefreshRateInHz	= D3DPRESENT_RATE_DEFAULT;
-	d3dpp.PresentationInterval		= D3DPRESENT_INTERVAL_IMMEDIATE;
-	d3dpp.MultiSampleType			= D3DMULTISAMPLE_NONE;
-	d3dpp.MultiSampleQuality		= 0;
-	d3dpp.BackBufferWidth	= SCREEN_WIDTH;
-	d3dpp.BackBufferHeight	= SCREEN_HEIGHT;
-	d3dpp.BackBufferFormat	= D3DFMT_A8R8G8B8;
-	d3dpp.BackBufferCount	= 1;
-	d3dpp.Flags				= 0;
+    d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
 
     // Create the Direct3D device. Here we are using the default adapter (most
     // systems only have one, unless they have multiple graphics hardware cards
@@ -79,6 +68,8 @@ VOID CDevice::Cleanup()
 {
 	for( int i = 0; i < LOG_COUNT; ++i)
 		Safe_Delete(m_Log[i]);
+	Safe_Delete_Array(m_Log);
+
 	Safe_Release(m_pFont); // 폰트 구조체해제
 
 	if( m_pLine != NULL)
@@ -116,7 +107,7 @@ VOID CDevice::InitLog()
 	for(int i = 0; i < LOG_COUNT; ++i)
 		m_Log[i] = new CTString();
 
-	AddLog( _T("로그 추가." ) );
+	AddLog( _S("로그 추가." ) );
 	
 }
 
@@ -143,7 +134,7 @@ VOID CDevice::InitFont()
 HRESULT CDevice::DrawFont(LPTSTR str )
 {
 	m_pFont->DrawText(NULL, str, -1, &m_FontRect, DT_RIGHT | DT_EXPANDTABS | DT_WORDBREAK , COLOR_CYAN); //출력
-
+	Safe_Delete_Array(str);
 	return S_OK;
 }
 
@@ -172,6 +163,7 @@ HRESULT CDevice::AddLog(LPTSTR _log)
 		//아닐 경우 그냥 로그 카운트에 넣는다
 		CTString::Tstrcpy(m_Log[m_LogCount++]->GetStr(), _log);
 
+	Safe_Delete_Array(_log);
 	return S_OK;
 }
 
@@ -187,5 +179,6 @@ HRESULT CDevice::AddLog(int idx, LPTSTR _log)
 		//아닐 경우 그냥 로그 카운트에 넣는다
 		CTString::Tstrcpy(m_Log[idx]->GetStr(), _log);
 
+	Safe_Delete_Array(_log);
 	return S_OK;
 }
