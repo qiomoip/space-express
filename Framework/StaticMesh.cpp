@@ -89,7 +89,7 @@ HRESULT CStaticMesh::LoadTexture()
 		if( d3dxMaterials[i].pTextureFilename &&
 			lstrlenA( d3dxMaterials[i].pTextureFilename ) > 0 )
 		{
-			LPSTR szRet = _SINGLE(CTString)->TCHARToChar(mMaterial.pTextureFilename);
+			LPSTR szRet = CTString::TCHARToChar(mMaterial.pTextureFilename);
 			
 			/*new CHAR[256];
 			memset(szRet, 0, sizeof(char) * 256);
