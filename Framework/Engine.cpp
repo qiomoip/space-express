@@ -82,8 +82,7 @@ VOID CEngine::Render()
 		//Debug Render
 		_SINGLE(CDebug)->Render();
 
-		_SINGLE(CTString)->DrawFont( _T("테스트 로그") );
-		_SINGLE(CTString)->DrawLog();
+
 		//ObjectRender
 		_SINGLE(CObjectManager)->Render();
 
@@ -97,7 +96,6 @@ VOID CEngine::Render()
 
 VOID CEngine::Destroy()
 {
-	_SINGLE(CTString)->KillInstance();
 	_SINGLE(CObjectManager)->KillInstance();
 	_SINGLE(CResourceManager)->KillInstance();
 	_SINGLE(CCameraManager)->KillInstance();

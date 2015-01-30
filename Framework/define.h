@@ -34,7 +34,7 @@ using namespace std;
 #include "Enum.h"
 #include "struct.h"
 #include "function.h"
-
+#include "TString.h"
 
 
 /*

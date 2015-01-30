@@ -6,6 +6,7 @@
 #include "KeyManager.h"
 #include "ResourceManager.h"
 #include "ObjectManager.h"
+#include "TString.h"
 
 
 CDebug::CDebug(void)
@@ -35,6 +36,9 @@ void CDebug::Initialize()
 
 	//m_pTerrain = (CTerrainMesh*)_SINGLE(CResourceManager)->LoadMesh(MT_TERRAIN, "MainTerrain");
 	m_pTerrain = _SINGLE(CObjectManager)->CreateEntity(MT_TERRAIN, RTYPE_TERRAIN, "MainTerrain");
+
+	_SINGLE(CDevice)->AddLog( _T("테스트 로그 입니다.") );
+	
 }
 
 void CDebug::CreateVertexBuffer()
@@ -111,6 +115,7 @@ void CDebug::Update()
 
 void CDebug::Render()
 {
+	
 	DrawInfo();
 }
 
@@ -118,6 +123,9 @@ void CDebug::DrawInfo()
 {
 	//m_pTerrain->Render();
 	DrawGrid();
+
+	_SINGLE(CDevice)->DrawFont( CTString::Tvprintf(_T("%d으하하 가변 길이 인자"), 1234 ) );
+	_SINGLE(CDevice)->DrawLog();
 }
 
 void CDebug::DrawGrid()
