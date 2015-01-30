@@ -6,6 +6,7 @@
 분리 헤더 필요한 헤더
 tchar.h
 windows.h
+문자열 상수를 입력할때 _T대신 _S를 사용
 */
 
 class CTString
@@ -25,6 +26,8 @@ public:
 	static LPTSTR			Tvprintf(LPTSTR str, ...);
 
 	LPTSTR					GetStr();
+
+	static LPTSTR			String( LPTSTR str);
 	
 
 	//연산자 오버로딩
@@ -41,3 +44,6 @@ private:
 
 
 //_stprintf_s(std, _T("std %d"), 123);
+
+//#define _T(_STR_)	{	LPTSTR Tstring = new TCHAR[255]; _tcscpy(Tstring, _tcslen(_STR_), _STR_); return _Tstring; }
+#define _S(_STR_)	CTString::String(_T(_STR_))

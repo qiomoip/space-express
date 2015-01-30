@@ -78,19 +78,35 @@ LPTSTR CTString::Tvprintf(LPTSTR str, ...)
 	
 	va_end(ap);
 
+
+	Safe_Delete_Array(str);
 	return dest;
+}
+
+LPTSTR CTString::String(LPTSTR str)
+{
+	LPTSTR Tstr = NULL;
+	Tstr = new TCHAR[255];
+	Tstrcpy(Tstr , str);
+
+//	Safe_Delete_Array(str);
+	return Tstr;
+	
 }
 
 //연산자 오버로딩
 VOID CTString::operator+=(LPTSTR source)
 {
 	Tstrcat(m_String, source);
+
+	Safe_Delete_Array(source);
 	//return m_String;
 }
 
 VOID CTString::operator+=(CTString* source)
 {
 	Tstrcat(m_String, source->GetStr() );
+	Safe_Delete_Array(source);
 }
 
 LPTSTR	CTString::operator+(LPTSTR source1)
@@ -100,11 +116,12 @@ LPTSTR	CTString::operator+(LPTSTR source1)
 	
 	Tstrcpy(str, m_String);
 	Tstrcat(str, source1);
-	
+	Safe_Delete_Array(source1);
 	return str;
 }
 
 VOID CTString::operator=(LPTSTR source)
 {
 	Tstrcpy(m_String, source);
+	Safe_Delete_Array(source);
 }
