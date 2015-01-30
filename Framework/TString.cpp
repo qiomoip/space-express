@@ -17,7 +17,7 @@ void CTString::Init()
 	 m_Log =  new LPTSTR[LOG_COUNT];
 	for(int i = 0 ; i < LOG_COUNT; ++i)
 	{
-		m_Log[i] = new TCHAR[100];
+		m_Log[i] = new wchar_t[100];
 		Tstrcpy(m_Log[i], _T("") );
 	}
 	memset(&m_Desc, 0, sizeof(D3DXFONT_DESC)); //구조체 초기화

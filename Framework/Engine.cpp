@@ -82,6 +82,8 @@ VOID CEngine::Render()
 		//Debug Render
 		_SINGLE(CDebug)->Render();
 
+		_SINGLE(CTString)->DrawFont( _T("테스트 로그") );
+		_SINGLE(CTString)->DrawLog();
 		//ObjectRender
 		_SINGLE(CObjectManager)->Render();
 
