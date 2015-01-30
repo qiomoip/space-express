@@ -65,7 +65,7 @@ HRESULT CStaticMesh::LoadTexture()
 	memset(&mMaterial, 0, sizeof(_TD3DXMATERIAL));
 	mMaterial.MatD3D = d3dxMaterials->MatD3D;
 
-	mMaterial.pTextureFilename = _SINGLE(CTString)->CharToTCHAR(d3dxMaterials->pTextureFilename);
+	mMaterial.pTextureFilename = CTString::CharToTCHAR(d3dxMaterials->pTextureFilename);
 
 	m_pMeshInfo->pMaterials = new D3DMATERIAL9[m_pMeshInfo->dwNumMaterials];
 	m_pMeshInfo->pTextures = new LPDIRECT3DTEXTURE9[m_pMeshInfo->dwNumMaterials];
