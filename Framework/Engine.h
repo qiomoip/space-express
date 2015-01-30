@@ -13,7 +13,9 @@ private:
 	LPCWSTR				m_Name;
 	CDevice*			m_pDevice;
 	
-
+public:
+	HRESULT CreateEntity();
+	HRESULT CreateCamera();
 
 public:
 	HRESULT				Initialize(HWND hWnd);

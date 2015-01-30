@@ -20,9 +20,13 @@ private:
 
 public:
 	void								Init();
+	void								Input();
 	void								Update();
 	void								CleanUp();
 	HRESULT								Render();
+
+public:
+	CEntity*	FindObject(const string& strObjKey);
 
 public:
 	CEntity*			CreateEntity(const eMESH_TYPE& eMeshType, const eRENDER_TYPE& eRender, const string& strMeshKey, const LPTSTR szMeshName = NULL);

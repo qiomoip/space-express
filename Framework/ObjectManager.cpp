@@ -29,6 +29,7 @@ void CObjectManager::CleanUp()
 	
 }
 
+
 CEntity* CObjectManager::CreateEntity(const eMESH_TYPE& eMeshType, const eRENDER_TYPE& eRender, const string& strMeshKey, const LPTSTR szMeshName)
 {
 	map<string, CEntity*>::iterator iter = m_mapObject.find(strMeshKey);
@@ -67,6 +68,16 @@ CEntity* CObjectManager::CreateEntity(const string& strEntityKey)
 	return pEntity;
 }
 
+
+void CObjectManager::Input()
+{
+	for(map<string, CEntity*>::iterator iter = m_mapObject.begin();
+		iter != m_mapObject.end(); ++iter)
+	{
+		iter->second->Input();
+	}
+}
+
 HRESULT CObjectManager::Render()
 {
 	//const map<string, CMesh*>* mapMesh = _SINGLE(CResourceManager)->GetMeshList();
@@ -75,13 +86,17 @@ HRESULT CObjectManager::Render()
 	//{
 	//	iter->second->Render();
 	//}
-	for(int i = RTYPE_ENTITY; i < RTYPE_MAX; ++i)
+	for(int i = RTYPE_ENVIRONMENT; i < RTYPE_MAX; ++i)
 	{
 		for(list<CEntity*>::iterator iter = m_listRenderList[i].begin(); iter != m_listRenderList[i].end();
 			++iter)
 		{
 			(*iter)->Render();
 		}
+	}
+
+	for(int i = RTYPE_ENVIRONMENT; i < RTYPE_MAX; ++i)
+	{
 		m_listRenderList[i].clear();
 	}
 
@@ -101,4 +116,14 @@ void CObjectManager::Update()
 void CObjectManager::Push_RenderList(CEntity* pEntity)
 {
 	m_listRenderList[pEntity->GetRenderType()].push_back(pEntity);
+}
+
+CEntity*	CObjectManager::FindObject(const string& strObjKey)
+{
+	map<string, CEntity*>::iterator iter = m_mapObject.find(strObjKey);
+
+	if(iter == m_mapObject.end())
+		return NULL;
+
+	return iter->second;
 }
