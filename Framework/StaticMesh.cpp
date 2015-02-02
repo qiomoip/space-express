@@ -47,7 +47,7 @@ HRESULT CStaticMesh::LoadMesh(const LPTSTR szMeshName)
 	{
 		Safe_Delete_Array(str);
 		Safe_Delete(m_pMeshInfo);
-		MessageBox(NULL, _T("No mesh!"), m_pMeshInfo->pName, MB_OK);
+		MessageBox(NULL, _T("No mesh!"), szMeshName, MB_OK);
 		return E_FAIL;
 	}
 	Safe_Delete_Array(str);
