@@ -19,6 +19,7 @@ private:
 	RECT			m_LogRect;
 
 	CTString**		m_Log;
+	CTString*		m_StaticLog;
 	int				m_LogCount;
 
 //getter
@@ -39,12 +40,15 @@ public:
 	VOID				InitLog();
 
 	//즉석에서 띄울 메세지
-	HRESULT			DrawFont(LPTSTR str );
+	HRESULT			DrawFont();
 	//항상 화면에 듸울 메세지
 	HRESULT			DrawLog();
 	//로그 추가
 	HRESULT			AddLog(LPTSTR _log);
+	//특정 인덱스에 로그 추가
 	HRESULT			AddLog(int _idx, LPTSTR _log);
+	//고정된 위치(우측상단)에 로그 출력
+	HRESULT			AddStaticLog(LPTSTR _log);
 	
 	
 private:

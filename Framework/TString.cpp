@@ -88,7 +88,7 @@ LPTSTR CTString::String(LPTSTR str)
 	LPTSTR Tstr = NULL;
 	Tstr = new TCHAR[255];
 	Tstrcpy(Tstr , str);
-
+	
 	return Tstr;
 	
 }
@@ -115,6 +115,7 @@ LPTSTR	CTString::operator+(LPTSTR source1)
 	
 	Tstrcpy(str, m_String);
 	Tstrcat(str, source1);
+	
 	Safe_Delete_Array(source1);
 	return str;
 }

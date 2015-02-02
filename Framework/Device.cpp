@@ -10,6 +10,7 @@ CDevice::CDevice(void)
 	, m_FontRect()
 	, m_LogRect()
 	, m_Log(NULL)
+	, m_StaticLog(NULL)
 	, m_LogCount(0)
 {
 }
@@ -77,10 +78,10 @@ HRESULT CDevice::CreateDevice(HWND hWnd)
 
 VOID CDevice::Cleanup()
 {
+	Safe_Delete(m_StaticLog);
 	for( int i = 0; i < LOG_COUNT; ++i)
 		Safe_Delete(m_Log[i]);
 	Safe_Delete_Array(m_Log);
-
 	Safe_Release(m_pFont); // 폰트 구조체해제
 
 	if( m_pLine != NULL)
@@ -114,6 +115,7 @@ HRESULT CDevice::Initialize(HWND hWnd)
 
 VOID CDevice::InitLog()
 {
+	m_StaticLog = new CTString();
 	m_Log = new CTString*[LOG_COUNT];
 	for(int i = 0; i < LOG_COUNT; ++i)
 		m_Log[i] = new CTString();
@@ -142,10 +144,9 @@ VOID CDevice::InitFont()
 	SetRect(&m_LogRect,10,10,400,SCREEN_HEIGHT); 
 }
 
-HRESULT CDevice::DrawFont(LPTSTR str )
+HRESULT CDevice::DrawFont()
 {
-	m_pFont->DrawText(NULL, str, -1, &m_FontRect, DT_RIGHT | DT_EXPANDTABS | DT_WORDBREAK , COLOR_CYAN); //출력
-	Safe_Delete_Array(str);
+	m_pFont->DrawText(NULL, m_StaticLog->GetStr(), -1, &m_FontRect, DT_RIGHT | DT_EXPANDTABS | DT_WORDBREAK , COLOR_CYAN); //출력
 	return S_OK;
 }
 
@@ -168,13 +169,16 @@ HRESULT CDevice::AddLog(LPTSTR _log)
 		//0번부터 덮어씀
 		//memset(m_Log[0], 0, sizeof(wchar_t) * 100);
 		CTString::Tstrcpy(m_Log[0]->GetStr(), _log);
+		*m_Log[0] = _log;
 		m_LogCount = 1;
 	}
 	else
 		//아닐 경우 그냥 로그 카운트에 넣는다
-		CTString::Tstrcpy(m_Log[m_LogCount++]->GetStr(), _log);
+		//CTString::Tstrcpy(m_Log[m_LogCount++]->GetStr(), _log);
+		*m_Log[m_LogCount++] = _log;
 
-	Safe_Delete_Array(_log);
+
+	//Safe_Delete_Array(_log);
 	return S_OK;
 }
 
@@ -188,8 +192,17 @@ HRESULT CDevice::AddLog(int idx, LPTSTR _log)
 	}
 	else
 		//아닐 경우 그냥 로그 카운트에 넣는다
-		CTString::Tstrcpy(m_Log[idx]->GetStr(), _log);
+		*m_Log[idx] = _log;
+		//CTString::Tstrcpy(m_Log[idx]->GetStr(), _log);
 
-	Safe_Delete_Array(_log);
+	//Safe_Delete_Array(_log);
+	return S_OK;
+}
+
+HRESULT CDevice::AddStaticLog(LPTSTR _log)
+{
+	CTString::Tstrcpy(m_StaticLog->GetStr(), _log);
+	*m_StaticLog = _log;
+	//Safe_Delete_Array(_log);
 	return S_OK;
 }

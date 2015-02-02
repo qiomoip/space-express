@@ -2,6 +2,7 @@
 #include "KeyManager.h"
 #include "Entity.h"
 
+#include "Device.h"
 //typedef struct _tagCamera
 //{
 //      D3DXMATRIX matView;

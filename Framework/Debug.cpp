@@ -124,7 +124,7 @@ void CDebug::DrawInfo()
 	//m_pTerrain->Render();
 	DrawGrid();
 
-	_SINGLE(CDevice)->DrawFont( CTString::Tvprintf(_S("%d으하하 가변 길이 인자"), 1234 ) );
+	_SINGLE(CDevice)->DrawFont();
 	_SINGLE(CDevice)->DrawLog();
 }
 
