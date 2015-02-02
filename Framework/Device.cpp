@@ -37,7 +37,18 @@ HRESULT CDevice::CreateDevice(HWND hWnd)
     ZeroMemory( &d3dpp, sizeof( d3dpp ) );
     d3dpp.Windowed = TRUE;
     d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-    d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
+    d3dpp.BackBufferFormat = D3DFMT_A8R8G8B8;
+	d3dpp.EnableAutoDepthStencil = true;
+	d3dpp.AutoDepthStencilFormat	= D3DFMT_D24S8;
+	d3dpp.FullScreen_RefreshRateInHz	= D3DPRESENT_RATE_DEFAULT;
+	d3dpp.PresentationInterval		= D3DPRESENT_INTERVAL_IMMEDIATE;
+	d3dpp.MultiSampleType			= D3DMULTISAMPLE_NONE;
+	d3dpp.MultiSampleQuality		= 0;
+	d3dpp.BackBufferWidth	= SCREEN_WIDTH;
+	d3dpp.BackBufferHeight	= SCREEN_HEIGHT;
+	d3dpp.BackBufferFormat	= D3DFMT_A8R8G8B8;
+	d3dpp.BackBufferCount	= 1;
+	d3dpp.Flags				= 0;
 
     // Create the Direct3D device. Here we are using the default adapter (most
     // systems only have one, unless they have multiple graphics hardware cards
