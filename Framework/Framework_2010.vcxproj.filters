@@ -80,6 +80,9 @@
     <Filter Include="Engine\Director\Manager\ObjeceManager">
       <UniqueIdentifier>{72aa8e84-55e4-401b-a933-68fb96d829f3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Device">
+      <UniqueIdentifier>{62cba8d7-68cd-4c4b-a488-048990fa4df1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXUT\Optional\directx.ico">
@@ -92,9 +95,6 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Device.cpp">
-      <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Engine.cpp">
       <Filter>Engine</Filter>
@@ -141,6 +141,9 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Engine\Director\DeviceRes\Texture</Filter>
     </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>Engine\Device</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -151,9 +154,6 @@
     </ClInclude>
     <ClInclude Include="define.h">
       <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Device.h">
-      <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>Engine</Filter>
@@ -208,6 +208,9 @@
     </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Engine\Director\DeviceRes\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>Engine\Device</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

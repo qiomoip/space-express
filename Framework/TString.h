@@ -51,3 +51,4 @@ private:
 
 //#define _T(_STR_)	{	LPTSTR Tstring = new TCHAR[255]; _tcscpy(Tstring, _tcslen(_STR_), _STR_); return _Tstring; }
 #define _S(_STR_)	CTString::String(_T(_STR_))
+

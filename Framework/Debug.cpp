@@ -15,6 +15,13 @@ CDebug::CDebug(void)
 	, m_pDevice(NULL)
 	, m_iCnt(0)
 	, m_pLineVB(NULL)
+	, m_pFont(NULL)
+	, m_Desc()
+	, m_FontRect()
+	, m_LogRect()
+	, m_Log(NULL)
+	, m_StaticLog(NULL)
+	, m_LogCount(0)
 {
 }
 
@@ -37,7 +44,13 @@ void CDebug::Initialize()
 	//m_pTerrain = (CTerrainMesh*)_SINGLE(CResourceManager)->LoadMesh(MT_TERRAIN, "MainTerrain");
 	m_pTerrain = _SINGLE(CObjectManager)->CreateEntity(MT_TERRAIN, RTYPE_TERRAIN, "MainTerrain");
 
-	_SINGLE(CDevice)->AddLog( _S("테스트 로그 입니다.") );
+	InitFont();
+	InitLog();
+	AddLog(0, _S("테스트 로그 입니다.") );
+	AddLog(1 ,  _S("테스트 로그 입니다.2") );
+	AddLog(2, CTString::Tvprintf(_S("로그 %d 변수 출력 %d"), 123 , 123) );
+	AddStaticLog( _S("위치가 고정된 로그") );
+
 	
 }
 
@@ -119,13 +132,31 @@ void CDebug::Render()
 	DrawInfo();
 }
 
+
+void CDebug::Destroy()
+{
+	Safe_Release(m_pGridVB);
+	Safe_Release(m_pLineVB);
+
+	Safe_Delete(m_StaticLog);
+	for( int i = 0; i < LOG_COUNT; ++i)
+		Safe_Delete(m_Log[i]);
+	Safe_Delete_Array(m_Log);
+	Safe_Release(m_pFont); // 폰트 구조체해제
+}
+
+void CDebug::Input()
+{
+}
+
+
 void CDebug::DrawInfo()
 {
 	//m_pTerrain->Render();
 	DrawGrid();
 
-	_SINGLE(CDevice)->DrawFont();
-	_SINGLE(CDevice)->DrawLog();
+	DrawFont();
+	DrawLog();
 }
 
 void CDebug::DrawGrid()
@@ -148,12 +179,95 @@ void CDebug::DrawGrid()
 	m_pDevice->SetRenderState( D3DRS_LIGHTING, TRUE );
 }
 
-void CDebug::Destroy()
+
+VOID CDebug::InitLog()
 {
-	Safe_Release(m_pGridVB);
-	Safe_Release(m_pLineVB);
+	m_StaticLog = new CTString();
+	m_Log = new CTString*[LOG_COUNT];
+	for(int i = 0; i < LOG_COUNT; ++i)
+		m_Log[i] = new CTString();
+
 }
 
-void CDebug::Input()
+VOID CDebug::InitFont()
 {
+	memset(&m_Desc, 0, sizeof(D3DXFONT_DESC)); //구조체 초기화
+	
+	m_Desc.CharSet = HANGUL_CHARSET;
+	CTString::Tstrcpy(m_Desc.FaceName, _T("맑은 고딕") ); //폰트 설정
+	m_Desc.Height = 15; //높이
+	m_Desc.Width = 8; //넓이
+	m_Desc.Weight = FW_BOLD; //두께
+	m_Desc.Quality = ANTIALIASED_QUALITY; //품질
+	m_Desc.MipLevels = 1;
+	m_Desc.Italic = 0; //이텔릭
+	m_Desc.OutputPrecision = OUT_DEFAULT_PRECIS;
+	m_Desc.PitchAndFamily = FF_DONTCARE;
+
+	D3DXCreateFontIndirect(_SINGLE(CDevice)->GetDevice(), &m_Desc, &m_pFont); 
+	SetRect(&m_FontRect,SCREEN_WIDTH-200,10,SCREEN_WIDTH-30,SCREEN_HEIGHT); //폰트 위치
+	SetRect(&m_LogRect,10,10,400,SCREEN_HEIGHT); 
+}
+
+HRESULT CDebug::DrawFont()
+{
+	m_pFont->DrawText(NULL, m_StaticLog->GetStr(), -1, &m_FontRect, DT_RIGHT | DT_EXPANDTABS | DT_WORDBREAK , COLOR_CYAN); //출력
+	return S_OK;
+}
+
+HRESULT CDebug::DrawLog()
+{
+	for(int i = 0; i < LOG_COUNT; ++i)
+	{
+		m_pFont->DrawText(NULL, m_Log[i]->GetStr(), -1, &m_LogRect, DT_LEFT | DT_EXPANDTABS | DT_WORDBREAK, COLOR_GOLD); //출력
+		m_LogRect.top += m_Desc.Height + 5;
+	}
+	m_LogRect.top  = 10;
+	return S_OK;
+}
+
+HRESULT CDebug::AddLog(LPTSTR _log)
+{
+	//로그 카운트가 맥스일 경우 위에 덮어쓴다
+	if( m_LogCount >= LOG_COUNT )
+	{
+		//0번부터 덮어씀
+		//memset(m_Log[0], 0, sizeof(wchar_t) * 100);
+		CTString::Tstrcpy(m_Log[0]->GetStr(), _log);
+		*m_Log[0] = _log;
+		m_LogCount = 1;
+	}
+	else
+		//아닐 경우 그냥 로그 카운트에 넣는다
+		//CTString::Tstrcpy(m_Log[m_LogCount++]->GetStr(), _log);
+		*m_Log[m_LogCount++] = _log;
+
+
+	//Safe_Delete_Array(_log);
+	return S_OK;
+}
+
+HRESULT CDebug::AddLog(int idx, LPTSTR _log)
+{
+	//로그 카운트가 맥스일 경우 위에 덮어쓴다
+	if( idx >= LOG_COUNT )
+	{
+		//잘못된 인덱스
+		return E_FAIL;
+	}
+	else
+		//아닐 경우 그냥 로그 카운트에 넣는다
+		*m_Log[idx] = _log;
+		//CTString::Tstrcpy(m_Log[idx]->GetStr(), _log);
+
+	//Safe_Delete_Array(_log);
+	return S_OK;
+}
+
+HRESULT CDebug::AddStaticLog(LPTSTR _log)
+{
+	CTString::Tstrcpy(m_StaticLog->GetStr(), _log);
+	*m_StaticLog = _log;
+	//Safe_Delete_Array(_log);
+	return S_OK;
 }
