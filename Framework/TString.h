@@ -21,12 +21,16 @@ public:
 	static LPTSTR			CharToTCHAR(LPSTR szStr);	//TCHAR을 char 형태로
 	static LPSTR			TCHARToChar(LPTSTR szStr);	//char을 TCHAR 형태로
 	
+	//문자열 삽입
 	static HRESULT			Tstrcpy(LPTSTR dest, LPTSTR source);
+	//문자열 붙이기
 	static HRESULT			Tstrcat(LPTSTR dest, LPTSTR source);
+	//변수포함 문자열 출력
 	static LPTSTR			Tvprintf(LPTSTR str, ...);
 
 	LPTSTR					GetStr();
 
+	//문자열 상수를 문자열 변수로 변환
 	static LPTSTR			String( LPTSTR str);
 	
 

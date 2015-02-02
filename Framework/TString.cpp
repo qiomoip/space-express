@@ -89,7 +89,6 @@ LPTSTR CTString::String(LPTSTR str)
 	Tstr = new TCHAR[255];
 	Tstrcpy(Tstr , str);
 
-//	Safe_Delete_Array(str);
 	return Tstr;
 	
 }
