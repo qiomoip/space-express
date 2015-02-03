@@ -25,6 +25,7 @@
 #include <strsafe.h>
 #include <string.h>
 #include <locale.h>
+#include <memory>
 
 #pragma warning( disable : 4996 ) // disable deprecated warning 
 //#pragma warning( disable : 4244 )
