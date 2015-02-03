@@ -22,6 +22,8 @@ public:
 	VOID				Destroy();
 	VOID				Update();
 	VOID				Input();
+	VOID				Run();
+	VOID				Collision();
 	VOID				Render();
 private:
 	CEngine(void);

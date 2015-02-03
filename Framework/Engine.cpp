@@ -9,6 +9,7 @@
 #include "TString.h"
 #include "Entity.h"
 #include "ThirdCam.h"
+#include "Mouse.h"
 
 CEngine::CEngine(void)
 	: m_pDevice(NULL)
@@ -34,6 +35,7 @@ HRESULT CEngine::Initialize(HWND hWnd)
 
 	//Key
 	_SINGLE(CKeyManager)->Initialize();
+	_SINGLE(CMouse)->SetHwnd(hWnd);
 
 #ifdef _DEBUG
 	_SINGLE(CDebug)->Initialize();
@@ -56,12 +58,15 @@ HRESULT CEngine::Initialize(HWND hWnd)
 HRESULT CEngine::CreateEntity()
 {
 	//_SINGLE(CResourceManager)->Load(MT_STATIC, "Tiger", _T("tiger.x"));
+
 	CEntity* pSylva = _SINGLE(CObjectManager)->CreateEntity(MT_STATIC, RTYPE_ENTITY, "Tiger", _T("tiger.x"));
 	pSylva->SetPos(D3DXVECTOR3(0.f, 0.f, 0.f));
-	
+
+	//_SINGLE(CObjectManager)->CreateEntity(MT_TERRAIN, RTYPE_TERRAIN, "MainTerrain");
+
 	CEntity* pEnvi = _SINGLE(CObjectManager)->CreateEntity(MT_STATIC, RTYPE_ENVIRONMENT, "Envi", _T("Environment.X"));
 	pEnvi->SetPos(D3DXVECTOR3(0.f, 10.f, 0.f));
-	pEnvi->SetScale(0.5f, 0.5f, 0.5f);
+	pEnvi->SetScale(5.f, 5.f, 5.f);
 
 	return S_OK;
 }
@@ -136,6 +141,18 @@ VOID CEngine::Destroy()
 
 	if(m_pDevice)
 		m_pDevice->KillInstance();
+}
+
+VOID CEngine::Collision()
+{
+}
+
+VOID CEngine::Run()
+{
+	Collision();
+	Input();
+	Update();
+	Render();
 }
 
 void CEngine::Input()

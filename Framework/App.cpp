@@ -1,6 +1,6 @@
 #include "App.h"
 #include "Engine.h"
-#include "Mouse.h"
+
 
 
 CApp::CApp(void)
@@ -25,7 +25,7 @@ HRESULT CApp::Initialize(HINSTANCE hInst, LPCTSTR lpClassName, LPCTSTR lpCWindow
 
 	if(!m_hWnd)
 		return E_FAIL;
-	_SINGLE(CMouse)->SetHwnd(m_hWnd);
+	
 	return S_OK;
 }
 
@@ -52,9 +52,8 @@ VOID CApp::Run()
 			}
 			else
 			{
-				_SINGLE(CEngine)->Input();
-				_SINGLE(CEngine)->Update();
-				_SINGLE(CEngine)->Render();
+				_SINGLE(CEngine)->Run();
+				
 			}
 		}
 	}
@@ -105,6 +104,5 @@ ATOM CApp::RegisterWindow()
 
 void CApp::Destroy()
 {
-	_SINGLE(CMouse)->KillInstance();
 	_SINGLE(CEngine)->KillInstance();
 }
