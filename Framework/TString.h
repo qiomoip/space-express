@@ -1,6 +1,5 @@
 #pragma once
 #include "define.h"
-#include <memory>
 /*
 문자열 클래스
 

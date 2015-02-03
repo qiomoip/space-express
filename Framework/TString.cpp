@@ -108,15 +108,15 @@ VOID CTString::operator+=(LPTSTR source)
 
 VOID CTString::operator+=(CTString* source)
 {
-	Tstrcat(m_String.get(), source->GetStr().get() );
+	Tstrcat(m_String.get(), source->GetStr().get());
 	//Safe_Delete_Array(source);
 }
 
 VOID CTString::operator+=(D3DXVECTOR3 vec)
 {
-	LPTSTR str = new TCHAR[100];
-	Tstrcat(str, Tvprintf(_T(" (%.2f, %.2f, %.2f) "), vec.x, vec.y, vec.z).get() );
-	Tstrcat(m_String.get(),  str);
+	shared_ptr<TCHAR> str(new TCHAR[100]);
+	Tstrcat(str.get(), Tvprintf(_T(" (%.2f, %.2f, %.2f) "), vec.x, vec.y, vec.z).get() );
+	Tstrcat(m_String.get(),  str.get());
 }
 
 
@@ -124,8 +124,8 @@ shared_ptr<TCHAR>	CTString::operator+(LPTSTR source1)
 {
 	shared_ptr<TCHAR> str(new TCHAR[255]);
 	
-	Tstrcpy(str.get(), m_String.get());
-	Tstrcat(str.get(), source1);
+	Tstrcpy(str.get(), m_String.get() );
+	Tstrcat(str.get(), source1 );
 	
 	//Safe_Delete_Array(source1);
 	return str;
