@@ -6,6 +6,12 @@ CTString::CTString(void)
 	Init();
 }
 
+CTString::CTString(LPTSTR str) 
+	: m_String(NULL)
+{
+	Init();
+	Tstrcpy(m_String.get(), str);
+}
 
 CTString::~CTString(void)
 {
@@ -14,23 +20,23 @@ CTString::~CTString(void)
 
 void CTString::Init()
 {
-	m_String =  new TCHAR[255];
-	memset(m_String, 0, sizeof(LPTSTR));
+	m_String = shared_ptr<TCHAR>(new TCHAR[255]);
+	memset(m_String.get(), 0, sizeof(LPTSTR));
 
 }
 
 void CTString::CleanUp()
 {
-	Safe_Delete_Array(m_String);
+	//Safe_Delete_Array(m_String);
 }
 
 
-LPTSTR	CTString::CharToTCHAR(LPSTR szStr)
+shared_ptr<TCHAR>	CTString::CharToTCHAR(LPSTR szStr)
 {
-	LPTSTR szRet = new TCHAR[256];
+	shared_ptr<TCHAR> szRet(new TCHAR[256]);
 
 	MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, szStr, strlen(szStr) + 1,
-		szRet, _tcslen(szRet) + 1);
+		szRet.get(), _tcslen(szRet.get() ) + 1);
 
 	return szRet;
 }
@@ -58,31 +64,29 @@ HRESULT	CTString::Tstrcat(LPTSTR dest, LPTSTR source)
 }
 
 
-LPTSTR CTString::GetStr()
+shared_ptr<TCHAR> CTString::GetStr()
 {
 	return m_String;
 }
 
-LPTSTR CTString::Tvprintf(LPTSTR str, ...)
+shared_ptr<TCHAR> CTString::Tvprintf(LPTSTR str, ...)
 {
 	
-	LPTSTR dest = NULL;
-
-	dest = new TCHAR[255];
+	shared_ptr<TCHAR> dest(new TCHAR[255]);
 
 	va_list ap;
 	
 	va_start(ap, str);
 
-	_vstprintf(dest, 255, str, ap);
+	_vstprintf(dest.get(), 255, str, ap);
 	
 	va_end(ap);
 
 
-	Safe_Delete_Array(str);
+	//Safe_Delete_Array(str);
 	return dest;
 }
-
+/*
 LPTSTR CTString::String(LPTSTR str)
 {
 	LPTSTR Tstr = NULL;
@@ -91,21 +95,21 @@ LPTSTR CTString::String(LPTSTR str)
 	
 	return Tstr;
 	
-}
+}*/
 
 //연산자 오버로딩
 VOID CTString::operator+=(LPTSTR source)
 {
-	Tstrcat(m_String, source);
+	Tstrcat(m_String.get(), source);
 
-	Safe_Delete_Array(source);
+	//Safe_Delete_Array(source);
 	//return m_String;
 }
 
 VOID CTString::operator+=(CTString* source)
 {
 	Tstrcat(m_String, source->GetStr() );
-	Safe_Delete_Array(source);
+	//Safe_Delete_Array(source);
 }
 
 VOID CTString::operator+=(D3DXVECTOR3 vec)
@@ -116,7 +120,7 @@ VOID CTString::operator+=(D3DXVECTOR3 vec)
 }
 
 
-LPTSTR	CTString::operator+(LPTSTR source1)
+shared_ptr<TCHAR>	CTString::operator+(LPTSTR source1)
 {
 	LPTSTR str = NULL;
 	str = new TCHAR[255];
@@ -124,18 +128,28 @@ LPTSTR	CTString::operator+(LPTSTR source1)
 	Tstrcpy(str, m_String);
 	Tstrcat(str, source1);
 	
-	Safe_Delete_Array(source1);
+	//Safe_Delete_Array(source1);
 	return str;
 }
 
-LPTSTR CTString::operator+(D3DXVECTOR3 vec)
+shared_ptr<TCHAR>	CTString::operator+(CTString* source1)
+{
+	LPTSTR str = NULL;
+	str = new TCHAR[255];
+	
+	Tstrcpy(str, m_String);
+	Tstrcat(str, source1->GetStr());
+	
+	//Safe_Delete_Array(source1);
+	return str;
+}
+
+shared_ptr<TCHAR> CTString::operator+(D3DXVECTOR3 vec)
 {
 	LPTSTR str = NULL;
 	str = new TCHAR[10];
-	
 	Tstrcpy(str, m_String);
-	Tstrcat(str, Tvprintf(_S(" (%.2f, %.2f, %.2f) "), vec.x, vec.y, vec.z) );
-	
+	Tstrcat(str, Tvprintf(_T(" (%.2f, %.2f, %.2f) "), vec.x, vec.y, vec.z) );
 	//Safe_Delete_Array(source1);
 	return str;
 
@@ -144,5 +158,5 @@ LPTSTR CTString::operator+(D3DXVECTOR3 vec)
 VOID CTString::operator=(LPTSTR source)
 {
 	Tstrcpy(m_String, source);
-	Safe_Delete_Array(source);
+	//Safe_Delete_Array(source);
 }

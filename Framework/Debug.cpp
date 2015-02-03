@@ -49,7 +49,7 @@ void CDebug::Initialize()
 	AddLog(0, _S("테스트 로그 입니다.") );
 	AddLog(1 ,  _S("테스트 로그 입니다.2") );
 	AddLog(2, CTString::Tvprintf(_S("로그 %d 변수 출력 %d"), 123 , 123) );
-	AddStaticLog( _S("위치가 고정된 로그") );
+	AddStaticLog( _S("위치가 고정된 로그"), false );
 
 	
 }
@@ -241,6 +241,7 @@ HRESULT CDebug::AddLog(LPTSTR _log)
 	return S_OK;
 }
 
+
 HRESULT CDebug::AddLog(int idx, LPTSTR _log)
 {
 	//로그 카운트가 맥스일 경우 위에 덮어쓴다
@@ -256,9 +257,11 @@ HRESULT CDebug::AddLog(int idx, LPTSTR _log)
 	return S_OK;
 }
 
-HRESULT CDebug::AddStaticLog(LPTSTR _log)
+HRESULT CDebug::AddStaticLog(LPTSTR _log, bool isOverwrite)
 {
-	CTString::Tstrcat(m_StaticLog->GetStr(), _log);
-	*m_StaticLog = _log;
+	if ( isOverwrite)
+		*m_StaticLog = _log;
+	else
+		*m_StaticLog += _log;
 	return S_OK;
 }
