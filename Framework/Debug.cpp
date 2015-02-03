@@ -205,7 +205,7 @@ VOID CDebug::InitFont()
 	m_Desc.PitchAndFamily = FF_DONTCARE;
 
 	D3DXCreateFontIndirect(_SINGLE(CDevice)->GetDevice(), &m_Desc, &m_pFont); 
-	SetRect(&m_FontRect,SCREEN_WIDTH-200,10,SCREEN_WIDTH-30,SCREEN_HEIGHT); //폰트 위치
+	SetRect(&m_FontRect,SCREEN_WIDTH-400,10,SCREEN_WIDTH-30,SCREEN_HEIGHT); //폰트 위치
 	SetRect(&m_LogRect,10,10,400,SCREEN_HEIGHT); 
 }
 
@@ -231,19 +231,13 @@ HRESULT CDebug::AddLog(LPTSTR _log)
 	//로그 카운트가 맥스일 경우 위에 덮어쓴다
 	if( m_LogCount >= LOG_COUNT )
 	{
-		//0번부터 덮어씀
-		//memset(m_Log[0], 0, sizeof(wchar_t) * 100);
 		CTString::Tstrcpy(m_Log[0]->GetStr(), _log);
 		*m_Log[0] = _log;
 		m_LogCount = 1;
 	}
 	else
 		//아닐 경우 그냥 로그 카운트에 넣는다
-		//CTString::Tstrcpy(m_Log[m_LogCount++]->GetStr(), _log);
 		*m_Log[m_LogCount++] = _log;
-
-
-	//Safe_Delete_Array(_log);
 	return S_OK;
 }
 
@@ -258,16 +252,13 @@ HRESULT CDebug::AddLog(int idx, LPTSTR _log)
 	else
 		//아닐 경우 그냥 로그 카운트에 넣는다
 		*m_Log[idx] = _log;
-		//CTString::Tstrcpy(m_Log[idx]->GetStr(), _log);
 
-	//Safe_Delete_Array(_log);
 	return S_OK;
 }
 
 HRESULT CDebug::AddStaticLog(LPTSTR _log)
 {
-	CTString::Tstrcpy(m_StaticLog->GetStr(), _log);
+	CTString::Tstrcat(m_StaticLog->GetStr(), _log);
 	*m_StaticLog = _log;
-	//Safe_Delete_Array(_log);
 	return S_OK;
 }

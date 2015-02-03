@@ -108,6 +108,14 @@ VOID CTString::operator+=(CTString* source)
 	Safe_Delete_Array(source);
 }
 
+VOID CTString::operator+=(D3DXVECTOR3 vec)
+{
+	LPTSTR str = new TCHAR[100];
+	Tstrcat(str, Tvprintf(_S(" (%.2f, %.2f, %.2f) "), vec.x, vec.y, vec.z) );
+	Tstrcat(m_String,  str);
+}
+
+
 LPTSTR	CTString::operator+(LPTSTR source1)
 {
 	LPTSTR str = NULL;
@@ -118,6 +126,19 @@ LPTSTR	CTString::operator+(LPTSTR source1)
 	
 	Safe_Delete_Array(source1);
 	return str;
+}
+
+LPTSTR CTString::operator+(D3DXVECTOR3 vec)
+{
+	LPTSTR str = NULL;
+	str = new TCHAR[10];
+	
+	Tstrcpy(str, m_String);
+	Tstrcat(str, Tvprintf(_S(" (%.2f, %.2f, %.2f) "), vec.x, vec.y, vec.z) );
+	
+	//Safe_Delete_Array(source1);
+	return str;
+
 }
 
 VOID CTString::operator=(LPTSTR source)

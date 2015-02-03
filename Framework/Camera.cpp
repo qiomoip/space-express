@@ -21,6 +21,8 @@ void CCamera::Init()
 	m_tCam.vUp = D3DXVECTOR3( 0.0f, 1.0f, 0.0f );
 	m_tCam.vRight = D3DXVECTOR3(1.f, 0.f, 0.f);
 	memset(m_tCam.iDir, 0, sizeof(int) * AT_MAX);
+	memset(m_tCam.iAngle, 0, sizeof(int) * AT_MAX);
+	m_tCam.fSmooth = 0.001f;
 
 	D3DXMatrixLookAtLH( &m_tCam.matView, &m_tCam.vPos, &m_tCam.vLook, &m_tCam.vUp );
 	D3DXMatrixRotationAxis(&m_tCam.matView, &m_tCam.vRight, D3DX_PI * 0.5f);

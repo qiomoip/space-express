@@ -2,7 +2,8 @@
 #include "KeyManager.h"
 #include "Entity.h"
 
-#include "Device.h"
+
+#include "Debug.h"
 //typedef struct _tagCamera
 //{
 //      D3DXMATRIX matView;
@@ -34,6 +35,14 @@ void CThirdCam::Update()
 	Move();
 	Rotation();
 	CCamera::Update();
+		
+	D3DXVECTOR3 vPos = m_tCam.vPos;
+	D3DXVECTOR3 vLook = m_tCam.vLook;
+	D3DXVECTOR3 vUp = m_tCam.vUp;
+	D3DXVECTOR3 vRight = m_tCam.vRight;
+	CTString* str = new CTString();
+	_SINGLE(CDebug)->AddStaticLog( _S("카메라 정보 \nvPos :") + vPos + "\nvLookAt : %.2f, %.2f, %.2f \nUp : %.2f, %.2f, %.2f \nvRight : %.2f, %.2f, %.2f"), 
+		vPos.x, vPos.y, vPos.z, vLook.x, vLook.y, vLook.z, vUp.x, vUp.y, vUp.z, vRight .x, vRight.y, vRight.z ) );
 }
 
 void CThirdCam::Rotation()
@@ -103,7 +112,7 @@ void CThirdCam::Input()
 void CThirdCam::Yaw()
 {
 	D3DXMATRIX matRot;
-	D3DXMatrixRotationAxis(&matRot, &m_tCam.vUp, D3DX_PI * 0.01f * m_tCam.iAngle[AT_Y]);
+	D3DXMatrixRotationAxis(&matRot, &m_tCam.vUp, D3DX_PI * m_tCam.fSmooth  * m_tCam.iAngle[AT_Y]);
 
 	D3DXVec3TransformCoord(&m_tCam.vRight, &m_tCam.vRight, &matRot);
 	D3DXVec3TransformCoord(&m_tCam.vLook, &m_tCam.vLook, &matRot);
@@ -111,7 +120,7 @@ void CThirdCam::Yaw()
 void CThirdCam::Pitch()
 {
 	D3DXMATRIX matRot;
-	D3DXMatrixRotationAxis(&matRot, &m_tCam.vRight, D3DX_PI * 0.01f * m_tCam.iAngle[AT_X]);
+	D3DXMatrixRotationAxis(&matRot, &m_tCam.vRight, D3DX_PI * m_tCam.fSmooth  * m_tCam.iAngle[AT_X]);
 
 	D3DXVec3TransformCoord(&m_tCam.vUp, &m_tCam.vUp, &matRot);
 	D3DXVec3TransformCoord(&m_tCam.vLook, &m_tCam.vLook, &matRot);
@@ -119,7 +128,7 @@ void CThirdCam::Pitch()
 void CThirdCam::Roll()
 {
 	D3DXMATRIX matRot;
-	D3DXMatrixRotationAxis(&matRot, &m_tCam.vLook, D3DX_PI * 0.01f * m_tCam.iAngle[AT_Z]);
+	D3DXMatrixRotationAxis(&matRot, &m_tCam.vLook, D3DX_PI * m_tCam.fSmooth  * m_tCam.iAngle[AT_Z]);
 
 	D3DXVec3TransformCoord(&m_tCam.vRight, &m_tCam.vRight, &matRot);
 	D3DXVec3TransformCoord(&m_tCam.vUp, &m_tCam.vUp, &matRot);

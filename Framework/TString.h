@@ -31,14 +31,19 @@ public:
 	LPTSTR					GetStr();
 
 	//문자열 상수를 문자열 변수로 변환
+	// _S("문자열"); 으로 사용하면 이 함수를 자동으로 호출해 준다.
 	static LPTSTR			String( LPTSTR str);
 	
 
 	//연산자 오버로딩
 	VOID					operator+=(LPTSTR source);
 	VOID					operator+=(CTString* source);
+	VOID					operator+=(D3DXVECTOR3 vector);
 
 	LPTSTR					operator+(LPTSTR source1);
+	//LPTSTR				operator+(D3DXVECTOR3 vector);
+	CTString				operator+(CTString source1);
+	CTString				operator+(D3DXVECTOR3 vector);
 	VOID					operator=(LPTSTR source);
 	
 private:

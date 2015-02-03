@@ -67,6 +67,7 @@ typedef struct _tagCamera
 	D3DXVECTOR3 vRight;
 	int		iDir[AT_MAX];
 	int		iAngle[AT_MAX];
+	float	fSmooth;
 }CAMERA;
 
 /*
