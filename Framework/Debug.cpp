@@ -46,9 +46,10 @@ void CDebug::Initialize()
 
 	InitFont();
 	InitLog();
+
 	AddLog(0, _T("테스트 로그 입니다.") );
-	AddLog(1 ,  _T("테스트 로그 입니다.2") );
-	AddLog(2, CTString::Tvprintf(_T("로그 %d 변수 출력 %d"), 123 , 123).get() );
+	AddLog(1, _T("테스트 로그 입니다.2") );
+	AddLog(2, _T("로그 %d 변수 출력 %d"), 123 , 123 );
 	AddStaticLog( _T("위치가 고정된 로그"), false );
 
 	
@@ -138,10 +139,10 @@ void CDebug::Destroy()
 	Safe_Release(m_pGridVB);
 	Safe_Release(m_pLineVB);
 
-	Safe_Delete(m_StaticLog);
+	/*Safe_Delete(m_StaticLog);
 	for( int i = 0; i < LOG_COUNT; ++i)
 		Safe_Delete(m_Log[i]);
-	Safe_Delete_Array(m_Log);
+	Safe_Delete_Array(m_Log);*/
 	Safe_Release(m_pFont); // 폰트 구조체해제
 }
 
@@ -182,11 +183,14 @@ void CDebug::DrawGrid()
 
 VOID CDebug::InitLog()
 {
-	m_StaticLog = new CTString();
-	m_Log = new CTString*[LOG_COUNT];
+	m_StaticLog = new TCHAR[255];
+	memset(m_StaticLog, 0, sizeof(TCHAR)* 255 );
+	m_Log = new LPTSTR[LOG_COUNT];
 	for(int i = 0; i < LOG_COUNT; ++i)
-		m_Log[i] = new CTString();
-
+	{
+		m_Log[i] = new TCHAR[255];
+		memset(m_Log[i], 0, sizeof(TCHAR) * 255);
+	}
 }
 
 VOID CDebug::InitFont()
@@ -211,7 +215,7 @@ VOID CDebug::InitFont()
 
 HRESULT CDebug::DrawFont()
 {
-	m_pFont->DrawText(NULL, m_StaticLog->GetStr().get(), -1, &m_FontRect, DT_RIGHT | DT_EXPANDTABS | DT_WORDBREAK , COLOR_CYAN); //출력
+	m_pFont->DrawText(NULL, m_StaticLog, -1, &m_FontRect, DT_RIGHT | DT_EXPANDTABS | DT_WORDBREAK , COLOR_CYAN); //출력
 	return S_OK;
 }
 
@@ -219,31 +223,37 @@ HRESULT CDebug::DrawLog()
 {
 	for(int i = 0; i < LOG_COUNT; ++i)
 	{
-		m_pFont->DrawText(NULL, m_Log[i]->GetStr().get(), -1, &m_LogRect, DT_LEFT | DT_EXPANDTABS | DT_WORDBREAK, COLOR_GOLD); //출력
+		m_pFont->DrawText(NULL, m_Log[i], -1, &m_LogRect, DT_LEFT | DT_EXPANDTABS | DT_WORDBREAK, COLOR_GOLD); //출력
 		m_LogRect.top += m_Desc.Height + 5;
 	}
 	m_LogRect.top  = 10;
 	return S_OK;
 }
 
-HRESULT CDebug::AddLog(LPTSTR _log)
+HRESULT CDebug::AddLog(LPTSTR _log, ...)
 {
+	va_list ap;
+	va_start(ap, _log);
 	//로그 카운트가 맥스일 경우 위에 덮어쓴다
 	if( m_LogCount >= LOG_COUNT )
 	{
-		CTString::Tstrcpy(m_Log[0]->GetStr().get(), _log);
-		*m_Log[0] = _log;
+		_vstprintf( m_Log[0] , 255, _log, ap);
+		//CTString::Tstrcpy(m_Log[0], _log);
+		//m_Log[0] = _log;
 		m_LogCount = 1;
 	}
 	else
 		//아닐 경우 그냥 로그 카운트에 넣는다
-		*m_Log[m_LogCount++] = _log;
+		_vstprintf( m_Log[m_LogCount++] , 255, _log, ap);
+		//m_Log[m_LogCount++] = _log;
 	return S_OK;
 }
 
 
-HRESULT CDebug::AddLog(int idx, LPTSTR _log)
+HRESULT CDebug::AddLog(int idx, LPTSTR _log, ...)
 {
+	va_list ap;
+	va_start(ap, _log);
 	//로그 카운트가 맥스일 경우 위에 덮어쓴다
 	if( idx >= LOG_COUNT )
 	{
@@ -252,16 +262,27 @@ HRESULT CDebug::AddLog(int idx, LPTSTR _log)
 	}
 	else
 		//아닐 경우 그냥 로그 카운트에 넣는다
-		*m_Log[idx] = _log;
+		_vstprintf( m_Log[idx] , 255, _log, ap);
+		//m_Log[idx] = _log;
 
 	return S_OK;
 }
 
-HRESULT CDebug::AddStaticLog(LPTSTR _log, bool isOverwrite)
+HRESULT CDebug::AddStaticLog(LPTSTR _log, bool isOverwrite, ...)
 {
+	va_list ap;
+	va_start(ap, _log);
+
 	if ( isOverwrite)
-		*m_StaticLog = _log;
+		_vstprintf( m_StaticLog, 255, _log, ap);
 	else
-		*m_StaticLog += _log;
+	{
+		LPTSTR str = new TCHAR[255];
+		
+		_vstprintf( str, 255, _log, ap);
+		_tcscat_s(m_StaticLog,_tcslen(m_StaticLog) + _tcslen(str) + 2, str) ;
+
+		Safe_Delete_Array(str);
+	}
 	return S_OK;
 }

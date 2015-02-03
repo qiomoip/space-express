@@ -33,8 +33,8 @@ private:
 	RECT			m_FontRect;
 	RECT			m_LogRect;
 
-	CTString**		m_Log;
-	CTString*		m_StaticLog;
+	LPTSTR*			m_Log;
+	LPTSTR			m_StaticLog;
 	int				m_LogCount;
 
 
@@ -50,11 +50,11 @@ public:
 	//항상 화면에 듸울 메세지
 	HRESULT			DrawLog();
 	//로그 추가
-	HRESULT			AddLog(LPTSTR _log);
+	HRESULT			AddLog(LPTSTR _log, ...);
 	//특정 인덱스에 로그 추가
-	HRESULT			AddLog(int _idx, LPTSTR _log);
+	HRESULT			AddLog(int _idx, LPTSTR _log, ...);
 	//고정된 위치(우측상단)에 로그 출력
-	HRESULT			AddStaticLog(LPTSTR _log, bool isOverwrite);
+	HRESULT			AddStaticLog(LPTSTR _log, bool isOverwrite, ...);
 	
 
 private:
