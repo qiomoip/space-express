@@ -46,10 +46,10 @@ void CDebug::Initialize()
 
 	InitFont();
 	InitLog();
-	AddLog(0, _S("테스트 로그 입니다.") );
-	AddLog(1 ,  _S("테스트 로그 입니다.2") );
-	AddLog(2, CTString::Tvprintf(_S("로그 %d 변수 출력 %d"), 123 , 123) );
-	AddStaticLog( _S("위치가 고정된 로그"), false );
+	AddLog(0, _T("테스트 로그 입니다.") );
+	AddLog(1 ,  _T("테스트 로그 입니다.2") );
+	AddLog(2, CTString::Tvprintf(_T("로그 %d 변수 출력 %d"), 123 , 123).get() );
+	AddStaticLog( _T("위치가 고정된 로그"), false );
 
 	
 }
@@ -211,7 +211,7 @@ VOID CDebug::InitFont()
 
 HRESULT CDebug::DrawFont()
 {
-	m_pFont->DrawText(NULL, m_StaticLog->GetStr(), -1, &m_FontRect, DT_RIGHT | DT_EXPANDTABS | DT_WORDBREAK , COLOR_CYAN); //출력
+	m_pFont->DrawText(NULL, m_StaticLog->GetStr().get(), -1, &m_FontRect, DT_RIGHT | DT_EXPANDTABS | DT_WORDBREAK , COLOR_CYAN); //출력
 	return S_OK;
 }
 
@@ -219,7 +219,7 @@ HRESULT CDebug::DrawLog()
 {
 	for(int i = 0; i < LOG_COUNT; ++i)
 	{
-		m_pFont->DrawText(NULL, m_Log[i]->GetStr(), -1, &m_LogRect, DT_LEFT | DT_EXPANDTABS | DT_WORDBREAK, COLOR_GOLD); //출력
+		m_pFont->DrawText(NULL, m_Log[i]->GetStr().get(), -1, &m_LogRect, DT_LEFT | DT_EXPANDTABS | DT_WORDBREAK, COLOR_GOLD); //출력
 		m_LogRect.top += m_Desc.Height + 5;
 	}
 	m_LogRect.top  = 10;
@@ -231,7 +231,7 @@ HRESULT CDebug::AddLog(LPTSTR _log)
 	//로그 카운트가 맥스일 경우 위에 덮어쓴다
 	if( m_LogCount >= LOG_COUNT )
 	{
-		CTString::Tstrcpy(m_Log[0]->GetStr(), _log);
+		CTString::Tstrcpy(m_Log[0]->GetStr().get(), _log);
 		*m_Log[0] = _log;
 		m_LogCount = 1;
 	}

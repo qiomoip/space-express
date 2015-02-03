@@ -20,7 +20,7 @@ public:
 	void					Init();
 	void					CleanUp();
 
-	static shared_ptr<TCHAR>	CharToTCHAR(LPSTR szStr);	//TCHAR을 char 형태로
+	static LPTSTR				CharToTCHAR(LPSTR szStr);	//TCHAR을 char 형태로
 	static LPSTR				TCHARToChar(LPTSTR szStr);	//char을 TCHAR 형태로
 	
 	//문자열 삽입

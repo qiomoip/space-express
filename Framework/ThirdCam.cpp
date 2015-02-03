@@ -40,14 +40,14 @@ void CThirdCam::Update()
 	D3DXVECTOR3 vLook = m_tCam.vLook;
 	D3DXVECTOR3 vUp = m_tCam.vUp;
 	D3DXVECTOR3 vRight = m_tCam.vRight;
-	CTString* str = new CTString(_S("카메라 정보 \nvPos :") );
-	_SINGLE(CDebug)->AddStaticLog( *str + vPos, true);
-	str = new CTString(_S("\nvLookAt : %.2f, %.2f, %.2f ") );
+	/*CTString* str = new CTString(_T("카메라 정보 \nvPos :") );
+	_SINGLE(CDebug)->AddStaticLog( (*str + vPos).get(), true);
+	str = new CTString(_T("\nvLookAt : %.2f, %.2f, %.2f ") );
 	_SINGLE(CDebug)->AddStaticLog( *str + vLook, false);
-	str = new CTString(_S("\nUp : %.2f, %.2f, %.2f ") );
+	str = new CTString(_T("\nUp : %.2f, %.2f, %.2f ") );
 	_SINGLE(CDebug)->AddStaticLog( *str + vUp, false);
-	str = new CTString(_S("\nvRight : %.2f, %.2f, %.2f") );
-	_SINGLE(CDebug)->AddStaticLog( *str + vRight, false);
+	str = new CTString(_T("\nvRight : %.2f, %.2f, %.2f") );
+	_SINGLE(CDebug)->AddStaticLog( *str + vRight, false);*/
 }
 
 void CThirdCam::Rotation()

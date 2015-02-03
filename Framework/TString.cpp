@@ -31,12 +31,12 @@ void CTString::CleanUp()
 }
 
 
-shared_ptr<TCHAR>	CTString::CharToTCHAR(LPSTR szStr)
+LPTSTR	CTString::CharToTCHAR(LPSTR szStr)
 {
-	shared_ptr<TCHAR> szRet(new TCHAR[256]);
+	LPTSTR szRet(new TCHAR[256]);
 
 	MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, szStr, strlen(szStr) + 1,
-		szRet.get(), _tcslen(szRet.get() ) + 1);
+		szRet, _tcslen(szRet) + 1);
 
 	return szRet;
 }
@@ -108,25 +108,24 @@ VOID CTString::operator+=(LPTSTR source)
 
 VOID CTString::operator+=(CTString* source)
 {
-	Tstrcat(m_String, source->GetStr() );
+	Tstrcat(m_String.get(), source->GetStr().get() );
 	//Safe_Delete_Array(source);
 }
 
 VOID CTString::operator+=(D3DXVECTOR3 vec)
 {
 	LPTSTR str = new TCHAR[100];
-	Tstrcat(str, Tvprintf(_S(" (%.2f, %.2f, %.2f) "), vec.x, vec.y, vec.z) );
-	Tstrcat(m_String,  str);
+	Tstrcat(str, Tvprintf(_T(" (%.2f, %.2f, %.2f) "), vec.x, vec.y, vec.z).get() );
+	Tstrcat(m_String.get(),  str);
 }
 
 
 shared_ptr<TCHAR>	CTString::operator+(LPTSTR source1)
 {
-	LPTSTR str = NULL;
-	str = new TCHAR[255];
+	shared_ptr<TCHAR> str(new TCHAR[255]);
 	
-	Tstrcpy(str, m_String);
-	Tstrcat(str, source1);
+	Tstrcpy(str.get(), m_String.get());
+	Tstrcat(str.get(), source1);
 	
 	//Safe_Delete_Array(source1);
 	return str;
@@ -134,11 +133,10 @@ shared_ptr<TCHAR>	CTString::operator+(LPTSTR source1)
 
 shared_ptr<TCHAR>	CTString::operator+(CTString* source1)
 {
-	LPTSTR str = NULL;
-	str = new TCHAR[255];
+	shared_ptr<TCHAR> str(new TCHAR[255]);
 	
-	Tstrcpy(str, m_String);
-	Tstrcat(str, source1->GetStr());
+	Tstrcpy(str.get(), m_String.get() );
+	Tstrcat(str.get(), source1->GetStr().get() );
 	
 	//Safe_Delete_Array(source1);
 	return str;
@@ -146,10 +144,9 @@ shared_ptr<TCHAR>	CTString::operator+(CTString* source1)
 
 shared_ptr<TCHAR> CTString::operator+(D3DXVECTOR3 vec)
 {
-	LPTSTR str = NULL;
-	str = new TCHAR[10];
-	Tstrcpy(str, m_String);
-	Tstrcat(str, Tvprintf(_T(" (%.2f, %.2f, %.2f) "), vec.x, vec.y, vec.z) );
+	shared_ptr<TCHAR> str(new TCHAR[10]);
+	Tstrcpy(str.get(), m_String.get());
+	Tstrcat(str.get(), Tvprintf(_T(" (%.2f, %.2f, %.2f) "), vec.x, vec.y, vec.z).get() );
 	//Safe_Delete_Array(source1);
 	return str;
 
@@ -157,6 +154,6 @@ shared_ptr<TCHAR> CTString::operator+(D3DXVECTOR3 vec)
 
 VOID CTString::operator=(LPTSTR source)
 {
-	Tstrcpy(m_String, source);
+	Tstrcpy(m_String.get(), source);
 	//Safe_Delete_Array(source);
 }
