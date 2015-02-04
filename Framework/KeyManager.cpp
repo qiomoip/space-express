@@ -13,31 +13,34 @@ CKeyManager::~CKeyManager(void)
 
 void CKeyManager::Initialize()
 {
-	SetKeyData("KEY_ROT_X_RIGHT", 'D');
-	SetKeyData("KEY_ROT_X_LEFT", 'A');
-	SetKeyData("KEY_START", VK_SPACE);
-	SetKeyData("KEY_UP", VK_UP);
-	SetKeyData("KEY_DOWN", VK_DOWN);
-	SetKeyData("KEY_RIGHT", VK_RIGHT);
-	SetKeyData("KEY_LEFT", VK_LEFT);
-	SetKeyData("KEY_SPACE", VK_SPACE);
-	SetKeyData("KEY_ROT_Y_UP", 'W');
-	SetKeyData("KEY_ROT_Y_DOWN", 'S');
-	SetKeyData("KEY_Entity_RotY-", 'Z');
-	SetKeyData("KEY_Entity_RotY+", 'X');
+	SetKeyData(KEYNAME_TURN_RIGHT, 'D');
+	SetKeyData(KEYNAME_TURN_LEFT, 'A');
+	SetKeyData(KEYNAME_START, VK_RETURN);
+	SetKeyData(KEYNAME_FRONT, VK_UP);
+	SetKeyData(KEYNAME_BACK, VK_DOWN);
+	SetKeyData(KEYNAME_RIGHT, VK_RIGHT);
+	SetKeyData(KEYNAME_LEFT, VK_LEFT);
+	SetKeyData(KEYNAME_UP, VK_HOME);
+	SetKeyData(KEYNAME_DOWN, VK_END);
+	SetKeyData(KEYNAME_SPACE, VK_SPACE);
+	SetKeyData(KEYNAME_TURN_UP, 'W');
+	SetKeyData(KEYNAME_TURN_DOWN, 'S');
+	SetKeyData(KEYNAME_TURN_NCLOCKWISE, 'Z');
+	SetKeyData(KEYNAME_TURN_CLOCKWISE, 'C');
+	SetKeyData(KEYNAME_TURN_CLOCKWISE, 'C');
 }
 void CKeyManager::SetKeyState()
 {
-	map<string, KEYINFO*>::iterator iter = m_mapKey.begin();
+	map<KEY, KEYINFO*>::iterator iter = m_mapKey.begin();
 	for(; iter != m_mapKey.end() ; ++iter)
 	{
 		CheckKey(iter);
 	}
 }
 
-bool CKeyManager::SetKeyData(const string& eKeyName, const int& iKey)
+bool CKeyManager::SetKeyData(const KEY eKeyName, const int& iKey)
 {
-	map<string, KEYINFO*>::iterator iter = m_mapKey.find(eKeyName);
+	map<KEY, KEYINFO*>::iterator iter = m_mapKey.find(eKeyName);
 	if(iter != m_mapKey.end())
 	{
 		return false;
@@ -46,13 +49,13 @@ bool CKeyManager::SetKeyData(const string& eKeyName, const int& iKey)
 	memset(pKey, 0, sizeof(KEYINFO));
 	
 	pKey->iKey = iKey;
-	m_mapKey.insert(map<string, KEYINFO*>::value_type(eKeyName, pKey));
+	m_mapKey.insert(map<KEY, KEYINFO*>::value_type(eKeyName, pKey));
 	return true;
 }
 
-const KEYINFO* CKeyManager::GetKey(const string& eKey) const
+const KEYINFO* CKeyManager::GetKey(const KEY eKey) const
 {
-	map<string, KEYINFO*>::const_iterator iter = m_mapKey.find(eKey);
+	map<KEY, KEYINFO*>::const_iterator iter = m_mapKey.find(eKey);
 
 	if(iter == m_mapKey.end())
 	{
@@ -61,7 +64,7 @@ const KEYINFO* CKeyManager::GetKey(const string& eKey) const
 	return iter->second;
 }
 
-void CKeyManager::CheckKey(map<string, KEYINFO*>::iterator iter)
+void CKeyManager::CheckKey(map<KEY, KEYINFO*>::iterator iter)
 {
 	if(GetAsyncKeyState(iter->second->iKey) & 0x8000)
 	{

@@ -25,6 +25,7 @@ public:
 	void SetViewMatrix();
 	void SetPos(const D3DXVECTOR3& vPos);
 	void SetData(const D3DXVECTOR3& vUp, const D3DXVECTOR3& vLook, const D3DXVECTOR3& vRight);
+	void SetCamera(const CAMERA&	_tCamera);
 
 public:
 	D3DXMATRIX*			GetMatView();

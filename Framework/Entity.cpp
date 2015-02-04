@@ -36,7 +36,7 @@ void CEntity::Initialize()
 
 void CEntity::Input()
 {
-	const KEYINFO* pInfo = _SINGLE(CKeyManager)->GetKey("KEY_Entity_RotY-");
+	/*const KEYINFO* pInfo = _SINGLE(CKeyManager)->GetKey("KEY_Entity_RotY-");
 	if(pInfo->bPush || pInfo->bDown)
 	{
 		m_fAngle[AT_Y] += D3DX_PI * 0.01f;
@@ -55,7 +55,7 @@ void CEntity::Input()
 	{
 		SetVisiable();
 	}
-	
+	*/
 }
 
 void CEntity::SetScale(const float& fScaleX, const float& fScaleY, const float& fScaleZ)

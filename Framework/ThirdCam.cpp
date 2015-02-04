@@ -48,7 +48,7 @@ void CThirdCam::Rotation()
 }
 void CThirdCam::Input()
 {
-	memset(m_tCam.iDir, 0, sizeof(int) * AT_MAX);
+/*	memset(m_tCam.iDir, 0, sizeof(int) * AT_MAX);
 	memset(m_tCam.iAngle, 0, sizeof(int) * AT_MAX);
 	const KEYINFO* pInfo = _SINGLE(CKeyManager)->GetKey("KEY_UP");
 	if(!pInfo)
@@ -98,7 +98,7 @@ void CThirdCam::Input()
 	if(pInfo->bPush || pInfo->bDown)
 	{
 		m_tCam.iDir[AT_X] = -1;
-	}
+	}*/
 }
 
 //Y
@@ -162,7 +162,7 @@ void CThirdCam::Move()
 		//D3DXVec3Normalize(&vDir, &vDir);
 
 		//m_tCam.vPos += vDir * 0.05f * (float)m_tCam.iDir[AT_Y];
-		m_tCam.vPos += /*D3DXVECTOR3(0.f, 0.2f, 0.f)*/m_tCam.vUp * m_tCam.fSmoothMove * m_tCam.iDir[AT_Y];
+		m_tCam.vPos += /*D3DXVECTOR3(0.f, 0.2f, 0.f)*/m_tCam.vUp * m_tCam.fSmoothMove * (float)m_tCam.iDir[AT_Y];
 	}
 
 	if(m_tCam.iDir[AT_Z])

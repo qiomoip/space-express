@@ -83,7 +83,75 @@ void CCameraManager::Input()
 {
 	CheckKey();
 	
-	m_pCurCam->Input();
+	CAMERA pCamera = m_pCurCam->GetCameraInfo();
+
+	memset(pCamera.iDir, 0, sizeof(int) * AT_MAX);
+	memset(pCamera.iAngle, 0, sizeof(int) * AT_MAX);
+	const KEYINFO* pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_FRONT);
+
+	if(!pInfo)
+		return;
+
+	if(pInfo->bPush || pInfo->bDown)
+	{
+		pCamera.iDir[AT_Z] = 1;
+	}
+
+	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_BACK);
+	if(pInfo->bPush || pInfo->bDown)
+	{
+		pCamera.iDir[AT_Z] = -1;
+	}
+
+	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_RIGHT);
+	if(pInfo->bPush || pInfo->bDown)
+	{
+		pCamera.iDir[AT_X] = 1;
+	}
+
+	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_LEFT);
+	if(pInfo->bPush || pInfo->bDown)
+	{
+		pCamera.iDir[AT_X] = -1;
+	}
+
+	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_UP);
+	if(pInfo->bPush || pInfo->bDown)
+	{
+		pCamera.iDir[AT_Y] = 1;
+	}
+	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_DOWN);
+	if(pInfo->bPush || pInfo->bDown)
+	{
+		pCamera.iDir[AT_Y] = -1;
+	}
+
+	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_TURN_RIGHT);
+	if(pInfo->bPush || pInfo->bDown)
+	{
+		pCamera.iAngle[AT_Y] = 1;
+	}
+
+	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_TURN_LEFT);
+	if(pInfo->bPush || pInfo->bDown)
+	{
+		pCamera.iAngle[AT_Y] = -1;
+	}
+
+	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_TURN_UP);
+	if(pInfo->bPush || pInfo->bDown)
+	{
+		pCamera.iAngle[AT_X] = -1;
+	}
+
+	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_TURN_DOWN);
+	if(pInfo->bPush || pInfo->bDown)
+	{
+		pCamera.iAngle[AT_X] = 1;
+	}
+
+	m_pCurCam->SetCamera( pCamera );
+	
 }
 
 void CCameraManager::AddCamera(const string& _CameraName, CCamera* pCam)

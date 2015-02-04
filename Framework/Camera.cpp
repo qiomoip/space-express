@@ -66,9 +66,9 @@ void CCamera::SetTransform()
 
 void CCamera::SetViewMatrix()
 {
-	D3DXVec3Cross(&m_tCam.vRight, &m_tCam.vUp, &m_tCam.vLook);
+	//D3DXVec3Cross(&m_tCam.vRight, &m_tCam.vUp, &m_tCam.vLook);
 	D3DXVec3Normalize(&m_tCam.vLook, &m_tCam.vLook);
-	D3DXVec3Cross(&m_tCam.vUp, &m_tCam.vLook, &m_tCam.vRight);
+	//D3DXVec3Cross(&m_tCam.vUp, &m_tCam.vLook, &m_tCam.vRight);
 	D3DXVec3Normalize(&m_tCam.vUp, &m_tCam.vUp);
 	D3DXVec3Normalize(&m_tCam.vRight, &m_tCam.vRight);
 
@@ -109,4 +109,9 @@ void CCamera::SetData(const D3DXVECTOR3& vUp, const D3DXVECTOR3& vLook, const D3
 	m_tCam.vLook = vLook;
 	m_tCam.vRight = vRight;
 	m_tCam.vUp = vUp;
+}
+
+void CCamera::SetCamera(const CAMERA& _tCamera)
+{
+	m_tCam = _tCamera;
 }
