@@ -4,6 +4,10 @@
 #include "ThirdCam.h"
 #include "KeyManager.h"
 
+#ifdef _DEBUG
+#include "Debug.h"
+#endif
+
 CCameraManager::CCameraManager(void)
 	: m_bChange(false)
 	, m_pCurCam(NULL)
@@ -53,6 +57,26 @@ void CCameraManager::Update()
 	{
 		iter->second->Update();
 	}
+
+	
+#ifdef _DEBUG
+	LPTSTR vPos = new TCHAR[100];
+	LPTSTR vLook = new TCHAR[100];
+	LPTSTR vUp = new TCHAR[100];
+	LPTSTR vRight = new TCHAR[100];
+	_SINGLE(CDebug)->VectorToString(vPos,  m_pCurCam->GetCameraInfo().vPos );
+	_SINGLE(CDebug)->VectorToString(vLook, m_pCurCam->GetCameraInfo().vLook );
+	_SINGLE(CDebug)->VectorToString(vUp, m_pCurCam->GetCameraInfo().vUp );
+	_SINGLE(CDebug)->VectorToString(vRight, m_pCurCam->GetCameraInfo().vRight );
+	_SINGLE(CDebug)->AddStaticLog(true, _T("%s나는 문자열이다."), _T("string") );
+	_SINGLE(CDebug)->AddStaticLog( true, _T("카메라 정보 출력\nvPos : %s\nvLook : %s\nvUp : %s\nvRight : %s"),
+		vPos, vLook, vUp, vRight);
+
+	Safe_Delete_Array(vPos);
+	Safe_Delete_Array(vLook);
+	Safe_Delete_Array(vUp);
+	Safe_Delete_Array(vRight);
+#endif
 }
 
 void CCameraManager::Input()

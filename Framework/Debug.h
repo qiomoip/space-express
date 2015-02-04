@@ -54,7 +54,9 @@ public:
 	//특정 인덱스에 로그 추가
 	HRESULT			AddLog(int _idx, LPTSTR _log, ...);
 	//고정된 위치(우측상단)에 로그 출력
-	HRESULT			AddStaticLog(LPTSTR _log, bool isOverwrite, ...);
+	HRESULT			AddStaticLog(bool isOverwrite, LPTSTR _log, ...);
+
+	HRESULT			VectorToString(LPTSTR dest, D3DXVECTOR3 vec);
 	
 
 private:

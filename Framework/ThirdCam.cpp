@@ -35,19 +35,6 @@ void CThirdCam::Update()
 	Move();
 	Rotation();
 	CCamera::Update();
-		
-	D3DXVECTOR3 vPos = m_tCam.vPos;
-	D3DXVECTOR3 vLook = m_tCam.vLook;
-	D3DXVECTOR3 vUp = m_tCam.vUp;
-	D3DXVECTOR3 vRight = m_tCam.vRight;
-	/*CTString* str = new CTString(_T("카메라 정보 \nvPos :") );
-	_SINGLE(CDebug)->AddStaticLog( (*str + vPos).get(), true);
-	str = new CTString(_T("\nvLookAt : %.2f, %.2f, %.2f ") );
-	_SINGLE(CDebug)->AddStaticLog( *str + vLook, false);
-	str = new CTString(_T("\nUp : %.2f, %.2f, %.2f ") );
-	_SINGLE(CDebug)->AddStaticLog( *str + vUp, false);
-	str = new CTString(_T("\nvRight : %.2f, %.2f, %.2f") );
-	_SINGLE(CDebug)->AddStaticLog( *str + vRight, false);*/
 }
 
 void CThirdCam::Rotation()
@@ -114,6 +101,7 @@ void CThirdCam::Input()
 	}
 }
 
+//Y
 void CThirdCam::Yaw()
 {
 	D3DXMATRIX matRot;
@@ -121,7 +109,9 @@ void CThirdCam::Yaw()
 
 	D3DXVec3TransformCoord(&m_tCam.vRight, &m_tCam.vRight, &matRot);
 	D3DXVec3TransformCoord(&m_tCam.vLook, &m_tCam.vLook, &matRot);
+	//Right 와 Look을 외적해서UP벡터 재 정
 }
+//X
 void CThirdCam::Pitch()
 {
 	D3DXMATRIX matRot;
@@ -130,6 +120,7 @@ void CThirdCam::Pitch()
 	D3DXVec3TransformCoord(&m_tCam.vUp, &m_tCam.vUp, &matRot);
 	D3DXVec3TransformCoord(&m_tCam.vLook, &m_tCam.vLook, &matRot);
 }
+//Z
 void CThirdCam::Roll()
 {
 	D3DXMATRIX matRot;

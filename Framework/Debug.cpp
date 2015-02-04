@@ -47,10 +47,10 @@ void CDebug::Initialize()
 	InitFont();
 	InitLog();
 
-	AddLog(0, _T("테스트 로그 입니다.") );
-	AddLog(1, _T("테스트 로그 입니다.2") );
-	AddLog(2, _T("로그 %d 변수 출력 %d"), 123 , 123 );
-	AddStaticLog( _T("위치가 고정된 로그"), false );
+	AddLog(0, _T("테스트 로그 입니다.%d"), 0 );
+	AddLog(1, _T("테스트 로그 입니다.%d"), 1 );
+	AddLog(0, _T("로그 %d 변수 출력 %d"), 123 , 123 );
+	AddStaticLog(true, _T("위치가 고정된 로그%d"), 0 );
 
 	
 }
@@ -139,10 +139,10 @@ void CDebug::Destroy()
 	Safe_Release(m_pGridVB);
 	Safe_Release(m_pLineVB);
 
-	/*Safe_Delete(m_StaticLog);
+	Safe_Delete(m_StaticLog);
 	for( int i = 0; i < LOG_COUNT; ++i)
 		Safe_Delete(m_Log[i]);
-	Safe_Delete_Array(m_Log);*/
+	Safe_Delete_Array(m_Log);
 	Safe_Release(m_pFont); // 폰트 구조체해제
 }
 
@@ -268,13 +268,15 @@ HRESULT CDebug::AddLog(int idx, LPTSTR _log, ...)
 	return S_OK;
 }
 
-HRESULT CDebug::AddStaticLog(LPTSTR _log, bool isOverwrite, ...)
+HRESULT CDebug::AddStaticLog(bool isOverwrite, LPTSTR _log, ...)
 {
 	va_list ap;
 	va_start(ap, _log);
 
 	if ( isOverwrite)
+	{
 		_vstprintf( m_StaticLog, 255, _log, ap);
+	}
 	else
 	{
 		LPTSTR str = new TCHAR[255];
@@ -284,5 +286,15 @@ HRESULT CDebug::AddStaticLog(LPTSTR _log, bool isOverwrite, ...)
 
 		Safe_Delete_Array(str);
 	}
+	return S_OK;
+}
+
+HRESULT CDebug::VectorToString(LPTSTR dest, D3DXVECTOR3 vec)
+{
+	LPTSTR _vec = new TCHAR[30];
+	_stprintf(_vec, _T("(%.2f, %.2f, %.2f)"), vec.x, vec.y, vec.z );
+	_tcscpy(dest, _vec);
+	Safe_Delete_Array(_vec);
+
 	return S_OK;
 }

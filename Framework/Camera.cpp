@@ -48,6 +48,11 @@ D3DXMATRIX* CCamera::GetMatProj()
 	return &m_tCam.matProj;
 }
 
+CAMERA CCamera::GetCameraInfo()
+{
+	return m_tCam;
+}
+
 void CCamera::SetTransform()
 {
 	_SINGLE(CDevice)->GetDevice()->SetTransform( D3DTS_VIEW, 

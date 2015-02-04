@@ -29,6 +29,7 @@ public:
 public:
 	D3DXMATRIX*			GetMatView();
 	D3DXMATRIX*			GetMatProj();
+	CAMERA				GetCameraInfo();
 
 public:
 	void SetTransform();
