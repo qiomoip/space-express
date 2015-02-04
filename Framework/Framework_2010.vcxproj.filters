@@ -83,11 +83,15 @@
     <Filter Include="Engine\Device">
       <UniqueIdentifier>{62cba8d7-68cd-4c4b-a488-048990fa4df1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Light">
+      <UniqueIdentifier>{6d20ba98-833c-425f-a142-44aa8c9739ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXUT\Optional\directx.ico">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entity.cpp">
@@ -143,6 +147,11 @@
     </ClCompile>
     <ClCompile Include="Device.cpp">
       <Filter>Engine\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="Light.cpp">
+      <Filter>Engine\Light</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -211,6 +220,11 @@
     </ClInclude>
     <ClInclude Include="Device.h">
       <Filter>Engine\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="Light.h">
+      <Filter>Engine\Light</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

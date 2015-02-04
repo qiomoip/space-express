@@ -196,23 +196,23 @@ CCamera* CCameraManager::CreateCamera(const eCAMERA_NUM& eCam)
 
 void CCameraManager::CheckKey()
 {
-	//const KEYINFO* pInfo = _SINGLE(CKeyManager)->GetKey("KEY_SPACE");
-	//if(!pInfo)
-	//	return;
+	const KEYINFO* pInfo = _SINGLE(CKeyManager)->GetKey("KEY_SPACE");
+	if(!pInfo)
+		return;
 
-	//if(pInfo->bPush)
-	//{
-	//	if(!m_bChange)
-	//	{
-	//		SetMainCamera("ThirdTestCam");
-	//		m_bChange = true;
-	//	}
-	//	else
-	//	{
-	//		SetMainCamera("MainCamera");
-	//		m_bChange = false;
-	//	}
-	//}
+	if(pInfo->bPush)
+	{
+		if(!m_bChange)
+		{
+			SetMainCamera("ThirdTestCam");
+			m_bChange = true;
+		}
+		else
+		{
+			SetMainCamera("MainCamera");
+			m_bChange = false;
+		}
+	}
 }
 
 void CCameraManager::Destroy()

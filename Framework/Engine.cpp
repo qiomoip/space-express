@@ -10,6 +10,7 @@
 #include "Entity.h"
 #include "ThirdCam.h"
 #include "Mouse.h"
+#include "Light.h"
 
 CEngine::CEngine(void)
 	: m_pDevice(NULL)
@@ -45,6 +46,9 @@ HRESULT CEngine::Initialize(HWND hWnd)
 		return E_FAIL;
 
 	if(FAILED(CreateCamera()))
+		return E_FAIL;
+
+	if(FAILED(CreateLight()))
 		return E_FAIL;
 
 	const CCamera* pMainCam = _SINGLE(CCameraManager)->GetCurCam();
@@ -86,6 +90,30 @@ HRESULT CEngine::CreateCamera()
 	return S_OK;
 }
 
+HRESULT CEngine::CreateLight()
+{
+	CLight* pLight = new CLight;
+	
+	D3DLIGHT9 tLight;
+	memset(&tLight, 0, sizeof(D3DLIGHT9));
+
+	D3DCOLORVALUE tValue;
+	tValue.b = tValue.g = tValue.r = tValue.a = 1.f;
+
+	tLight.Ambient = tValue;
+	tLight.Diffuse = tValue;
+	tLight.Specular = tValue;
+	
+	tLight.Direction = D3DXVECTOR3(1.f, 0.f, 1.f);
+	tLight.Type = D3DLIGHT_DIRECTIONAL;
+
+	pLight->SetLightInfo(tLight);
+
+	m_vecLight.push_back(pLight);
+
+	return S_OK;
+}
+
 void CEngine::Update()
 {
 	_SINGLE(CCameraManager)->Update();
@@ -110,14 +138,21 @@ VOID CEngine::Render()
 		//Camera Transform
 		_SINGLE(CCameraManager)->SetTransform();
 
-		//Debug Render
-		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
-		_SINGLE(CDebug)->Render();
+		//Set Light
+		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, true);
+		for(int i = 0; i < m_vecLight.size(); ++i)
+		{
+			m_pDevice->GetDevice()->SetLight(i, m_vecLight[i]->GetLightInfo());
+			m_pDevice->GetDevice()->LightEnable(i, true);
+		}
 
+		//Debug Render
+//		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
+		_SINGLE(CDebug)->Render();
 
 		//ObjectRender
 		_SINGLE(CObjectManager)->Render();
-		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, TRUE);
+//		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 		// End the scene
 		m_pDevice->GetDevice()->EndScene();
@@ -129,6 +164,10 @@ VOID CEngine::Render()
 
 VOID CEngine::Destroy()
 {
+	for(int i = 0; i < m_vecLight.size(); ++i)
+		Safe_Delete(m_vecLight[i]);
+	m_vecLight.clear();
+	_SINGLE(CMouse)->KillInstance();
 	_SINGLE(CObjectManager)->KillInstance();
 	_SINGLE(CResourceManager)->KillInstance();
 	_SINGLE(CCameraManager)->KillInstance();

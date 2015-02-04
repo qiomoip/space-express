@@ -50,11 +50,11 @@ void CEntity::Input()
 		RotationY();
 	}
 
-	pInfo = _SINGLE(CKeyManager)->GetKey("KEY_SPACE");
-	if(pInfo->bPush)
-	{
-		SetVisiable();
-	}
+		//pInfo = _SINGLE(CKeyManager)->GetKey("KEY_SPACE");
+		//if(pInfo->bPush)
+		//{
+		//	SetVisiable();
+		//}
 	*/
 }
 

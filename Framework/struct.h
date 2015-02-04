@@ -101,5 +101,13 @@ typedef struct _tagD3dMaterial
 	LPTSTR			pTextureFilename;
 }_TD3DXMATERIAL;
 
+typedef struct _tagLightInfo
+{
+	D3DXVECTOR4		vDiffuse;
+	D3DXVECTOR4		vEmbient;
+	D3DXVECTOR4		vSpecular;
+	float			fPower;
+}LIGHTINFO, *PLIGHTINFO;
+
 
 
