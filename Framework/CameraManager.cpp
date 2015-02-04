@@ -69,8 +69,8 @@ void CCameraManager::Update()
 	_SINGLE(CDebug)->VectorToString(vUp, m_pCurCam->GetCameraInfo().vUp );
 	_SINGLE(CDebug)->VectorToString(vRight, m_pCurCam->GetCameraInfo().vRight );
 	_SINGLE(CDebug)->AddStaticLog(true, _T("%s나는 문자열이다."), _T("string") );
-	_SINGLE(CDebug)->AddStaticLog( true, _T("카메라 정보 출력\nvPos : %s\nvLook : %s\nvUp : %s\nvRight : %s"),
-		vPos, vLook, vUp, vRight);
+	_SINGLE(CDebug)->AddStaticLog( true, _T("카메라 정보 출력\nvPos : %s\nvLook : %s\nvUp : %s\nvRight : %s\nfAngle : %d, %d, %d"),
+		vPos, vLook, vUp, vRight, m_pCurCam->GetCameraInfo().iAngle[0], m_pCurCam->GetCameraInfo().iAngle[1], m_pCurCam->GetCameraInfo().iAngle[2]);
 
 	Safe_Delete_Array(vPos);
 	Safe_Delete_Array(vLook);

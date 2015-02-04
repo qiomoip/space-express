@@ -16,13 +16,16 @@ void CCamera::Init()
 	D3DXMatrixIdentity( &m_tCam.matView);
 	D3DXMatrixIdentity( &m_tCam.matProj);
 
-	m_tCam.vPos = D3DXVECTOR3( -3.f, 10.f, -3.f );
+	m_tCam.vPos = D3DXVECTOR3( -3.f, 10.f, -10.f );
 	m_tCam.vLook= D3DXVECTOR3( 0.0f, 0.0f, 1.0f );
 	m_tCam.vUp = D3DXVECTOR3( 0.0f, 1.0f, 0.0f );
 	m_tCam.vRight = D3DXVECTOR3(1.f, 0.f, 0.f);
 	memset(m_tCam.iDir, 0, sizeof(int) * AT_MAX);
 	memset(m_tCam.iAngle, 0, sizeof(int) * AT_MAX);
-	m_tCam.fSmooth = 0.001f;
+	D3DXQuaternionIdentity( &m_tCam.qAngle );
+	
+	m_tCam.fSmoothMove = 0.03f;
+	m_tCam.fSmoothRotate = 0.003f;
 
 	D3DXMatrixLookAtLH( &m_tCam.matView, &m_tCam.vPos, &m_tCam.vLook, &m_tCam.vUp );
 	D3DXMatrixRotationAxis(&m_tCam.matView, &m_tCam.vRight, D3DX_PI * 0.5f);
@@ -63,13 +66,15 @@ void CCamera::SetTransform()
 
 void CCamera::SetViewMatrix()
 {
+	D3DXVec3Cross(&m_tCam.vRight, &m_tCam.vUp, &m_tCam.vLook);
 	D3DXVec3Normalize(&m_tCam.vLook, &m_tCam.vLook);
 	D3DXVec3Cross(&m_tCam.vUp, &m_tCam.vLook, &m_tCam.vRight);
 	D3DXVec3Normalize(&m_tCam.vUp, &m_tCam.vUp);
-
-	D3DXVec3Cross(&m_tCam.vRight, &m_tCam.vUp, &m_tCam.vLook);
 	D3DXVec3Normalize(&m_tCam.vRight, &m_tCam.vRight);
 
+	/*D3DXMatrixLookAtLH( &m_tCam.matView, &m_tCam.vPos, &m_tCam.vLook, &m_tCam.vUp );
+	D3DXMatrixPerspectiveFovLH( &m_tCam.matProj, D3DX_PI / 4, 1.0f, 1.0f, 1000.0f );
+	*/
 	float fX = -D3DXVec3Dot(&m_tCam.vRight, &m_tCam.vPos);
 	float fY = -D3DXVec3Dot(&m_tCam.vUp, &m_tCam.vPos);
 	float fZ = -D3DXVec3Dot(&m_tCam.vLook, &m_tCam.vPos);
