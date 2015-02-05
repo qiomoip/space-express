@@ -37,6 +37,16 @@ void CDebug::Initialize()
 	if(!m_pDevice)
 		return;
 	CreateVertexBuffer();
+
+	memset(&m_tGridMaterial, 0, sizeof(D3DMATERIAL9));
+	m_tGridMaterial.Diffuse.a = 1.f;
+	m_tGridMaterial.Diffuse.r = 1.f;
+	m_tGridMaterial.Diffuse.g = 0.8f;
+	m_tGridMaterial.Diffuse.b = 1.f;
+	m_tGridMaterial.Power = 0.2f;
+	m_tGridMaterial.Specular = m_tGridMaterial.Diffuse;
+	m_tGridMaterial.Ambient = m_tGridMaterial.Diffuse;
+	
 	//m_pTerrain = new CTerrainMesh;
 
 	//m_pTerrain->Initialize();
@@ -167,6 +177,7 @@ void CDebug::DrawGrid()
 
 	//m_pDevice->SetRenderState(D3DRS_LIGHTING, false);
 	m_pDevice->SetFVF(VTXCOLORFVF);
+	m_pDevice->SetMaterial(&m_tGridMaterial);
 	m_pDevice->SetStreamSource( 0, m_pGridVB, 0, sizeof( VERTEXCOLOR ) );
 	m_pDevice->DrawPrimitive(D3DPT_LINELIST, 0, m_iCnt/2);
 

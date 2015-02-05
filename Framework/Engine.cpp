@@ -147,12 +147,10 @@ VOID CEngine::Render()
 		}
 
 		//Debug Render
-//		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
 		_SINGLE(CDebug)->Render();
 
 		//ObjectRender
 		_SINGLE(CObjectManager)->Render();
-//		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 		// End the scene
 		m_pDevice->GetDevice()->EndScene();

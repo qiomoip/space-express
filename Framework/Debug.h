@@ -23,6 +23,7 @@ public:
 private:
 	LPDIRECT3DVERTEXBUFFER9		m_pGridVB;
 	LPDIRECT3DVERTEXBUFFER9		m_pLineVB;
+	D3DMATERIAL9				m_tGridMaterial;
 	int							m_iCnt;
 
 	CEntity*		m_pTerrain;
