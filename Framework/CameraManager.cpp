@@ -196,7 +196,7 @@ CCamera* CCameraManager::CreateCamera(const eCAMERA_NUM& eCam)
 
 void CCameraManager::CheckKey()
 {
-	/*const KEYINFO* pInfo = _SINGLE(CKeyManager)->GetKey("KEY_SPACE");
+	const KEYINFO* pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_SPACE);
 	if(!pInfo)
 		return;
 
@@ -212,7 +212,7 @@ void CCameraManager::CheckKey()
 			SetMainCamera("MainCamera");
 			m_bChange = false;
 		}
-	}*/
+	}
 }
 
 void CCameraManager::Destroy()

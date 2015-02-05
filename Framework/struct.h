@@ -81,7 +81,7 @@ typedef struct _tagMeshInfo
 	LPTSTR				pName;
 	LPD3DXMESH			pMesh ; // Our mesh object in sysmem
 	D3DMATERIAL9*		pMaterials ; // Materials for our mesh
-	LPDIRECT3DTEXTURE9*	pTextures ; // Textures for our mesh
+	//LPDIRECT3DTEXTURE9*	pTextures ; // Textures for our mesh
 	DWORD				dwNumMaterials ;   // Number of mesh materials
 
 }MESH_INFO;

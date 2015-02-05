@@ -63,14 +63,20 @@ HRESULT CStaticMesh::LoadTexture()
 	D3DXMATERIAL* d3dxMaterials = ( D3DXMATERIAL* )m_pD3DXMtrlBuffer->GetBufferPointer();
 	_TD3DXMATERIAL mMaterial;
 	memset(&mMaterial, 0, sizeof(_TD3DXMATERIAL));
-	mMaterial.MatD3D = d3dxMaterials->MatD3D;
+	mMaterial.pTextureFilename = new TCHAR[255];
 
-	mMaterial.pTextureFilename = CTString::CharToTCHAR(d3dxMaterials->pTextureFilename);
+	mMaterial.MatD3D = d3dxMaterials->MatD3D;
+	MultiByteToWideChar(
+		CP_ACP, MB_PRECOMPOSED, 
+		d3dxMaterials->pTextureFilename, 
+		strlen(d3dxMaterials->pTextureFilename) + 1,
+		mMaterial.pTextureFilename , 
+		_tcslen(mMaterial.pTextureFilename ) + 1);
 
 	m_pMeshInfo->pMaterials = new D3DMATERIAL9[m_pMeshInfo->dwNumMaterials];
-	m_pMeshInfo->pTextures = new LPDIRECT3DTEXTURE9[m_pMeshInfo->dwNumMaterials];
+	//m_pMeshInfo->pTextures = new LPDIRECT3DTEXTURE9[m_pMeshInfo->dwNumMaterials];
 
-	if( !m_pMeshInfo->pMaterials || !m_pMeshInfo->pMaterials )
+	if( !m_pMeshInfo->pMaterials  )
 	{
 		Safe_Delete(m_pMeshInfo);
 		return E_OUTOFMEMORY;
@@ -84,18 +90,20 @@ HRESULT CStaticMesh::LoadTexture()
 		// Set the ambient color for the material (D3DX does not do this)
 		m_pMeshInfo->pMaterials[i].Ambient = m_pMeshInfo->pMaterials[i].Diffuse;
 
-		m_pMeshInfo->pTextures[i] = NULL;
+		//m_pMeshInfo->pTextures[i] = NULL;
 
 		if( d3dxMaterials[i].pTextureFilename &&
 			lstrlenA( d3dxMaterials[i].pTextureFilename ) > 0 )
 		{
-			LPSTR szRet = CTString::TCHARToChar(mMaterial.pTextureFilename);
+			LPSTR szRet = new CHAR[255];
 			
-			/*new CHAR[256];
-			memset(szRet, 0, sizeof(char) * 256);
 			int len = WideCharToMultiByte( CP_ACP, 0, mMaterial.pTextureFilename, -1, NULL, 0, NULL, NULL );	
-			WideCharToMultiByte( CP_ACP, 0, mMaterial.pTextureFilename, -1, szRet, len, NULL, NULL );*/
-
+			WideCharToMultiByte( CP_ACP, 0, mMaterial.pTextureFilename, -1, szRet, len, NULL, NULL );
+			/*LPSTR szRet= new CHAR[256];
+			memset(szRet, 0, sizeof(char) * 256);
+			/*int len = WideCharToMultiByte( CP_ACP, 0, mMaterial.pTextureFilename, -1, NULL, 0, NULL, NULL );	
+			WideCharToMultiByte( CP_ACP, 0, mMaterial.pTextureFilename, -1, szRet, len, NULL, NULL );
+*/
 			//WideCharToMultiByte(CP_ACP, MB_PRECOMPOSED, mMaterial.pTextureFilename, _tcslen(mMaterial.pTextureFilename) + 1,
 			//	szRet, 256 , NULL, NULL);
 
@@ -144,15 +152,15 @@ void CStaticMesh::Destroy()
 		Safe_Delete_Array(m_pMeshInfo->pMaterials);
 	if( m_pMeshInfo->pName)
 		Safe_Delete_Array(m_pMeshInfo->pName);
-	if( m_pMeshInfo->pTextures )
-	{
-		for( DWORD j = 0; j < m_pMeshInfo->dwNumMaterials; ++j)
-		{
-			if( m_pMeshInfo->pTextures[j] )
-				Safe_Release( m_pMeshInfo->pTextures[j] );
-		}
-		Safe_Delete_Array( m_pMeshInfo->pTextures );
-	}
+	//if( m_pMeshInfo->pTextures )
+	//{
+	//	for( DWORD j = 0; j < m_pMeshInfo->dwNumMaterials; ++j)
+	//	{
+	//		if( m_pMeshInfo->pTextures[j] )
+	//			Safe_Release( m_pMeshInfo->pTextures[j] );
+	//	}
+	//	Safe_Delete_Array( m_pMeshInfo->pTextures );
+	//}
 	if( m_pMeshInfo->pMesh )
 	{
 

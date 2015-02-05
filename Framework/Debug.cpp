@@ -195,7 +195,7 @@ VOID CDebug::InitFont()
 	memset(&m_Desc, 0, sizeof(D3DXFONT_DESC)); //구조체 초기화
 	
 	m_Desc.CharSet = HANGUL_CHARSET;
-	CTString::Tstrcpy(m_Desc.FaceName, _T("맑은 고딕") ); //폰트 설정
+	_tcscpy_s(m_Desc.FaceName, _tcslen(_T("맑은 고딕")) + 1 , _T("맑은 고딕") ); //폰트 설정
 	m_Desc.Height = 15; //높이
 	m_Desc.Width = 8; //넓이
 	m_Desc.Weight = FW_BOLD; //두께
