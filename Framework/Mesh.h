@@ -6,7 +6,8 @@ class CTexture;
 class CMesh
 {
 protected:
-	vector<CTexture*>	m_vecTexture;
+	//vector<CTexture*>	m_vecTexture;
+	CTexture**			m_arrayTexture;
 public:
 	virtual void Render()PURE;
 	virtual void Destroy();

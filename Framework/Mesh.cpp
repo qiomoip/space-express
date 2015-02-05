@@ -14,4 +14,5 @@ CMesh::~CMesh(void)
 
 void CMesh::Destroy()
 {
+	Safe_Delete_Array(m_arrayTexture);
 }

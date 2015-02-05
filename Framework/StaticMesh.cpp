@@ -74,6 +74,7 @@ HRESULT CStaticMesh::LoadTexture()
 		_tcslen(mMaterial.pTextureFilename ) + 1);
 
 	m_pMeshInfo->pMaterials = new D3DMATERIAL9[m_pMeshInfo->dwNumMaterials];
+	m_arrayTexture = new CTexture*[m_pMeshInfo->dwNumMaterials];
 	//m_pMeshInfo->pTextures = new LPDIRECT3DTEXTURE9[m_pMeshInfo->dwNumMaterials];
 
 	if( !m_pMeshInfo->pMaterials  )
@@ -115,7 +116,8 @@ HRESULT CStaticMesh::LoadTexture()
 				return E_FAIL;
 			}
 			Safe_Delete_Array(szRet);
-			m_vecTexture.push_back(pTexture);
+//			m_vecTexture.push_back(pTexture);
+			m_arrayTexture[i] = pTexture;
 		}
 	}
 
@@ -137,7 +139,8 @@ void CStaticMesh::Render()
 		// Set the material and texture for this subset
 		_SINGLE(CDevice)->GetDevice()->SetMaterial( &m_pMeshInfo->pMaterials[i] );
 		// _SINGLE(CDevice)->GetDevice()->SetTexture( 0, m_pMeshInfo->pTextures[i] );
-		m_vecTexture[i]->SetTexture();
+//		m_vecTexture[i]->SetTexture();
+		m_arrayTexture[i]->SetTexture();
 
 		// Draw the mesh subset
 		m_pMeshInfo->pMesh->DrawSubset( i );
