@@ -86,6 +86,12 @@
     <Filter Include="Engine\Light">
       <UniqueIdentifier>{6d20ba98-833c-425f-a142-44aa8c9739ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Director\Manager\SceneManager">
+      <UniqueIdentifier>{ab08b2e1-f2a2-45df-bbc8-58edd1a8250a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\Manager\SceneManager\Scene">
+      <UniqueIdentifier>{bef10f86-f0e5-41ac-9991-7ae9453e041d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXUT\Optional\directx.ico">
@@ -108,9 +114,6 @@
     <ClCompile Include="Light.cpp">
       <Filter>Engine\Light</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="TString.cpp" />
     <ClCompile Include="App.cpp">
       <Filter>App</Filter>
     </ClCompile>
@@ -135,9 +138,6 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>Engine\Director\DeviceRes\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
-      <Filter>Engine\Director\DeviceRes</Filter>
-    </ClCompile>
     <ClCompile Include="StaticMesh.cpp">
       <Filter>Engine\Director\DeviceRes\Mesh\StaticMesh</Filter>
     </ClCompile>
@@ -149,6 +149,15 @@
     </ClCompile>
     <ClCompile Include="ThirdCam.cpp">
       <Filter>Engine\Director\Manager\CameraManager\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Engine\Director\Manager\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Engine\Director\Manager\SceneManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Engine\Director\Manager\SceneManager\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -170,10 +179,6 @@
     <ClInclude Include="Light.h">
       <Filter>Engine\Light</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="SceneManager.h" />
-    <ClInclude Include="struct.h" />
-    <ClInclude Include="TString.h" />
     <ClInclude Include="App.h">
       <Filter>App</Filter>
     </ClInclude>
@@ -204,9 +209,6 @@
     <ClInclude Include="Mesh.h">
       <Filter>Engine\Director\DeviceRes\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceManager.h">
-      <Filter>Engine\Director\DeviceRes</Filter>
-    </ClInclude>
     <ClInclude Include="StaticMesh.h">
       <Filter>Engine\Director\DeviceRes\Mesh\StaticMesh</Filter>
     </ClInclude>
@@ -218,6 +220,18 @@
     </ClInclude>
     <ClInclude Include="ThirdCam.h">
       <Filter>Engine\Director\Manager\CameraManager\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Engine\Director\Manager\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Engine\Director\Manager\SceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Engine\Director\Manager\SceneManager\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="struct.h">
+      <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
