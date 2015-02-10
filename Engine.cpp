@@ -11,6 +11,8 @@
 #include "ThirdCam.h"
 #include "Mouse.h"
 #include "Light.h"
+#include "Connect.h"
+#include "Session.h"
 
 CEngine::CEngine(void)
 	: m_pDevice(NULL)
@@ -55,6 +57,12 @@ HRESULT CEngine::Initialize(HWND hWnd)
 
 	((CThirdCam*)pMainCam)->SetLookObject(_SINGLE(CObjectManager)->FindObject("Tiger"));
 
+	//서버 초기화
+	if(_SINGLE(CConnect)->Initialize())
+		return E_FAIL;
+
+	for(int i = 0; i < 5; ++i)
+		_SINGLE(CConnect)->SendInfo();
 
 	return S_OK;
 }
@@ -164,7 +172,12 @@ VOID CEngine::Destroy()
 {
 	for(int i = 0; i < m_vecLight.size(); ++i)
 		Safe_Delete(m_vecLight[i]);
+
 	m_vecLight.clear();
+
+
+	_SINGLE(CConnect)->KillInstance();
+
 	_SINGLE(CMouse)->KillInstance();
 	_SINGLE(CObjectManager)->KillInstance();
 	_SINGLE(CResourceManager)->KillInstance();

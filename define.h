@@ -1,5 +1,6 @@
 #pragma once
 
+#include <WinSock2.h>
 #include <Windows.h>
 #include <list>
 #include <vector>
@@ -27,6 +28,13 @@
 #include <locale.h>
 #include <memory>
 
+
+//#include "IE_WinApplication.h"
+
+#pragma comment(lib,"winmm.lib")
+#pragma comment (lib,"ws2_32.lib")
+#pragma comment (lib,"mswsock.lib")
+
 #pragma warning( disable : 4996 ) // disable deprecated warning 
 //#pragma warning( disable : 4244 )
 
@@ -36,6 +44,10 @@ using namespace std;
 #include "struct.h"
 #include "function.h"
 #include "TString.h"
+
+
+#define BUFFERSIZE 8192
+#define PACKETHEADER 4
 
 
 /*
