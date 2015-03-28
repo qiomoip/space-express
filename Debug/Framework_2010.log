@@ -1,0 +1,38 @@
+﻿빌드 시작: 2015-03-29 오전 4:17:02
+     1>2 노드의 "C:\Users\Administrator\Desktop\Space_Express\trunk\Framework\Framework_2010.vcxproj" 프로젝트(Build 대상)입니다.
+     1>ClCompile:
+         C:\Program Files\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"C:\Program Files\Microsoft DirectX SDK (June 2010)\\Include" /IDXUT\Core /IDXUT\Optional /ZI /nologo /W4 /WX- /Od /Oi /Oy- /D WIN32 /D _DEBUG /D DEBUG /D PROFILE /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MDd /GS /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt  Debug.cpp Engine.cpp
+         Debug.cpp
+         Engine.cpp
+         코드를 생성하고 있습니다...
+       Link:
+         C:\Program Files\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Administrator\Desktop\Space_Express\trunk\Framework\Debug\Framework.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files\Microsoft DirectX SDK (June 2010)\\Lib\x86" d3d9.lib d3dx10d.lib d3dx9d.lib dxerr.lib dxguid.lib winmm.lib comctl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"C:\Program Files\Microsoft Visual Studio 11.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"C:\Users\Administrator\Desktop\Space_Express\trunk\Framework\Debug\Framework.pdb" /SUBSYSTEM:WINDOWS /LARGEADDRESSAWARE:NO /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Administrator\Desktop\Space_Express\trunk\Framework\Debug\Framework.lib" /MACHINE:X86 /SAFESEH  Debug\Framework.res
+         Debug\App.obj
+         Debug\Camera.obj
+         Debug\CameraManager.obj
+         Debug\Debug.obj
+         Debug\Device.obj
+         Debug\Engine.obj
+         Debug\Entity.obj
+         Debug\KeyManager.obj
+         Debug\Light.obj
+         Debug\main.obj
+         Debug\Mesh.obj
+         Debug\Mouse.obj
+         Debug\ObjectManager.obj
+         Debug\ResourceManager.obj
+         Debug\Scene.obj
+         Debug\SceneManager.obj
+         Debug\Shader.obj
+         Debug\ShaderManager.obj
+         Debug\StaticMesh.obj
+         Debug\TerrainMesh.obj
+         Debug\Texture.obj
+         Debug\ThirdCam.obj
+         Debug\TString.obj
+         Framework_2010.vcxproj -> C:\Users\Administrator\Desktop\Space_Express\trunk\Framework\Debug\Framework.exe
+     1>"C:\Users\Administrator\Desktop\Space_Express\trunk\Framework\Framework_2010.vcxproj" 프로젝트를 빌드했습니다(Build 대상).
+
+빌드했습니다.
+
+경과 시간: 00:00:03.10
