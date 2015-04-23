@@ -3,6 +3,7 @@
 #include "ResourceManager.h"
 #include "TString.h"
 #include "Texture.h"
+#include "Debug.h"
 
 CStaticMesh::CStaticMesh(void)
 	: m_pMeshInfo(NULL)
@@ -50,6 +51,9 @@ HRESULT CStaticMesh::LoadMesh(const LPTSTR szMeshName)
 		MessageBox(NULL, _T("No mesh!"), szMeshName, MB_OK);
 		return E_FAIL;
 	}
+	//로드한 x파일의 사이즈 구하기
+	GetMeshSize();
+
 	Safe_Delete_Array(str);
 	return S_OK;
 }
@@ -130,6 +134,65 @@ HRESULT CStaticMesh::LoadTexture()
 	return S_OK;
 }
 
+void CStaticMesh::GetMeshSize()
+{
+	_SINGLE(CDevice)->GetDevice()->SetFVF(VTXCOLORFVF);
+	LPDIRECT3DVERTEXBUFFER9 pVB = NULL;
+	m_pMeshInfo->pMesh->GetVertexBuffer( &pVB);
+
+	// 현재 메쉬의 전체 버텍스 갯수를 받아옵니다.
+	DWORD dwVertexNum = m_pMeshInfo->pMesh->GetNumVertices();
+
+	// 버텍스 버퍼를 생성합니다^^
+
+	// 버텍스정보를 받아오기 위한 포인터를 생성하구요.
+	VOID* pVertices;
+
+	// 버텍스버퍼의 락을 걸고 버텍스정보를 받아와요. 여기서 쓰이는게 x파일의 fvf를 구조체로 정의한
+	// XFILE_FVF_INFO의 크기구요. 왜냐면 여기다 저장할꺼니까요. 위에다 적어놓았죠?
+	pVB->Lock(0, sizeof(VERTEXCOLOR) * m_pMeshInfo->pMesh->GetNumVertices(), 
+		(void**)&pVertices, 0);
+
+	// 구조체안에다가 포인터의 내용을 전달하면 이제 pVertex 안에
+	// 버텍스의 포지션, 방향값, 텍스쳐좌표가 들어있으므로 게임 끝난거죠^^
+	VERTEXCOLOR* pVertex = (VERTEXCOLOR*)pVertices;
+
+	float minX, minY, maxX, maxY, minZ, maxZ;
+	minX = minY = minZ = INFINITE ;
+	maxX = maxY = maxZ = INFINITE * -1;
+	// 하지만 pVertex는 현재 메쉬의 모든 위치정보도 같이있으므로, 이런식으로 응용해서 작성합니다.
+	for(DWORD i = 0; i < dwVertexNum; ++i)
+	{
+		// x좌표의 위치를 1씩 왼쪽으로.. (뭐 이런식으로 사용하시면 되요~)
+		if ( pVertex[i].vPos.x < minX)
+			minX = pVertex[i].vPos.x ;
+		else if( pVertex[i].vPos.x > maxX)
+			maxX = pVertex[i].vPos.x;
+
+		if ( pVertex[i].vPos.y < minY )
+			minY = pVertex[i].vPos.y;
+		else if( pVertex[i].vPos.y > maxY)
+			maxY = pVertex[i].vPos.y;
+
+		if ( pVertex[i].vPos.z < minZ )
+			minZ = pVertex[i].vPos.z;
+		else if( pVertex[i].vPos.z > maxZ )
+			maxZ = pVertex[i].vPos.z;
+	}
+
+	D3DXVECTOR3 vMin = D3DXVECTOR3(minX, minY, minZ);
+	D3DXVECTOR3 vMax = D3DXVECTOR3(maxX, maxY, maxZ);
+	D3DXVECTOR3 vMid = (vMin + vMax)/2;
+	D3DXVECTOR3 vlen = vMax - vMin;
+	float len = D3DXVec3Length( &vlen);
+	
+	m_pMeshInfo->sphere.pos = vMid;
+	m_pMeshInfo->sphere.size = len ;
+	// 이제 다 썼으니 버텍스버퍼의 락을 해제해줘야겠죠.
+pVB->Unlock();
+}
+
+
 void CStaticMesh::Render()
 {
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
@@ -144,7 +207,16 @@ void CStaticMesh::Render()
 
 		// Draw the mesh subset
 		m_pMeshInfo->pMesh->DrawSubset( i );
+		_SINGLE(CDebug)->AddFaceCount( (UINT)m_pMeshInfo->pMesh->GetNumFaces() );
 	}
+
+	//경계구 그리기
+	LPD3DXMESH _mesh = NULL;
+	HRESULT r = D3DXCreateSphere( _SINGLE(CDevice)->GetDevice(),
+		 m_pMeshInfo->sphere.size * 0.25f , (UINT)8, (UINT)8, &_mesh, NULL);
+	r = _mesh->DrawSubset(0);
+	
+	Safe_Release( _mesh);
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 

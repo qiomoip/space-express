@@ -22,6 +22,7 @@ CDebug::CDebug(void)
 	, m_Log(NULL)
 	, m_StaticLog(NULL)
 	, m_LogCount(0)
+	, m_FaceCount(0)
 {
 }
 
@@ -160,11 +161,13 @@ void CDebug::Input()
 
 void CDebug::DrawInfo()
 {
+	AddStaticLog(FALSE, _T("\nFaces : %d"), m_FaceCount);
 	//m_pTerrain->Render();
 	DrawGrid();
 
 	DrawFont();
 	DrawLog();
+	
 }
 
 void CDebug::DrawGrid()
@@ -231,7 +234,7 @@ HRESULT CDebug::DrawLog()
 {
 	for(int i = 0; i < LOG_COUNT; ++i)
 	{
-		m_pFont->DrawText(NULL, m_Log[i], -1, &m_LogRect, DT_LEFT | DT_EXPANDTABS | DT_WORDBREAK, COLOR_GOLD); //출력
+		m_pFont->DrawText(NULL, m_Log[i], -1, &m_LogRect, DT_LEFT | DT_EXPANDTABS | DT_WORDBREAK, COLOR_BLUE); //출력
 		m_LogRect.top += m_Desc.Height + 5;
 	}
 	m_LogRect.top  = 10;
@@ -306,3 +309,16 @@ HRESULT CDebug::VectorToString(LPTSTR dest, D3DXVECTOR3 vec)
 
 	return S_OK;
 }
+
+
+
+void CDebug::InitFaceCount()
+{
+	m_FaceCount = 0;
+}
+
+void CDebug::AddFaceCount(UINT _faces)
+{
+	m_FaceCount += _faces;
+}
+

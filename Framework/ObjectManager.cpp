@@ -42,7 +42,7 @@ CEntity* CObjectManager::CreateEntity(const eMESH_TYPE& eMeshType, const eRENDER
 	pEntity->SetRenderType(eRender);
 	pEntity->SetName(strMeshKey);
 	CMesh* pMesh = NULL;
-
+	
 	if(eRender != RTYPE_NONE)
 		pMesh = _SINGLE(CResourceManager)->Load(eMeshType, strMeshKey, szMeshName);
 

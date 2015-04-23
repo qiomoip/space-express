@@ -16,6 +16,8 @@ public:
 public:
 	HRESULT LoadMesh(const LPTSTR szMeshName);
 	HRESULT LoadTexture();
+	//메쉬의 사이즈를 메쉬 정보(sphere)에 저장
+	void	GetMeshSize();
 
 public:
 	CStaticMesh(void);

@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "Texture.h"
 #include "ResourceManager.h"
+#include "Debug.h"
 
 CTerrainMesh::CTerrainMesh(void)
 	: m_pVB(NULL)
@@ -60,7 +61,8 @@ void CTerrainMesh::Render()
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, true);
 	_SINGLE(CDevice)->GetDevice()->SetTexture(0, NULL);
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
-
+	//터레인 폴리곤 수 추가
+	_SINGLE(CDebug)->AddFaceCount( (UINT)m_iTriNum );
 }
 
 bool CTerrainMesh::CreateTerrainInfo(const TERRAININFO& tInfo)

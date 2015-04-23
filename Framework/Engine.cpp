@@ -148,10 +148,9 @@ VOID CEngine::Render()
 
 		//Debug Render
 		_SINGLE(CDebug)->Render();
-
+		_SINGLE(CDebug)->InitFaceCount();
 		//ObjectRender
 		_SINGLE(CObjectManager)->Render();
-
 		// End the scene
 		m_pDevice->GetDevice()->EndScene();
 	}

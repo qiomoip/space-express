@@ -29,7 +29,7 @@ void CCamera::Init()
 
 	D3DXMatrixLookAtLH( &m_tCam.matView, &m_tCam.vPos, &m_tCam.vLook, &m_tCam.vUp );
 	D3DXMatrixRotationAxis(&m_tCam.matView, &m_tCam.vRight, D3DX_PI * 0.5f);
-	D3DXMatrixPerspectiveFovLH( &m_tCam.matProj, D3DX_PI / 4, 1.0f, 1.0f, 1000.0f );
+	D3DXMatrixPerspectiveFovLH( &m_tCam.matProj, /*D3DX_PI / 4*/D3DX_PI / 4.f , 1.0f, 1.0f, 1000.0f );
 }
 
 void CCamera::Update()
