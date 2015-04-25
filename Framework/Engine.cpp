@@ -11,6 +11,9 @@
 #include "ThirdCam.h"
 #include "Mouse.h"
 #include "Light.h"
+#include "Shader.h"
+#include "ShaderManager.h"
+#include "Frustum.h"
 
 CEngine::CEngine(void)
 	: m_pDevice(NULL)
@@ -42,6 +45,9 @@ HRESULT CEngine::Initialize(HWND hWnd)
 	_SINGLE(CDebug)->Initialize();
 #endif
 
+	if(FAILED(CreateShader()))
+		return E_FAIL;
+
 	if(FAILED(CreateEntity()))
 		return E_FAIL;
 
@@ -63,14 +69,33 @@ HRESULT CEngine::CreateEntity()
 {
 	//_SINGLE(CResourceManager)->Load(MT_STATIC, "Tiger", _T("tiger.x"));
 
-	CEntity* pSylva = _SINGLE(CObjectManager)->CreateEntity(MT_STATIC, RTYPE_ENTITY, "Tiger", _T("tiger.x"));
+	CEntity* pSylva = _SINGLE(CObjectManager)->CreateEntity(MT_STATIC, RTYPE_ENTITY, "Tiger", MN_TIGER, _T("tiger.x"));
 	pSylva->SetPos(D3DXVECTOR3(0.f, 0.f, 0.f));
+	pSylva->SetShader(SHADER_DEFAULT);
+	pSylva->SetTechKey("DefaultTech");
+	pSylva->SetPass(PASS_DEFAULT);
 
-	//_SINGLE(CObjectManager)->CreateEntity(MT_TERRAIN, RTYPE_TERRAIN, "MainTerrain");
+	CEntity* pTerrain = _SINGLE(CObjectManager)->CreateEntity(MT_TERRAIN, RTYPE_TERRAIN, "MainTerrain", MN_TERRAIN, _T("MainTerrain"));
+	pTerrain->SetShader(SHADER_DEFAULT);
+	pTerrain->SetTechKey("DefaultTech");
+	pTerrain->SetPass(PASS_DEFAULT);
 
-	CEntity* pEnvi = _SINGLE(CObjectManager)->CreateEntity(MT_STATIC, RTYPE_ENVIRONMENT, "Envi", _T("Environment.X"));
+
+	CEntity* pEnvi = _SINGLE(CObjectManager)->CreateEntity(MT_STATIC, RTYPE_ENVIRONMENT, "Envi", MN_ENVIRONMENT, _T("Environment.X"));
 	pEnvi->SetPos(D3DXVECTOR3(0.f, 10.f, 0.f));
 	pEnvi->SetScale(5.f, 5.f, 5.f);
+	pEnvi->SetShader(SHADER_DEFAULT);
+	pEnvi->SetTechKey("DefaultTech");
+	pEnvi->SetPass(PASS_DEFAULT/*PASS_NOTEXTURE*/);
+
+#ifdef _DEBUG
+
+	CEntity* pGrid = _SINGLE(CObjectManager)->CreateEntity(MT_GRID, RTYPE_GRID, "DebugGrid", MN_GRID, _T("Grid"));
+	pGrid->SetShader(SHADER_DEFAULT);
+	pGrid->SetTechKey("DefaultTech");
+	pGrid->SetPass(PASS_NOTEXTURE);
+
+#endif
 
 	return S_OK;
 }
@@ -114,6 +139,16 @@ HRESULT CEngine::CreateLight()
 	return S_OK;
 }
 
+HRESULT CEngine::CreateShader()
+{
+	if(FAILED(_SINGLE(CShaderManager)->CreateShader(SHADER_DEFAULT, _T("shader.hpp"))))
+	{
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
 void CEngine::Update()
 {
 	_SINGLE(CCameraManager)->Update();
@@ -136,21 +171,28 @@ VOID CEngine::Render()
 		// Rendering of scene objects can happen here
 
 		//Camera Transform
-		_SINGLE(CCameraManager)->SetTransform();
+		_SINGLE(CCameraManager)->SetTransform(); 
 
 		//Set Light
 		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, true);
-		for(int i = 0; i < m_vecLight.size(); ++i)
+		for(unsigned int i = 0; i < m_vecLight.size(); ++i)
 		{
 			m_pDevice->GetDevice()->SetLight(i, m_vecLight[i]->GetLightInfo());
 			m_pDevice->GetDevice()->LightEnable(i, true);
 		}
 
+#ifdef _DEBUG
+
 		//Debug Render
 		_SINGLE(CDebug)->Render();
 		_SINGLE(CDebug)->InitFaceCount();
+		//_SINGLE(CFrustum)->Render();
+
+#endif
+
 		//ObjectRender
 		_SINGLE(CObjectManager)->Render();
+
 		// End the scene
 		m_pDevice->GetDevice()->EndScene();
 	}
@@ -161,9 +203,11 @@ VOID CEngine::Render()
 
 VOID CEngine::Destroy()
 {
-	for(int i = 0; i < m_vecLight.size(); ++i)
+	for(unsigned int i = 0; i < m_vecLight.size(); ++i)
 		Safe_Delete(m_vecLight[i]);
 	m_vecLight.clear();
+	_SINGLE(CFrustum)->KillInstance();
+	_SINGLE(CShaderManager)->KillInstance();
 	_SINGLE(CMouse)->KillInstance();
 	_SINGLE(CObjectManager)->KillInstance();
 	_SINGLE(CResourceManager)->KillInstance();

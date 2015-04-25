@@ -19,6 +19,7 @@ public:
 	HRESULT CreateEntity();
 	HRESULT CreateCamera();
 	HRESULT CreateLight();
+	HRESULT CreateShader();
 
 public:
 	HRESULT				Initialize(HWND hWnd);
@@ -28,6 +29,7 @@ public:
 	VOID				Run();
 	VOID				Collision();
 	VOID				Render();
+	//ÄÃ¸µ
 private:
 	CEngine(void);
 	~CEngine(void);

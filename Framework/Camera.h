@@ -28,8 +28,9 @@ public:
 	void SetCamera(const CAMERA&	_tCamera);
 
 public:
-	D3DXMATRIX*			GetMatView();
-	D3DXMATRIX*			GetMatProj();
+	const D3DXMATRIX*			GetMatView()const;
+	const D3DXMATRIX*			GetMatProj()const;
+	const D3DXMATRIX			GetMatViewProj()const;
 	CAMERA				GetCameraInfo();
 
 public:

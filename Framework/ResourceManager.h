@@ -14,7 +14,7 @@ private:
 	CResourceManager(void);
 	~CResourceManager(void);
 
-	map<string, CMesh*>*			m_mapMesh;
+	map<eMESH_NUM, CMesh*>*			m_mapMesh;
 	map<string, CTexture*>			m_mapTexture;
 	
 	//LPD3DXBUFFER					m_pD3DXMtrlBuffer ;
@@ -27,16 +27,16 @@ public:
 
 	void							CleanUp();
 
-	CMesh*							Load(const eMESH_TYPE& eMeshType, const string& strMeshKey, const LPTSTR szMeshName);
+	CMesh*							Load(const eMESH_TYPE& eMeshType, const eMESH_NUM& eMeshNum, const LPTSTR szMeshName);
 
-	CMesh*							LoadMesh(const eMESH_TYPE& eMeshType, const string& strMeshKey, const LPTSTR _meshName = NULL);
+	CMesh*							LoadMesh(const eMESH_TYPE& eMeshType, const eMESH_NUM& eMeshNum, const LPTSTR _meshName = NULL);
 
 	CTexture*						LoadTexture(const string& strTextureKey, const LPTSTR _texname);
 
 	LPSTR							GetResourcePath(const LPSTR _str_);
 	TCHAR*							GetResourcePathT(const LPTSTR _str_);
 
-	const map<string, CMesh*>*		GetMeshList() const;
+	const map<eMESH_NUM, CMesh*>*		GetMeshList() const;
 
 };
 

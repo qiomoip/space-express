@@ -1,6 +1,10 @@
 #include "ObjectManager.h"
 #include "ResourceManager.h"
 #include "Entity.h"
+#include "ShaderManager.h"
+#include "Shader.h"
+#include "Tiger.h"
+#include "Frustum.h"
 
 //임시
 #include "Mesh.h"
@@ -30,26 +34,46 @@ void CObjectManager::CleanUp()
 }
 
 
-CEntity* CObjectManager::CreateEntity(const eMESH_TYPE& eMeshType, const eRENDER_TYPE& eRender, const string& strMeshKey, const LPTSTR szMeshName)
+CEntity* CObjectManager::CreateEntity(const eMESH_TYPE& eMeshType, const eRENDER_TYPE& eRender, const string& strEntityKey,  const eMESH_NUM& eMeshNum, const LPTSTR szMeshName)
 {
-	map<string, CEntity*>::iterator iter = m_mapObject.find(strMeshKey);
+	map<string, CEntity*>::iterator iter = m_mapObject.find(strEntityKey);
 
 	if(iter != m_mapObject.end())
 		return iter->second;
 
-	CEntity* pEntity = new CEntity;
+	CEntity* pEntity = NULL;
+
+	switch(eMeshNum)
+	{
+	case MN_TIGER:
+		pEntity = new CTiger;
+		break;
+		/*case MN_ENVIRONMENT:
+		pEntity = new CEntity;
+		break;
+	case MN_GRID:
+		pEntity = new CEntity;
+		break;
+	case MN_TERRAIN:
+		pEntity = new CEntity;
+		break;*/
+	default:
+		pEntity = new CEntity;
+		break;
+	}
+	//CEntity* pEntity = new CEntity;
 	pEntity->Initialize();
 	pEntity->SetRenderType(eRender);
-	pEntity->SetName(strMeshKey);
+	pEntity->SetName(strEntityKey);
 	CMesh* pMesh = NULL;
 	
 	if(eRender != RTYPE_NONE)
-		pMesh = _SINGLE(CResourceManager)->Load(eMeshType, strMeshKey, szMeshName);
+		pMesh = _SINGLE(CResourceManager)->Load(eMeshType, eMeshNum, szMeshName);
 
 	if(pMesh)
 		pEntity->PushMesh(pMesh);
 
-	m_mapObject.insert(map<string, CEntity*>::value_type(strMeshKey, pEntity));
+	m_mapObject.insert(map<string, CEntity*>::value_type(strEntityKey, pEntity));
 
 	return pEntity;
 }
@@ -86,19 +110,20 @@ HRESULT CObjectManager::Render()
 	//{
 	//	iter->second->Render();
 	//}
-	for(int i = RTYPE_ENVIRONMENT; i < RTYPE_MAX; ++i)
+	for(int i = RTYPE_NONE + 1; i < RTYPE_MAX; ++i)
 	{
 		for(list<CEntity*>::iterator iter = m_listRenderList[i].begin(); iter != m_listRenderList[i].end();
 			++iter)
 		{
+			_SINGLE(CShaderManager)->BeginShader((*iter)->GetShader(), (*iter)->GetTechKey());
+
 			(*iter)->Render();
+
+			_SINGLE(CShaderManager)->EndShader((*iter)->GetShader());
 		}
 	}
-
-	for(int i = RTYPE_ENVIRONMENT; i < RTYPE_MAX; ++i)
-	{
-		m_listRenderList[i].clear();
-	}
+	//렌더리스트 초기화
+	Reset_RenderList();
 
 	return S_OK;
 }
@@ -108,6 +133,12 @@ void CObjectManager::Update()
 	for(map<string, CEntity*>::iterator iter = m_mapObject.begin();
 		iter != m_mapObject.end(); ++iter)
 	{
+		/*if ( _SINGLE(CFrustum)->isInFrustum( iter->second->GetPos(), 
+			iter->second->GetSize() ) )
+			iter->second->SetVisiable(true);
+		else
+			iter->second->SetVisiable(false);
+*/
 		iter->second->Update();
 	}
 
@@ -116,6 +147,12 @@ void CObjectManager::Update()
 void CObjectManager::Push_RenderList(CEntity* pEntity)
 {
 	m_listRenderList[pEntity->GetRenderType()].push_back(pEntity);
+}
+
+void CObjectManager::Reset_RenderList()
+{
+	for (int i = RTYPE_NONE + 1; i < RTYPE_MAX; ++i)
+		m_listRenderList[i].clear();
 }
 
 CEntity*	CObjectManager::FindObject(const string& strObjKey)

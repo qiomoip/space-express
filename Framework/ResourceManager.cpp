@@ -4,6 +4,7 @@
 #include "TerrainMesh.h"
 #include "StaticMesh.h"
 #include "Texture.h"
+#include "GridMesh.h"
 
 CResourceManager::CResourceManager(void)
 {
@@ -18,7 +19,7 @@ CResourceManager::~CResourceManager(void)
 
 void CResourceManager::Init()
 {
-	m_mapMesh = new map<string, CMesh*>;
+	m_mapMesh = new map<eMESH_NUM, CMesh*>;
 }
 
 void CResourceManager::CleanUp()
@@ -28,9 +29,9 @@ void CResourceManager::CleanUp()
 	Safe_Delete(m_mapMesh);
 }
 
-CMesh* CResourceManager::Load(const eMESH_TYPE& eMeshType, const string& strMeshKey, const LPTSTR szMeshName)
+CMesh* CResourceManager::Load(const eMESH_TYPE& eMeshType, const eMESH_NUM& eMeshNum, const LPTSTR szMeshName)
 {
-	CMesh* pMesh = LoadMesh(eMeshType, strMeshKey, szMeshName);
+	CMesh* pMesh = LoadMesh(eMeshType, eMeshNum, szMeshName);
 	if(!pMesh)
 	{
 		return NULL;
@@ -55,9 +56,9 @@ CMesh* CResourceManager::Load(const eMESH_TYPE& eMeshType, const string& strMesh
 성공 : 해당 메쉬의 포인터 리턴
 실패 : NULL 반환
 */
-CMesh* CResourceManager::LoadMesh(const eMESH_TYPE& eMeshType, const string& strMeshKey, const LPTSTR _meshName)
+CMesh* CResourceManager::LoadMesh(const eMESH_TYPE& eMeshType, const eMESH_NUM& eMeshNum, const LPTSTR _meshName)
 {
-	map<string, CMesh*>::iterator iter = m_mapMesh->find(strMeshKey);
+	map<eMESH_NUM, CMesh*>::iterator iter = m_mapMesh->find(eMeshNum);
 	if(iter != m_mapMesh->end())
 		return iter->second;
 
@@ -83,6 +84,13 @@ CMesh* CResourceManager::LoadMesh(const eMESH_TYPE& eMeshType, const string& str
 			pMesh = new CTerrainMesh;
 		}
 		break;
+#ifdef _DEBUG
+	case MT_GRID:
+		{
+			pMesh = new CGridMesh;
+		}
+		break;
+#endif
 	default:
 		break;
 	}
@@ -111,7 +119,7 @@ CMesh* CResourceManager::LoadMesh(const eMESH_TYPE& eMeshType, const string& str
 	//_tcscpy(pMesh->pName, _meshName);
 	//Safe_Delete_Array(str);
 
-	m_mapMesh->insert(map<string, CMesh*>::value_type(strMeshKey, pMesh));
+	m_mapMesh->insert(map<eMESH_NUM, CMesh*>::value_type(eMeshNum, pMesh));
 
 	return pMesh;
 }
@@ -136,6 +144,13 @@ CTexture*	CResourceManager::LoadTexture(const string& strTextureKey, const LPTST
 	}
 	Safe_Delete_Array(szPath);
 	pTexture->SetTextureInfo(pTex);
+
+	CHAR szRet[256];
+			memset(szRet, 0, sizeof(char) * 256);
+			int len = WideCharToMultiByte( CP_ACP, 0, _texname, -1, NULL, 0, NULL, NULL );	
+			WideCharToMultiByte( CP_ACP, 0, _texname, -1, szRet, len, NULL, NULL );
+
+	pTexture->SetTextureName(szRet);
 	m_mapTexture.insert(map<string, CTexture*>::value_type(strTextureKey, pTexture));
 	return pTexture;
 
@@ -163,7 +178,7 @@ TCHAR* CResourceManager::GetResourcePathT(const LPTSTR _str)
 	return pFileName;
 }
 
-const map<string, CMesh*>*		CResourceManager::GetMeshList() const
+const map<eMESH_NUM, CMesh*>*		CResourceManager::GetMeshList() const
 {
 	return m_mapMesh;
 }

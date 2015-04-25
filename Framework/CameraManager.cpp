@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "ThirdCam.h"
 #include "KeyManager.h"
+#include "Frustum.h"
 
 #ifdef _DEBUG
 #include "Debug.h"
@@ -60,23 +61,25 @@ void CCameraManager::Update()
 
 	
 #ifdef _DEBUG
-	LPTSTR vPos = new TCHAR[100];
-	LPTSTR vLook = new TCHAR[100];
-	LPTSTR vUp = new TCHAR[100];
-	LPTSTR vRight = new TCHAR[100];
+	TCHAR vPos[100] = _T(""); 
+	TCHAR vLook[100] = _T("");
+	TCHAR vUp[100] = _T("");
+	TCHAR vRight[100] = _T("");
 	_SINGLE(CDebug)->VectorToString(vPos,  m_pCurCam->GetCameraInfo().vPos );
 	_SINGLE(CDebug)->VectorToString(vLook, m_pCurCam->GetCameraInfo().vLook );
 	_SINGLE(CDebug)->VectorToString(vUp, m_pCurCam->GetCameraInfo().vUp );
 	_SINGLE(CDebug)->VectorToString(vRight, m_pCurCam->GetCameraInfo().vRight );
-	_SINGLE(CDebug)->AddStaticLog(true, _T("%s나는 문자열이다."), _T("string") );
-	_SINGLE(CDebug)->AddStaticLog( true, _T("카메라 정보 출력\nvPos : %s\nvLook : %s\nvUp : %s\nvRight : %s\nfAngle : %d, %d, %d"),
-		vPos, vLook, vUp, vRight, m_pCurCam->GetCameraInfo().iAngle[0], m_pCurCam->GetCameraInfo().iAngle[1], m_pCurCam->GetCameraInfo().iAngle[2]);
-
-	Safe_Delete_Array(vPos);
-	Safe_Delete_Array(vLook);
-	Safe_Delete_Array(vUp);
-	Safe_Delete_Array(vRight);
+	_SINGLE(CDebug)->AddStaticLog(LOG_CAMERA_INFO_0, _T("vPos : %s"), vPos );
+	_SINGLE(CDebug)->AddStaticLog(LOG_CAMERA_INFO_1, _T("vLook : %s"), vLook);
+	_SINGLE(CDebug)->AddStaticLog(LOG_CAMERA_INFO_2, _T("vUp : %s"), vUp );
+	_SINGLE(CDebug)->AddStaticLog(LOG_CAMERA_INFO_3, _T("vRight : %s"), vRight );
+	_SINGLE(CDebug)->AddStaticLog(LOG_CAMERA_INFO_4, _T("fAngle : %d, %d, %d"),
+		m_pCurCam->GetCameraInfo().iAngle[0], 
+		m_pCurCam->GetCameraInfo().iAngle[1], 
+		m_pCurCam->GetCameraInfo().iAngle[2]);
 #endif
+	//절두체 설정
+	_SINGLE(CFrustum)->setFrustum( GetCurCam()->GetMatViewProj() );
 }
 
 void CCameraManager::Input()
@@ -130,7 +133,7 @@ void CCameraManager::Input()
 	if(pInfo->bPush || pInfo->bDown)
 	{
 		pCamera.iAngle[AT_Y] = 1;
-	}
+	} 
 
 	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_TURN_LEFT);
 	if(pInfo->bPush || pInfo->bDown)

@@ -19,21 +19,24 @@ private:
 	list<CEntity*>			m_listRenderList[RTYPE_MAX];
 
 public:
-	void								Init();
-	void								Input();
-	void								Update();
-	void								CleanUp();
-	HRESULT								Render();
+	void					Init();
+	void					Input();
+	void					Update();
+	void					CleanUp();
+	HRESULT					Render();
 
 public:
 	CEntity*	FindObject(const string& strObjKey);
 
 public:
-	CEntity*			CreateEntity(const eMESH_TYPE& eMeshType, const eRENDER_TYPE& eRender, const string& strMeshKey, const LPTSTR szMeshName = NULL);
+	CEntity*			CreateEntity(const eMESH_TYPE& eMeshType, const eRENDER_TYPE& eRender, const string& strEntityKey, const eMESH_NUM& eMeshNum, const LPTSTR szMeshName = NULL);
 	CEntity*			CreateEntity(const string& strEntityKey);
 
 public:
+	//비운 리스트에 비지블한 오브젝트만 삽입해줌.
 	void Push_RenderList(CEntity* pEntity);
+	//렌더리스트 초기화함수(매 프레임마다 비우고 다시 채워놓는다.)
+	void Reset_RenderList();
 	
 };
 

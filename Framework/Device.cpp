@@ -55,8 +55,6 @@ HRESULT CDevice::CreateDevice(HWND hWnd)
 		return E_FAIL;
 	}
 
-	//m_pd3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
-	m_pd3dDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
     return S_OK;
 }
 

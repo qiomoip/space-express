@@ -41,14 +41,19 @@ void CCamera::Input()
 {
 }
 
-D3DXMATRIX* CCamera::GetMatView() 
+const D3DXMATRIX* CCamera::GetMatView() const
 {
 	return &m_tCam.matView;
 }
 
-D3DXMATRIX* CCamera::GetMatProj() 
+const D3DXMATRIX* CCamera::GetMatProj() const 
 {
 	return &m_tCam.matProj;
+}
+
+const D3DXMATRIX CCamera::GetMatViewProj() const 
+{
+	return (m_tCam.matView * m_tCam.matProj);
 }
 
 CAMERA CCamera::GetCameraInfo()

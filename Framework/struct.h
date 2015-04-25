@@ -75,14 +75,6 @@ typedef struct _tagCamera
 /*
 Mesh Info
 */
- 
-typedef struct _tagSphere
-{
-	D3DXVECTOR3 pos;
-	float size;
-}SPHERE_INFO;
-
-
 typedef struct _tagMeshInfo
 {
 	LPTSTR				pName;
@@ -90,8 +82,8 @@ typedef struct _tagMeshInfo
 	D3DMATERIAL9*		pMaterials ; // Materials for our mesh
 	//LPDIRECT3DTEXTURE9*	pTextures ; // Textures for our mesh
 	DWORD				dwNumMaterials ;   // Number of mesh materials
-	//경계구
-	SPHERE_INFO			sphere;
+	//메시 사이즈
+	float				fSize;
 }MESH_INFO;
 
 

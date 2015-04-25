@@ -7,6 +7,8 @@
 #include "ResourceManager.h"
 #include "ObjectManager.h"
 #include "TString.h"
+#include "ShaderManager.h"
+#include "Shader.h"
 
 
 CDebug::CDebug(void)
@@ -17,11 +19,12 @@ CDebug::CDebug(void)
 	, m_pLineVB(NULL)
 	, m_pFont(NULL)
 	, m_Desc()
-	, m_FontRect()
 	, m_LogRect()
+	, m_StaticLogRect()
 	, m_Log(NULL)
 	, m_StaticLog(NULL)
 	, m_LogCount(0)
+	, m_StaticLogCount(0)
 	, m_FaceCount(0)
 {
 }
@@ -37,16 +40,16 @@ void CDebug::Initialize()
 	m_pDevice = _SINGLE(CDevice)->GetDevice();
 	if(!m_pDevice)
 		return;
-	CreateVertexBuffer();
+	//CreateVertexBuffer();
 
-	memset(&m_tGridMaterial, 0, sizeof(D3DMATERIAL9));
-	m_tGridMaterial.Diffuse.a = 1.f;
-	m_tGridMaterial.Diffuse.r = 1.f;
-	m_tGridMaterial.Diffuse.g = 0.8f;
-	m_tGridMaterial.Diffuse.b = 1.f;
-	m_tGridMaterial.Power = 0.2f;
-	m_tGridMaterial.Specular = m_tGridMaterial.Diffuse;
-	m_tGridMaterial.Ambient = m_tGridMaterial.Diffuse;
+	//memset(&m_tGridMaterial, 0, sizeof(D3DMATERIAL9));
+	//m_tGridMaterial.Diffuse.a = 1.f;
+	//m_tGridMaterial.Diffuse.r = 1.f;
+	//m_tGridMaterial.Diffuse.g = 0.8f;
+	//m_tGridMaterial.Diffuse.b = 1.f;
+	//m_tGridMaterial.Power = 0.2f;
+	//m_tGridMaterial.Specular = m_tGridMaterial.Diffuse;
+	//m_tGridMaterial.Ambient = m_tGridMaterial.Diffuse;
 	
 	//m_pTerrain = new CTerrainMesh;
 
@@ -54,12 +57,12 @@ void CDebug::Initialize()
 
 	InitFont();
 	InitLog();
-
+	/*
 	AddLog(0, _T("테스트 로그 입니다.%d"), 0 );
 	AddLog(1, _T("테스트 로그 입니다.%d"), 1 );
 	AddLog(0, _T("로그 %d 변수 출력 %d"), 123 , 123 );
 	AddStaticLog(true, _T("위치가 고정된 로그%d"), 0 );
-
+	*/
 	
 }
 
@@ -147,6 +150,8 @@ void CDebug::Destroy()
 	Safe_Release(m_pGridVB);
 	Safe_Release(m_pLineVB);
 
+	for( int i = 0; i < LOG_COUNT; ++i)
+		Safe_Delete(m_StaticLog[i]);
 	Safe_Delete(m_StaticLog);
 	for( int i = 0; i < LOG_COUNT; ++i)
 		Safe_Delete(m_Log[i]);
@@ -161,22 +166,34 @@ void CDebug::Input()
 
 void CDebug::DrawInfo()
 {
-	AddStaticLog(FALSE, _T("\nFaces : %d"), m_FaceCount);
+	AddStaticLog(5, _T("\nFaces : %d"), m_FaceCount);
 	//m_pTerrain->Render();
-	DrawGrid();
+	//DrawGrid();
 
-	DrawFont();
+	DrawStaticLog();
 	DrawLog();
-	
 }
 
 void CDebug::DrawGrid()
 {
+
 	D3DXMATRIX matWorld;
 	D3DXMatrixIdentity(&matWorld);
-
 	m_pDevice->SetTransform(D3DTS_WORLD, &matWorld);
+
+	const D3DXMATRIX* pMatProj = _SINGLE(CCameraManager)->GetCurCam()->GetMatProj();
+	const D3DXMATRIX* pMatView = _SINGLE(CCameraManager)->GetCurCam()->GetMatView();
+	D3DXMATRIX matWVP = (*pMatView) * (*pMatProj);
+
+	_SINGLE(CShaderManager)->BeginShader(SHADER_DEFAULT, "DefaultTech");
+
+	CShader* pShader = _SINGLE(CShaderManager)->FindShader(SHADER_DEFAULT);
 	
+	pShader->SetMatrix("g_matWVP", &matWVP);
+
+	pShader->BeginPass(PASS_NOTEXTURE);
+	
+	pShader->SetValue("g_mtrlMesh", &m_tGridMaterial, sizeof(D3DMATERIAL9));
 
 	//m_pDevice->SetRenderState(D3DRS_LIGHTING, false);
 	m_pDevice->SetFVF(VTXCOLORFVF);
@@ -188,19 +205,25 @@ void CDebug::DrawGrid()
 	m_pDevice->SetFVF(VTXCOLORFVF);
 	m_pDevice->DrawPrimitive( D3DPT_LINELIST, 0, 3 );
 
-	//m_pDevice->SetRenderState( D3DRS_LIGHTING, TRUE );
+	pShader->EndPass();
+
+	_SINGLE(CShaderManager)->EndShader(SHADER_DEFAULT);
 }
 
 
 VOID CDebug::InitLog()
 {
-	m_StaticLog = new TCHAR[255];
-	memset(m_StaticLog, 0, sizeof(TCHAR)* 255 );
+	m_StaticLog = new LPTSTR[LOG_COUNT];
 	m_Log = new LPTSTR[LOG_COUNT];
 	for(int i = 0; i < LOG_COUNT; ++i)
 	{
-		m_Log[i] = new TCHAR[255];
-		memset(m_Log[i], 0, sizeof(TCHAR) * 255);
+		m_Log[i]		= new TCHAR[255];
+		m_StaticLog[i] = new TCHAR[255];
+		_tcscpy_s(m_Log[i], 255,  _T("") );
+		_tcscpy_s(m_StaticLog[i], 255,  _T("") );
+
+		//memset(m_Log[i], 0, sizeof(TCHAR) * 255);
+		//memset(m_StaticLog[i], 0, sizeof(TCHAR)* 255 );
 	}
 }
 
@@ -220,13 +243,19 @@ VOID CDebug::InitFont()
 	m_Desc.PitchAndFamily = FF_DONTCARE;
 
 	D3DXCreateFontIndirect(_SINGLE(CDevice)->GetDevice(), &m_Desc, &m_pFont); 
-	SetRect(&m_FontRect,SCREEN_WIDTH-400,10,SCREEN_WIDTH-30,SCREEN_HEIGHT); //폰트 위치
+	SetRect(&m_StaticLogRect,SCREEN_WIDTH-400,10,SCREEN_WIDTH-30,SCREEN_HEIGHT); //폰트 위치
 	SetRect(&m_LogRect,10,10,400,SCREEN_HEIGHT); 
 }
 
-HRESULT CDebug::DrawFont()
+HRESULT CDebug::DrawStaticLog()
 {
-	m_pFont->DrawText(NULL, m_StaticLog, -1, &m_FontRect, DT_RIGHT | DT_EXPANDTABS | DT_WORDBREAK , COLOR_CYAN); //출력
+	//m_pFont->DrawText(NULL, m_StaticLog, -1, &m_FontRect, DT_RIGHT | DT_EXPANDTABS | DT_WORDBREAK , COLOR_CYAN); //출력
+	for(int i = 0; i < LOG_COUNT; ++i)
+	{
+		m_pFont->DrawText(NULL, m_StaticLog[i], -1, &m_StaticLogRect, DT_RIGHT | DT_EXPANDTABS | DT_WORDBREAK , COLOR_CYAN); //출력
+		m_StaticLogRect.top += m_Desc.Height + 5;
+	}
+	m_StaticLogRect.top  = 10;
 	return S_OK;
 }
 
@@ -240,7 +269,7 @@ HRESULT CDebug::DrawLog()
 	m_LogRect.top  = 10;
 	return S_OK;
 }
-
+/*
 HRESULT CDebug::AddLog(LPTSTR _log, ...)
 {
 	va_list ap;
@@ -258,45 +287,43 @@ HRESULT CDebug::AddLog(LPTSTR _log, ...)
 		_vstprintf( m_Log[m_LogCount++] , 255, _log, ap);
 		//m_Log[m_LogCount++] = _log;
 	return S_OK;
-}
+}*/
 
 
 HRESULT CDebug::AddLog(int idx, LPTSTR _log, ...)
 {
 	va_list ap;
 	va_start(ap, _log);
-	//로그 카운트가 맥스일 경우 위에 덮어쓴다
-	if( idx >= LOG_COUNT )
+	//로그 카운트가 맥스일 경우+0보다 작은 인덱스일 경우 마지막 로그의
+	//아래쪽에 로그를 기록
+	if(  idx  < 0 || idx >= LOG_COUNT)
 	{
-		//잘못된 인덱스
-		return E_FAIL;
+		if ( m_LogCount >= LOG_COUNT )
+			m_LogCount = 0;
+		_vstprintf( m_Log[m_LogCount++] , 255, _log, ap);
 	}
 	else
-		//아닐 경우 그냥 로그 카운트에 넣는다
+	
 		_vstprintf( m_Log[idx] , 255, _log, ap);
-		//m_Log[idx] = _log;
 
 	return S_OK;
 }
 
-HRESULT CDebug::AddStaticLog(bool isOverwrite, LPTSTR _log, ...)
+HRESULT CDebug::AddStaticLog(int idx, LPTSTR _log, ...)
 {
 	va_list ap;
 	va_start(ap, _log);
 
-	if ( isOverwrite)
+	if ( idx >= LOG_COUNT ||  idx < 0)
 	{
-		_vstprintf( m_StaticLog, 255, _log, ap);
+		//로그수가 최대하면 맨위에 로그부터 덮어 씌운다.
+		if ( m_StaticLogCount >= LOG_COUNT )
+			m_StaticLogCount = 0;
+		_vstprintf( m_StaticLog[m_StaticLogCount++], 255, _log, ap);
 	}
 	else
-	{
-		LPTSTR str = new TCHAR[255];
-		
-		_vstprintf( str, 255, _log, ap);
-		_tcscat_s(m_StaticLog,_tcslen(m_StaticLog) + _tcslen(str) + 2, str) ;
-
-		Safe_Delete_Array(str);
-	}
+		//아닐 경우 그냥 넘겨받은 로그 카운트에 넣는다
+		_vstprintf( m_StaticLog[idx], 255, _log, ap);
 	return S_OK;
 }
 

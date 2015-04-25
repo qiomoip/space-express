@@ -3,6 +3,7 @@
 #include "ResourceManager.h"
 #include "TString.h"
 #include "Texture.h"
+#include "Shader.h"
 #include "Debug.h"
 
 CStaticMesh::CStaticMesh(void)
@@ -52,7 +53,7 @@ HRESULT CStaticMesh::LoadMesh(const LPTSTR szMeshName)
 		return E_FAIL;
 	}
 	//로드한 x파일의 사이즈 구하기
-	GetMeshSize();
+	GetSize();
 
 	Safe_Delete_Array(str);
 	return S_OK;
@@ -134,7 +135,7 @@ HRESULT CStaticMesh::LoadTexture()
 	return S_OK;
 }
 
-void CStaticMesh::GetMeshSize()
+float CStaticMesh::GetSize() 
 {
 	_SINGLE(CDevice)->GetDevice()->SetFVF(VTXCOLORFVF);
 	LPDIRECT3DVERTEXBUFFER9 pVB = NULL;
@@ -158,8 +159,8 @@ void CStaticMesh::GetMeshSize()
 	VERTEXCOLOR* pVertex = (VERTEXCOLOR*)pVertices;
 
 	float minX, minY, maxX, maxY, minZ, maxZ;
-	minX = minY = minZ = INFINITE ;
-	maxX = maxY = maxZ = INFINITE * -1;
+	minX = minY = minZ = INT_MAX ;
+	maxX = maxY = maxZ = INT_MIN;
 	// 하지만 pVertex는 현재 메쉬의 모든 위치정보도 같이있으므로, 이런식으로 응용해서 작성합니다.
 	for(DWORD i = 0; i < dwVertexNum; ++i)
 	{
@@ -182,40 +183,44 @@ void CStaticMesh::GetMeshSize()
 
 	D3DXVECTOR3 vMin = D3DXVECTOR3(minX, minY, minZ);
 	D3DXVECTOR3 vMax = D3DXVECTOR3(maxX, maxY, maxZ);
-	D3DXVECTOR3 vMid = (vMin + vMax)/2;
 	D3DXVECTOR3 vlen = vMax - vMin;
-	float len = D3DXVec3Length( &vlen);
-	
-	m_pMeshInfo->sphere.pos = vMid;
-	m_pMeshInfo->sphere.size = len ;
+	float len = D3DXVec3Length( &vlen) * 0.5f;
+
+	m_pMeshInfo->fSize = len ;
 	// 이제 다 썼으니 버텍스버퍼의 락을 해제해줘야겠죠.
-pVB->Unlock();
+	pVB->Unlock();
+
+return m_pMeshInfo->fSize;
 }
 
 
-void CStaticMesh::Render()
+void CStaticMesh::Render(CShader* pShader, const UINT& uPass)
 {
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
 	
 	for( DWORD i = 0; i < m_pMeshInfo->dwNumMaterials; i++ )
 	{
 		// Set the material and texture for this subset
-		_SINGLE(CDevice)->GetDevice()->SetMaterial( &m_pMeshInfo->pMaterials[i] );
+		//_SINGLE(CDevice)->GetDevice()->SetMaterial( &m_pMeshInfo->pMaterials[i] );
+		pShader->SetValue("g_mtrlMesh", &m_pMeshInfo->pMaterials[i], sizeof(D3DMATERIAL9) );
 		// _SINGLE(CDevice)->GetDevice()->SetTexture( 0, m_pMeshInfo->pTextures[i] );
 //		m_vecTexture[i]->SetTexture();
 		m_arrayTexture[i]->SetTexture();
 
 		// Draw the mesh subset
+		pShader->BeginPass(uPass);
 		m_pMeshInfo->pMesh->DrawSubset( i );
-		_SINGLE(CDebug)->AddFaceCount( (UINT)m_pMeshInfo->pMesh->GetNumFaces() );
+		pShader->EndPass();
+_SINGLE(CDebug)->AddFaceCount( (UINT)m_pMeshInfo->pMesh->GetNumFaces() );
 	}
 
 	//경계구 그리기
 	LPD3DXMESH _mesh = NULL;
 	HRESULT r = D3DXCreateSphere( _SINGLE(CDevice)->GetDevice(),
-		 m_pMeshInfo->sphere.size * 0.25f , (UINT)8, (UINT)8, &_mesh, NULL);
+		 m_pMeshInfo->fSize * 0.5f , (UINT)8, (UINT)8, &_mesh, NULL);
+	pShader->BeginPass(PASS_NOTEXTURE);
 	r = _mesh->DrawSubset(0);
-	
+	pShader->EndPass();
 	Safe_Release( _mesh);
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, TRUE);
 }

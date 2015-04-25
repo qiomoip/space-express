@@ -12,10 +12,10 @@ private:
 	CCameraManager(void);
 	~CCameraManager(void);
 
-	map<string, CCamera*>				m_mapCamera;
-	CCamera*							m_pCurCam;
+	map<string, CCamera*>		m_mapCamera;
+	CCamera*					m_pCurCam;
 
-	bool								m_bChange;
+	bool						m_bChange;
 
 public:
 

@@ -3,6 +3,7 @@
 #include "define.h"
 
 class CMesh;
+
 /*
 엔티티 클래스
 용도 : 3D전체
@@ -11,29 +12,36 @@ class CMesh;
 
 class CEntity
 {
-private:
-	
+protected:
 	std::string		m_strName;
-	eMESH_NUM		Mesh_num;
-	eTEXTURE_NUM	Texture_num;
+	//eMESH_NUM		Mesh_num;
+	//eTEXTURE_NUM	Texture_num;
 	CMesh*			m_pMesh;
 	eRENDER_TYPE	m_eRenderType;
 	D3DXVECTOR3		m_vPos;
+	D3DXVECTOR3		m_vWorldAxis[AT_MAX];
+	D3DXVECTOR3		m_vLocalAxis[AT_MAX];
+	D3DXMATRIX		m_matRot;
+	D3DXMATRIX		m_matTrans;
 	D3DXMATRIX		m_matWorld;
 	float			m_fAngle[AT_MAX];
 	D3DXMATRIX		m_matScale;
-	D3DXMATRIX		m_matRot[AT_MAX];
+	D3DXQUATERNION	m_AxisRot;
 	float			m_fScale[AT_MAX];
 	bool			m_bVisiable;
+	eSHADER_KEY	m_eShader;
+	string			m_strTechKey;
+	vector<UINT>	m_vecPass;
+	bool			m_bTransformUpdate;
 
 public:
-	void Initialize();
-	void Update();
+	virtual void Initialize();
+	virtual void Update();
 	void Render();
-	void Input();
+	virtual void Input();
 
 public:
-	void RotationY();
+	void Rotation();
 
 //Setter
 public:
@@ -43,6 +51,10 @@ public:
 	void SetPos(const D3DXVECTOR3& vPos);
 	void SetScale(const float& fScaleX, const float& fScaleY, const float& fScaleZ);
 	void SetVisiable();
+	void SetTechKey(const string& strTechKey);
+	void SetPass(const UINT& uPass);
+	void SetShader(const eSHADER_KEY& pShader);
+	void SetVisiable(bool);
 
 //Getter
 public:
@@ -50,10 +62,14 @@ public:
 	const CMesh*		GetMesh() const;
 	const string&		GetName() const;
 	const D3DXVECTOR3&	GetPos() const;
+	const eSHADER_KEY&		GetShader() const;
+	const vector<UINT>&			GetPassList()	const;
+	const string&		GetTechKey() const;
+	/*const*/ float			GetSize() /*const*/;
 
 public:
 	CEntity(void);
-	~CEntity(void);
+	virtual ~CEntity(void);
 
 	/*Entity(	std::string _name, 
 			eEntity_Type _type, 

@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "Texture.h"
 #include "ResourceManager.h"
+#include "Shader.h"
 #include "Debug.h"
 
 CTerrainMesh::CTerrainMesh(void)
@@ -20,6 +21,11 @@ CTerrainMesh::CTerrainMesh(void)
 CTerrainMesh::~CTerrainMesh(void)
 {
 	Destroy();
+}
+
+float CTerrainMesh::GetSize()
+{
+	return 129 * 1.4f;
 }
 
 HRESULT CTerrainMesh::LoadResource(const LPTSTR _meshName)
@@ -40,16 +46,19 @@ HRESULT CTerrainMesh::LoadResource(const LPTSTR _meshName)
 	return S_OK;
 }
 
-void CTerrainMesh::Render()
+void CTerrainMesh::Render(CShader* pShader, const UINT& uPass)
 {
-	D3DXMATRIX matWorld;
-	D3DXMatrixIdentity(&matWorld);
+	//D3DXMATRIX matWorld;
+	//D3DXMatrixIdentity(&matWorld);
 
-	_SINGLE(CDevice)->GetDevice()->SetTransform(D3DTS_WORLD, &matWorld);
-	_SINGLE(CDevice)->GetDevice()->SetTexture(0, m_pTexture->GetTextureInfo());
+	//_SINGLE(CDevice)->GetDevice()->SetTransform(D3DTS_WORLD, &matWorld);
+	//_SINGLE(CDevice)->GetDevice()->SetTexture(0, m_pTexture->GetTextureInfo());
+	m_pTexture->SetTexture();
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_NEVER);
+
+	pShader->BeginPass(uPass);
 
 	_SINGLE(CDevice)->GetDevice()->SetStreamSource(0, m_pVB, 0, sizeof(_tagTerrainVertex));
 	_SINGLE(CDevice)->GetDevice()->SetFVF(VTXTERRAINFVF);
@@ -59,10 +68,12 @@ void CTerrainMesh::Render()
 	_SINGLE(CDevice)->GetDevice()->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_tInfo.iVtxNum,
 		0, m_iTriNum);
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, true);
-	_SINGLE(CDevice)->GetDevice()->SetTexture(0, NULL);
+	//_SINGLE(CDevice)->GetDevice()->SetTexture(0, NULL);
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
-	//터레인 폴리곤 수 추가
+	pShader->EndPass();
+//터레인 폴리곤 수 추가
 	_SINGLE(CDebug)->AddFaceCount( (UINT)m_iTriNum );
+
 }
 
 bool CTerrainMesh::CreateTerrainInfo(const TERRAININFO& tInfo)
@@ -97,6 +108,7 @@ bool CTerrainMesh::CreateVertexInfo()
 	//	}
 	//}
 	m_pTexture = _SINGLE(CResourceManager)->LoadTexture("Height", L"heightmap.bmp");
+	m_pTexture->SetTextureName("heightmap.bmp");
 
 	BITMAPFILEHEADER	fh;
 	BITMAPINFOHEADER	ih;
@@ -129,7 +141,7 @@ bool CTerrainMesh::CreateVertexInfo()
 		{
 			int iIndex = i * m_tInfo.iRow + j;
 			pV[iIndex].vPos = D3DXVECTOR3( j * m_tInfo.fCellSpacing - m_tInfo.iRow * 0.5f, 0.f, i * m_tInfo.fCellSpacing- m_tInfo.iCol * 0.5f) * 0.2f;	
-			pV[iIndex].vPos.y = (pPixel[iIndex] & 0x000000ff) * 0.05f;
+			pV[iIndex].vPos.y = (pPixel[iIndex] & 0x000000ff) * 0.01f;
 			//if(pPixel[iIndex] & 0x000000ff >= 200)
 			//	pV[iIndex].vPos.y = 10.f;
 			//else if(pPixel[iIndex] & 0x000000ff >= 100)

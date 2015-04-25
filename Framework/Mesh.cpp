@@ -3,6 +3,7 @@
 
 
 CMesh::CMesh(void)
+	: m_arrayTexture(NULL)
 {
 }
 

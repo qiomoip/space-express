@@ -16,8 +16,12 @@ private:
 	int							m_iTriNum;
 
 public:
-	void Render();
+	void Render(CShader* pShader, const UINT& uPass);
 	void Destroy();
+
+public:
+	//가장 멀리 있는 두 점의 거리 리턴
+	float GetSize();
 
 public:
 	HRESULT LoadResource(const LPTSTR szMeshName);
