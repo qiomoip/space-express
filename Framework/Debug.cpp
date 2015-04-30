@@ -26,6 +26,10 @@ CDebug::CDebug(void)
 	, m_LogCount(0)
 	, m_StaticLogCount(0)
 	, m_FaceCount(0)
+	, m_StartTime(0)
+	, m_ElapsedTime(0)
+	, m_EndTime(0)
+	, m_FPS(0)
 {
 }
 
@@ -40,6 +44,8 @@ void CDebug::Initialize()
 	m_pDevice = _SINGLE(CDevice)->GetDevice();
 	if(!m_pDevice)
 		return;
+
+	m_StartTime = GetTickCount();
 	//CreateVertexBuffer();
 
 	//memset(&m_tGridMaterial, 0, sizeof(D3DMATERIAL9));
@@ -135,7 +141,8 @@ void CDebug::CreateVertexBuffer()
 
 void CDebug::Update()
 {
-
+	CheckFPS();
+	
 }
 
 void CDebug::Render()
@@ -161,12 +168,18 @@ void CDebug::Destroy()
 
 void CDebug::Input()
 {
+	const KEYINFO* keyInfo = _SINGLE(CKeyManager)->GetKey( KEYNAME_WIREFRAME_TRIGGER ) ;
+	
+	if ( keyInfo->bDown ) 
+		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	else
+		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 }
 
 
 void CDebug::DrawInfo()
 {
-	AddStaticLog(5, _T("\nFaces : %d"), m_FaceCount);
+	AddStaticLog(LOG_FACE_COUNT, _T("Faces : %d"), m_FaceCount);
 	//m_pTerrain->Render();
 	//DrawGrid();
 
@@ -349,3 +362,18 @@ void CDebug::AddFaceCount(UINT _faces)
 	m_FaceCount += _faces;
 }
 
+
+void CDebug::CheckFPS()
+{
+	m_EndTime = GetTickCount();
+	m_ElapsedTime = m_EndTime - m_StartTime;
+	
+	++m_FPS;
+	if( m_ElapsedTime >= 1000L )
+	{
+		AddStaticLog(LOG_FPS, _T("FPS : %d"), m_FPS );
+		m_FPS = 0;
+		m_StartTime = m_EndTime;
+	}
+
+}

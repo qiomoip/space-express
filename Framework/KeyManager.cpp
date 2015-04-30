@@ -27,7 +27,8 @@ void CKeyManager::Initialize()
 	SetKeyData(KEYNAME_TURN_DOWN, 'S');
 	SetKeyData(KEYNAME_TURN_NCLOCKWISE, 'Z');
 	SetKeyData(KEYNAME_TURN_CLOCKWISE, 'C');
-	SetKeyData(KEYNAME_TURN_CLOCKWISE, 'C');
+	//SetKeyData(KEYNAME_TURN_CLOCKWISE, 'C');
+	SetKeyData(KEYNAME_WIREFRAME_TRIGGER , VK_TAB);
 }
 void CKeyManager::SetKeyState()
 {

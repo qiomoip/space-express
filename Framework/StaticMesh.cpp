@@ -158,9 +158,9 @@ float CStaticMesh::GetSize()
 	// 버텍스의 포지션, 방향값, 텍스쳐좌표가 들어있으므로 게임 끝난거죠^^
 	VERTEXCOLOR* pVertex = (VERTEXCOLOR*)pVertices;
 
-	float minX, minY, maxX, maxY, minZ, maxZ;
-	minX = minY = minZ = INT_MAX ;
-	maxX = maxY = maxZ = INT_MIN;
+	float minX, /*minY, */maxX/*, maxY*/, minZ, maxZ;
+	minX = /*minY = */minZ = INT_MAX ;
+	maxX = /*maxY = */maxZ = INT_MIN;
 	// 하지만 pVertex는 현재 메쉬의 모든 위치정보도 같이있으므로, 이런식으로 응용해서 작성합니다.
 	for(DWORD i = 0; i < dwVertexNum; ++i)
 	{
@@ -169,20 +169,20 @@ float CStaticMesh::GetSize()
 			minX = pVertex[i].vPos.x ;
 		else if( pVertex[i].vPos.x > maxX)
 			maxX = pVertex[i].vPos.x;
-
+		/*
 		if ( pVertex[i].vPos.y < minY )
 			minY = pVertex[i].vPos.y;
 		else if( pVertex[i].vPos.y > maxY)
 			maxY = pVertex[i].vPos.y;
-
+			*/
 		if ( pVertex[i].vPos.z < minZ )
 			minZ = pVertex[i].vPos.z;
 		else if( pVertex[i].vPos.z > maxZ )
 			maxZ = pVertex[i].vPos.z;
 	}
 
-	D3DXVECTOR3 vMin = D3DXVECTOR3(minX, minY, minZ);
-	D3DXVECTOR3 vMax = D3DXVECTOR3(maxX, maxY, maxZ);
+	D3DXVECTOR3 vMin = D3DXVECTOR3(minX, 0.f, minZ);
+	D3DXVECTOR3 vMax = D3DXVECTOR3(maxX, 0.f, maxZ);
 	D3DXVECTOR3 vlen = vMax - vMin;
 	float len = D3DXVec3Length( &vlen) * 0.5f;
 

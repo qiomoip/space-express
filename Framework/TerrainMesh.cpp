@@ -141,7 +141,7 @@ bool CTerrainMesh::CreateVertexInfo()
 		{
 			int iIndex = i * m_tInfo.iRow + j;
 			pV[iIndex].vPos = D3DXVECTOR3( j * m_tInfo.fCellSpacing - m_tInfo.iRow * 0.5f, 0.f, i * m_tInfo.fCellSpacing- m_tInfo.iCol * 0.5f) * 0.2f;	
-			pV[iIndex].vPos.y = (pPixel[iIndex] & 0x000000ff) * 0.01f;
+			pV[iIndex].vPos.y = (pPixel[iIndex] & 0x000000ff) * 0.05f;
 			//if(pPixel[iIndex] & 0x000000ff >= 200)
 			//	pV[iIndex].vPos.y = 10.f;
 			//else if(pPixel[iIndex] & 0x000000ff >= 100)

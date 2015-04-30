@@ -47,6 +47,13 @@ private:
 	//그려지는 폴리곤 수 
 	UINT			m_FaceCount;
 
+	//FPS
+	UINT			m_FPS;
+	//FPS측정용 시간
+	DWORD			m_StartTime;
+	DWORD			m_EndTime;
+	DWORD			m_ElapsedTime;
+
 public:
 	void CreateVertexBuffer();
 	void DrawInfo();
@@ -71,6 +78,9 @@ public:
 	void			InitFaceCount();
 	//폴리곤수 추가(그릴때마다 호출)
 	void			AddFaceCount(UINT);
+
+	void			CheckFPS();
+	
 private:
 	CDebug(void);
 	~CDebug(void);
