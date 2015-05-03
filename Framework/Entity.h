@@ -14,34 +14,58 @@ class CEntity
 {
 public:
 	std::string		m_strName;
-	//eMESH_NUM		Mesh_num;
-	//eTEXTURE_NUM	Texture_num;
 	CMesh*			m_pMesh;
 	eRENDER_TYPE	m_eRenderType;
+	//위치
 	D3DXVECTOR3		m_vPos;
+	//월드 축
 	D3DXVECTOR3		m_vWorldAxis[AT_MAX];
+	//로컬 축
 	D3DXVECTOR3		m_vLocalAxis[AT_MAX];
+	//회전 행렬
 	D3DXMATRIX		m_matRot;
+	//이동 행렬
 	D3DXMATRIX		m_matTrans;
+	//월드 행렬
 	D3DXMATRIX		m_matWorld;
+	//회전각
 	float			m_fAngle[AT_MAX];
+	//크기변환 행렬
 	D3DXMATRIX		m_matScale;
+	//??
 	D3DXQUATERNION	m_AxisRot;
+	//크기 값
 	float			m_fScale[AT_MAX];
+	//그리기 여부 판정
 	bool			m_bVisiable;
 	eSHADER_KEY		m_eShader;
 	string			m_strTechKey;
 	vector<UINT>	m_vecPass;
 	bool			m_bTransformUpdate;
 
+	//이동속도
+	float			m_fMoveSpeed;
+	//이동벡터(슬라이딩 벡터 연산에 사용)
+	D3DXVECTOR3		m_vMove;
+	
+	//경계구 메시
+	LPD3DXMESH		m_SphereMesh;
+
 public:
 	virtual void Initialize();
 	virtual void Update();
 	void Render();
 	virtual void Input();
-
+	bool Collision();
+	//경계구 생성.
+	VOID			InitSphereMesh();
+	//경계구 그리기
+	void DrawSphere(/*D3DXVECTOR3, float*/);
 public:
+	//회전
 	void Rotation();
+	//이동
+	void Move();
 
 //Setter
 public:

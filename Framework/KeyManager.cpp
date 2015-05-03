@@ -1,5 +1,5 @@
 #include "KeyManager.h"
-
+#include "Debug.h"
 
 CKeyManager::CKeyManager(void)
 {
@@ -20,8 +20,12 @@ void CKeyManager::Initialize()
 	SetKeyData(KEYNAME_BACK, VK_DOWN);
 	SetKeyData(KEYNAME_RIGHT, VK_RIGHT);
 	SetKeyData(KEYNAME_LEFT, VK_LEFT);
-	SetKeyData(KEYNAME_UP, VK_HOME);
-	SetKeyData(KEYNAME_DOWN, VK_END);
+	SetKeyData(KEYNAME_HOME, VK_HOME);
+	SetKeyData(KEYNAME_END, VK_END);
+	SetKeyData(KEYNAME_INS, VK_INSERT);
+	SetKeyData(KEYNAME_DEL, VK_DELETE);
+	SetKeyData(KEYNAME_PGUP, VK_PRIOR);
+	SetKeyData(KEYNAME_PGDN, VK_NEXT);
 	SetKeyData(KEYNAME_SPACE, VK_SPACE);
 	SetKeyData(KEYNAME_TURN_UP, 'W');
 	SetKeyData(KEYNAME_TURN_DOWN, 'S');
@@ -37,6 +41,14 @@ void CKeyManager::SetKeyState()
 	{
 		CheckKey(iter);
 	}
+#ifdef _DEBUG
+	_SINGLE(CDebug)->AddLog(0, _T("카메라 상하 회전 : W,S")  );
+	_SINGLE(CDebug)->AddLog(1, _T("카메라 좌우 회전 : A,D")  );
+	_SINGLE(CDebug)->AddLog(2, _T("카메라 전후 이동 : HOME, END")  );
+	_SINGLE(CDebug)->AddLog(3, _T("카메라 상하 이동 : INS, PAGE_UP")  );
+	_SINGLE(CDebug)->AddLog(4, _T("카메라 좌우 이동 : DEL, PAGE_DOWN")  );
+	_SINGLE(CDebug)->AddLog(5, _T("캐릭터 4방향 이동: 화살표")  );
+#endif
 }
 
 bool CKeyManager::SetKeyData(const KEY eKeyName, const int& iKey)

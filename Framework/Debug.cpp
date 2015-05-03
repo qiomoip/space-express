@@ -30,6 +30,7 @@ CDebug::CDebug(void)
 	, m_ElapsedTime(0)
 	, m_EndTime(0)
 	, m_FPS(0)
+	, m_bWireFrame(false)
 {
 }
 
@@ -63,13 +64,6 @@ void CDebug::Initialize()
 
 	InitFont();
 	InitLog();
-	/*
-	AddLog(0, _T("테스트 로그 입니다.%d"), 0 );
-	AddLog(1, _T("테스트 로그 입니다.%d"), 1 );
-	AddLog(0, _T("로그 %d 변수 출력 %d"), 123 , 123 );
-	AddStaticLog(true, _T("위치가 고정된 로그%d"), 0 );
-	*/
-	
 }
 
 void CDebug::CreateVertexBuffer()
@@ -147,7 +141,15 @@ void CDebug::Update()
 
 void CDebug::Render()
 {
-	
+	if(m_bWireFrame)
+	{
+		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	}
+	else
+	{
+		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+	}
+
 	DrawInfo();
 }
 
@@ -158,10 +160,10 @@ void CDebug::Destroy()
 	Safe_Release(m_pLineVB);
 
 	for( int i = 0; i < LOG_COUNT; ++i)
-		Safe_Delete(m_StaticLog[i]);
-	Safe_Delete(m_StaticLog);
+		Safe_Delete_Array(m_StaticLog[i]);
+	Safe_Delete_Array(m_StaticLog);
 	for( int i = 0; i < LOG_COUNT; ++i)
-		Safe_Delete(m_Log[i]);
+		Safe_Delete_Array(m_Log[i]);
 	Safe_Delete_Array(m_Log);
 	Safe_Release(m_pFont); // 폰트 구조체해제
 }
@@ -170,10 +172,10 @@ void CDebug::Input()
 {
 	const KEYINFO* keyInfo = _SINGLE(CKeyManager)->GetKey( KEYNAME_WIREFRAME_TRIGGER ) ;
 	
-	if ( keyInfo->bDown ) 
-		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
-	else
-		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+	if ( keyInfo->bPush ) 
+	{
+		m_bWireFrame = !m_bWireFrame;
+	}
 }
 
 
@@ -187,41 +189,45 @@ void CDebug::DrawInfo()
 	DrawLog();
 }
 
-void CDebug::DrawGrid()
-{
 
-	D3DXMATRIX matWorld;
-	D3DXMatrixIdentity(&matWorld);
-	m_pDevice->SetTransform(D3DTS_WORLD, &matWorld);
 
-	const D3DXMATRIX* pMatProj = _SINGLE(CCameraManager)->GetCurCam()->GetMatProj();
-	const D3DXMATRIX* pMatView = _SINGLE(CCameraManager)->GetCurCam()->GetMatView();
-	D3DXMATRIX matWVP = (*pMatView) * (*pMatProj);
-
-	_SINGLE(CShaderManager)->BeginShader(SHADER_DEFAULT, "DefaultTech");
-
-	CShader* pShader = _SINGLE(CShaderManager)->FindShader(SHADER_DEFAULT);
-	
-	pShader->SetMatrix("g_matWVP", &matWVP);
-
-	pShader->BeginPass(PASS_NOTEXTURE);
-	
-	pShader->SetValue("g_mtrlMesh", &m_tGridMaterial, sizeof(D3DMATERIAL9));
-
-	//m_pDevice->SetRenderState(D3DRS_LIGHTING, false);
-	m_pDevice->SetFVF(VTXCOLORFVF);
-	m_pDevice->SetMaterial(&m_tGridMaterial);
-	m_pDevice->SetStreamSource( 0, m_pGridVB, 0, sizeof( VERTEXCOLOR ) );
-	m_pDevice->DrawPrimitive(D3DPT_LINELIST, 0, m_iCnt/2);
-
-	m_pDevice->SetStreamSource( 0, m_pLineVB, 0, sizeof(VERTEXCOLOR) );
-	m_pDevice->SetFVF(VTXCOLORFVF);
-	m_pDevice->DrawPrimitive( D3DPT_LINELIST, 0, 3 );
-
-	pShader->EndPass();
-
-	_SINGLE(CShaderManager)->EndShader(SHADER_DEFAULT);
-}
+//
+//void CDebug::DrawGrid()
+//{
+//
+//	D3DXMATRIX matWorld;
+//	D3DXMatrixIdentity(&matWorld);
+//	m_pDevice->SetTransform(D3DTS_WORLD, &matWorld);
+//
+//	const D3DXMATRIX* pMatProj = _SINGLE(CCameraManager)->GetCurCam()->GetMatProj();
+//	const D3DXMATRIX* pMatView = _SINGLE(CCameraManager)->GetCurCam()->GetMatView();
+//	D3DXMATRIX matWVP = (*pMatView) * (*pMatProj);
+//
+//	_SINGLE(CShaderManager)->BeginShader(SHADER_DEFAULT, "DefaultTech");
+//
+//	CShader* pShader = _SINGLE(CShaderManager)->FindShader(SHADER_DEFAULT);
+//	
+//	pShader->SetMatrix("g_matWVP", &matWVP);
+//
+//	pShader->BeginPass(PASS_NOTEXTURE);
+//	
+//	pShader->SetValue("g_mtrlMesh", &m_tGridMaterial, sizeof(D3DMATERIAL9));
+//
+//	//m_pDevice->SetRenderState(D3DRS_LIGHTING, false);
+//
+//	m_pDevice->SetFVF(VTXCOLORFVF);
+//	m_pDevice->SetMaterial(&m_tGridMaterial);
+//	m_pDevice->SetStreamSource( 0, m_pGridVB, 0, sizeof( VERTEXCOLOR ) );
+//	m_pDevice->DrawPrimitive(D3DPT_LINELIST, 0, m_iCnt/2);
+//
+//	m_pDevice->SetStreamSource( 0, m_pLineVB, 0, sizeof(VERTEXCOLOR) );
+//	m_pDevice->SetFVF(VTXCOLORFVF);
+//	m_pDevice->DrawPrimitive( D3DPT_LINELIST, 0, 3 );
+//
+//	pShader->EndPass();
+//
+//	_SINGLE(CShaderManager)->EndShader(SHADER_DEFAULT);
+//}
 
 
 VOID CDebug::InitLog()
@@ -235,8 +241,6 @@ VOID CDebug::InitLog()
 		_tcscpy_s(m_Log[i], 255,  _T("") );
 		_tcscpy_s(m_StaticLog[i], 255,  _T("") );
 
-		//memset(m_Log[i], 0, sizeof(TCHAR) * 255);
-		//memset(m_StaticLog[i], 0, sizeof(TCHAR)* 255 );
 	}
 }
 
@@ -246,9 +250,9 @@ VOID CDebug::InitFont()
 	
 	m_Desc.CharSet = HANGUL_CHARSET;
 	_tcscpy_s(m_Desc.FaceName, _tcslen(_T("맑은 고딕")) + 1 , _T("맑은 고딕") ); //폰트 설정
-	m_Desc.Height = 15; //높이
-	m_Desc.Width = 8; //넓이
-	m_Desc.Weight = FW_BOLD; //두께
+	m_Desc.Height = 16; //높이
+	m_Desc.Width = 7; //넓이
+	m_Desc.Weight = FW_MEDIUM; //두께
 	m_Desc.Quality = ANTIALIASED_QUALITY; //품질
 	m_Desc.MipLevels = 1;
 	m_Desc.Italic = 0; //이텔릭
@@ -259,6 +263,8 @@ VOID CDebug::InitFont()
 	SetRect(&m_StaticLogRect,SCREEN_WIDTH-400,10,SCREEN_WIDTH-30,SCREEN_HEIGHT); //폰트 위치
 	SetRect(&m_LogRect,10,10,400,SCREEN_HEIGHT); 
 }
+
+
 
 HRESULT CDebug::DrawStaticLog()
 {

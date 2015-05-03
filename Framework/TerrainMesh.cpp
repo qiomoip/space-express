@@ -72,7 +72,9 @@ void CTerrainMesh::Render(CShader* pShader, const UINT& uPass)
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
 	pShader->EndPass();
 //터레인 폴리곤 수 추가
+#ifdef _DEBUG
 	_SINGLE(CDebug)->AddFaceCount( (UINT)m_iTriNum );
+#endif
 
 }
 

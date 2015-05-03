@@ -26,15 +26,12 @@ INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
 
 	//_wsetlocale(LC_ALL, _T("korean") );
 
-//#ifdef _DEBUG
-	//_CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-//#endif
-
 	UNREFERENCED_PARAMETER( hInst );
 
 	CApp* pApp = new CApp();
 
-	if(FAILED(pApp->Initialize(hInst, _T("ExpressWork"), _T("qiomoip"), SCREEN_WIDTH, SCREEN_HEIGHT)))
+	if(FAILED(pApp->Initialize(
+		hInst, _T("ExpressWork"), _T("qiomoip"), SCREEN_WIDTH, SCREEN_HEIGHT)))
 	{
 		Safe_Delete(pApp);
 		return 0;
@@ -44,9 +41,9 @@ INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
 
 	Safe_Delete(pApp);
 
-//	#ifdef _DEBUG
-//	_CrtDumpMemoryLeaks();
-//#endif
+	#ifdef _DEBUG
+	_CrtDumpMemoryLeaks();
+#endif
 	return 0;
 }
 

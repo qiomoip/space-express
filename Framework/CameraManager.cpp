@@ -86,51 +86,58 @@ void CCameraManager::Update()
 
 void CCameraManager::Input()
 {
-	/*CheckKey();
+	/*키 설정
+	W, S : 상하로 회전
+	A, D : 좌우로 회전
+	HOME, END : 보는 방향으로 전진, 후진
+	INSERT, PAGE_UP : UP벡터 방향으로 상승, 하강
+	DEL, PAGE_DOWN : RIGHT벡터 방향으로 좌, 우 이동
+	*/
+	CheckKey();
 	
 	CAMERA pCamera = m_pCurCam->GetCameraInfo();
 
 	memset(pCamera.iDir, 0, sizeof(int) * AT_MAX);
 	memset(pCamera.iAngle, 0, sizeof(int) * AT_MAX);
-	const KEYINFO* pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_FRONT);
+	const KEYINFO* pInfo /*= _SINGLE(CKeyManager)->GetKey(KEYNAME_FRONT)*/;
 
+	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_HOME);
 	if(!pInfo)
 		return;
-
 	if(pInfo->bPush || pInfo->bDown)
 	{
 		pCamera.iDir[AT_Z] = 1;
 	}
 
-	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_BACK);
+	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_END);
 	if(pInfo->bPush || pInfo->bDown)
 	{
 		pCamera.iDir[AT_Z] = -1;
 	}
-
-	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_RIGHT);
+	
+	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_PGDN);
 	if(pInfo->bPush || pInfo->bDown)
 	{
 		pCamera.iDir[AT_X] = 1;
 	}
 
-	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_LEFT);
+	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_DEL);
 	if(pInfo->bPush || pInfo->bDown)
 	{
 		pCamera.iDir[AT_X] = -1;
 	}
-
-	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_UP);
+	
+	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_INS);
 	if(pInfo->bPush || pInfo->bDown)
 	{
 		pCamera.iDir[AT_Y] = 1;
 	}
-	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_DOWN);
+	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_PGUP);
 	if(pInfo->bPush || pInfo->bDown)
 	{
 		pCamera.iDir[AT_Y] = -1;
 	}
-
+	
 	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_TURN_RIGHT);
 	if(pInfo->bPush || pInfo->bDown)
 	{
@@ -155,7 +162,7 @@ void CCameraManager::Input()
 		pCamera.iAngle[AT_X] = 1;
 	}
 
-	m_pCurCam->SetCamera( pCamera );*/
+	m_pCurCam->SetCamera( pCamera );
 	
 }
 

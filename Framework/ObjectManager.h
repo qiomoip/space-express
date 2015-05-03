@@ -24,6 +24,7 @@ public:
 	void					Update();
 	void					CleanUp();
 	HRESULT					Render();
+	void					Collision();
 
 public:
 	CEntity*	FindObject(const string& strObjKey);
@@ -37,6 +38,7 @@ public:
 	void Push_RenderList(CEntity* pEntity);
 	//렌더리스트 초기화함수(매 프레임마다 비우고 다시 채워놓는다.)
 	void Reset_RenderList();
-	
+	//렌더리스트 반환
+	list<CEntity*>* GetRenderList();
 };
 

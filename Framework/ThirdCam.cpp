@@ -20,7 +20,7 @@ void CThirdCam::Init()
 {
 	CCamera::Init();
 	m_vDist = D3DXVECTOR3(0.f, 0.f, -10.f);
-	m_tCam.vPos = D3DXVECTOR3( -3.f, 10.f, -50.f );
+	m_tCam.vPos = D3DXVECTOR3( 0.f, 30.f, -10.f );
 }
 void CThirdCam::Update()
 {

@@ -14,6 +14,7 @@
 #include "Shader.h"
 #include "ShaderManager.h"
 #include "Frustum.h"
+#include "SceneManager.h"
 
 CEngine::CEngine(void)
 	: m_pDevice(NULL)
@@ -57,9 +58,9 @@ HRESULT CEngine::Initialize(HWND hWnd)
 	if(FAILED(CreateLight()))
 		return E_FAIL;
 
-	const CCamera* pMainCam = _SINGLE(CCameraManager)->GetCurCam();
+	//const CCamera* pMainCam = _SINGLE(CCameraManager)->GetCurCam();
 
-	((CThirdCam*)pMainCam)->SetLookObject(_SINGLE(CObjectManager)->FindObject("Tiger"));
+	//((CThirdCam*)pMainCam)->SetLookObject(_SINGLE(CObjectManager)->FindObject("Tiger"));
 
 
 	return S_OK;
@@ -70,30 +71,38 @@ HRESULT CEngine::CreateEntity()
 	//_SINGLE(CResourceManager)->Load(MT_STATIC, "Tiger", _T("tiger.x"));
 
 
-	CEntity* pSylva = _SINGLE(CObjectManager)->CreateEntity(MT_STATIC, RTYPE_ENTITY, "Tiger", MN_TIGER, _T("tiger.x"));
-	pSylva->SetPos(D3DXVECTOR3(0.f, 0.f, 0.f));
+	CEntity* pSylva = _SINGLE(CObjectManager)->CreateEntity(
+		MT_STATIC, RTYPE_ENTITY, "Tiger", MN_TIGER, _T("tiger.x"));
+	pSylva->SetPos(D3DXVECTOR3(-5.f, 0.f, 0.f));
 	pSylva->SetShader(SHADER_DEFAULT);
 	pSylva->SetTechKey("DefaultTech");
 	pSylva->SetPass(PASS_DEFAULT);
-
-	for(int i = 0; i < 50; ++i)
+	
+	CEntity* pSylvas[50];
+	//테스트용 NPC생성
+	for ( int i = 0; i < 50; ++i)
 	{
-		string strName = "Tiger";
-		strName += i;
-		pSylva = _SINGLE(CObjectManager)->CreateEntity(MT_STATIC, RTYPE_ENTITY, strName, MN_TIGER, _T("tiger.x"));
-		pSylva->SetPos(D3DXVECTOR3(0.f, 0.5f * i, 0.f));
-		pSylva->SetShader(SHADER_DEFAULT);
-		pSylva->SetTechKey("DefaultTech");
-		pSylva->SetPass(PASS_DEFAULT);
+		char ch[2]  = "";
+		itoa(i, ch, 10);
+		string str = "Npc"; 
+		str += ch;
+		pSylvas[i] = _SINGLE(CObjectManager)->CreateEntity(
+			MT_STATIC, RTYPE_ENTITY, str, MN_NULL, _T("tiger.x"));
+		pSylvas[i]->SetPos(D3DXVECTOR3(sin(i) * 10.f, 0.0f, cos(i) * 30.0f));
+		pSylvas[i]->SetShader(SHADER_DEFAULT);
+		pSylvas[i]->SetTechKey("DefaultTech");
+		pSylvas[i]->SetPass(PASS_DEFAULT);
 	}
-
-	CEntity* pTerrain = _SINGLE(CObjectManager)->CreateEntity(MT_TERRAIN, RTYPE_TERRAIN, "MainTerrain", MN_TERRAIN, _T("MainTerrain"));
+	
+	/*
+	CEntity* pTerrain = _SINGLE(CObjectManager)->CreateEntity(
+		MT_TERRAIN, RTYPE_TERRAIN, "MainTerrain", MN_TERRAIN, _T("MainTerrain"));
 	pTerrain->SetShader(SHADER_DEFAULT);
 	pTerrain->SetTechKey("DefaultTech");
 	pTerrain->SetPass(PASS_DEFAULT);
-
-
-	CEntity* pEnvi = _SINGLE(CObjectManager)->CreateEntity(MT_STATIC, RTYPE_ENVIRONMENT, "Envi", MN_ENVIRONMENT, _T("Environment.X"));
+	//*/
+	CEntity* pEnvi = _SINGLE(CObjectManager)->CreateEntity(
+		MT_STATIC, RTYPE_ENVIRONMENT, "Envi", MN_ENVIRONMENT, _T("Environment.X"));
 	pEnvi->SetPos(D3DXVECTOR3(0.f, 10.f, 0.f));
 	pEnvi->SetScale(5.f, 5.f, 5.f);
 	pEnvi->SetShader(SHADER_DEFAULT);
@@ -101,24 +110,22 @@ HRESULT CEngine::CreateEntity()
 	pEnvi->SetPass(PASS_DEFAULT/*PASS_NOTEXTURE*/);
 
 #ifdef _DEBUG
-
-	CEntity* pGrid = _SINGLE(CObjectManager)->CreateEntity(MT_GRID, RTYPE_GRID, "DebugGrid", MN_GRID, _T("Grid"));
+	CEntity* pGrid = _SINGLE(CObjectManager)->CreateEntity(
+		MT_GRID, RTYPE_GRID, "DebugGrid", MN_GRID, _T("Grid"));
 	pGrid->SetShader(SHADER_DEFAULT);
 	pGrid->SetTechKey("DefaultTech");
 	pGrid->SetPass(PASS_NOTEXTURE);
-
 #endif
-
 	return S_OK;
 }
 
 HRESULT CEngine::CreateCamera()
 {
-	//Camera
+	//Camera 메인 자유시점
 	CCamera* pCam = _SINGLE(CCameraManager)->CreateCamera(CN_THIRD);
 	_SINGLE(CCameraManager)->AddCamera("MainCamera", pCam);
 	_SINGLE(CCameraManager)->SetMainCamera("MainCamera");
-	//Camera
+	//Camera 3인칭
 	CCamera* pCam1 = _SINGLE(CCameraManager)->CreateCamera(CN_THIRD);
 	pCam1->SetPos(D3DXVECTOR3(10.f, 0.f, -10.f));
 	_SINGLE(CCameraManager)->AddCamera("ThirdTestCam", pCam1);
@@ -164,7 +171,9 @@ void CEngine::Update()
 {
 	_SINGLE(CCameraManager)->Update();
 	_SINGLE(CObjectManager)->Update();
+	#ifdef _DEBUG
 	_SINGLE(CDebug)->Update();
+#endif
 }
 
 VOID CEngine::Render()
@@ -224,8 +233,7 @@ VOID CEngine::Destroy()
 	_SINGLE(CResourceManager)->KillInstance();
 	_SINGLE(CCameraManager)->KillInstance();
 	_SINGLE(CKeyManager)->KillInstance();
-
-
+	_SINGLE(CSceneManager)->KillInstance();
 #ifdef _DEBUG
 	_SINGLE(CDebug)->KillInstance();
 #endif
@@ -240,9 +248,11 @@ VOID CEngine::Collision()
 
 VOID CEngine::Run()
 {
-	Collision();
 	Input();
 	Update();
+	//업데이트후에 최신의 상태를 갖고 충돌체크를 해야할거 같아서 
+	//충돌체크의 위치를 업데이트후로 바꿈.
+	Collision();
 	Render();
 }
 

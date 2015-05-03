@@ -34,7 +34,12 @@ void CObjectManager::CleanUp()
 }
 
 
-CEntity* CObjectManager::CreateEntity(const eMESH_TYPE& eMeshType, const eRENDER_TYPE& eRender, const string& strEntityKey,  const eMESH_NUM& eMeshNum, const LPTSTR szMeshName)
+CEntity* CObjectManager::CreateEntity(
+	const eMESH_TYPE& eMeshType, 
+	const eRENDER_TYPE& eRender, 
+	const string& strEntityKey,  
+	const eMESH_NUM& eMeshNum, 
+	const LPTSTR szMeshName)
 {
 	map<string, CEntity*>::iterator iter = m_mapObject.find(strEntityKey);
 
@@ -74,7 +79,9 @@ CEntity* CObjectManager::CreateEntity(const eMESH_TYPE& eMeshType, const eRENDER
 		pEntity->PushMesh(pMesh);
 
 	m_mapObject.insert(map<string, CEntity*>::value_type(strEntityKey, pEntity));
-
+	
+	//메시크기로 경계구 생성
+	pEntity->InitSphereMesh();
 	return pEntity;
 }
 
@@ -133,16 +140,16 @@ void CObjectManager::Update()
 	for(map<string, CEntity*>::iterator iter = m_mapObject.begin();
 		iter != m_mapObject.end(); ++iter)
 	{
-		/*if ( _SINGLE(CFrustum)->isInFrustum( iter->second->GetPos(), 
-			iter->second->GetSize() ) )
-			iter->second->SetVisiable(true);
-		else
-			iter->second->SetVisiable(false);
-*/
 		iter->second->Update();
 	}
 
 }
+
+void CObjectManager::Collision()
+{
+
+}
+
 
 void CObjectManager::Push_RenderList(CEntity* pEntity)
 {
@@ -163,4 +170,9 @@ CEntity*	CObjectManager::FindObject(const string& strObjKey)
 		return NULL;
 
 	return iter->second;
+}
+
+list<CEntity*>* CObjectManager::GetRenderList()
+{
+	return m_listRenderList;
 }

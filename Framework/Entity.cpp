@@ -7,9 +7,10 @@
 #include "Shader.h"
 #include "ShaderManager.h"
 #include "CameraManager.h"
+#include "ObjectManager.h"
 #include "Camera.h"
 #include "Frustum.h"
-
+#include "Debug.h"
 CEntity::CEntity(void)
 	: m_pMesh(NULL)
 	, m_strName("")
@@ -18,8 +19,8 @@ CEntity::CEntity(void)
 	, m_eShader(SHADER_NONE)
 	, m_strTechKey("")
 	, m_bTransformUpdate(false)
-	
-//	, Mesh_num(MN_NULL)
+	, m_fMoveSpeed(0.01f)
+	, m_SphereMesh(NULL)
 {
 	m_vecPass.reserve(10);
 	memset(&m_vPos, 0, sizeof(D3DXVECTOR3));
@@ -28,6 +29,7 @@ CEntity::CEntity(void)
 
 CEntity::~CEntity(void)
 {
+	Safe_Release(m_SphereMesh);
 }
 
 void CEntity::Initialize()
@@ -57,26 +59,70 @@ void CEntity::Initialize()
 
 void CEntity::Input()
 {
-	/*const KEYINFO* pInfo = _SINGLE(CKeyManager)->GetKey("KEY_Entity_RotY-");
-	if(pInfo->bPush || pInfo->bDown)
-	{
-		m_fAngle[AT_Y] += D3DX_PI * 0.01f;
-		RotationY();
-	}
 
-	pInfo = _SINGLE(CKeyManager)->GetKey("KEY_Entity_RotY+");
-	if(pInfo->bPush || pInfo->bDown)
-	{
-		m_fAngle[AT_Y] -= D3DX_PI * 0.01f;
-		RotationY();
-	}
+}
 
-		//pInfo = _SINGLE(CKeyManager)->GetKey("KEY_SPACE");
-		//if(pInfo->bPush)
-		//{
-		//	SetVisiable();
-		//}
-	*/
+bool CEntity::Collision()
+{
+	list<CEntity*>*	RenderList = _SINGLE(CObjectManager)->GetRenderList();
+
+	//두 엔티티 벡터 차
+	D3DXVECTOR3 vLenth = D3DXVECTOR3(0,0,0);
+	//엔티티 크기
+	float size = GetSize();
+	//두 엔티티간의 길이
+	float len  = 0.f;
+	
+	static int cnt = 0;
+	//int i = RTYPE_ENTITY;
+	for(list<CEntity*>::iterator iter = RenderList[RTYPE_ENTITY].begin();
+		iter != RenderList[RTYPE_ENTITY].end(); ++iter)
+	{
+		//체크하려는 객체와 같은 객체라면 넘어가라
+		if( (*iter)->GetName() == m_strName )
+			continue;
+		//이동 예정인 위치와 오브젝트의 차벡터
+		vLenth = (m_vPos + m_vMove) - (*iter)->GetPos();
+		//차벡터 길이 계산
+		len = D3DXVec3Length(&vLenth );
+		//충돌체크
+		if( size + (*iter)->GetSize() >= len ) 
+		{
+			//vLenth벡터를 법선 벡터처럼 사용하는 과정
+			vLenth = m_vPos - (*iter)->GetPos();
+
+			D3DXVec3Normalize( &vLenth, &vLenth);
+			D3DXVec3Normalize( &m_vMove, &m_vMove);
+			//슬라이딩 벡터 수식(vLenth가 법선 벡터로 쓰임)
+			m_vMove -= D3DXVec3Dot( &m_vMove, &vLenth) * vLenth;
+			//연산이 끝난후 벡터의 길이를 이동속도로 조정.
+			D3DXVec3Normalize( &m_vMove, &m_vMove);
+			m_vMove *= m_fMoveSpeed;
+			
+			//슬라이딩 벡터를 계산했으면 이 벡터를 기준으로 다시 충돌 체크
+			iter = RenderList[RTYPE_ENTITY].begin();
+			//충돌했으면 슬라이딩 벡터 계산
+			//return true;
+			_SINGLE(CDebug)->AddLog(6, _T("충돌했음 %d번 리셋"), ++cnt);
+			
+		}
+	}
+	cnt = 0;
+	//충돌 안했으면 고고
+	m_vPos += m_vMove;
+
+	return false;
+}
+
+void CEntity::InitSphereMesh()
+{
+	D3DXCreateSphere( _SINGLE(CDevice)->GetDevice(), 
+		GetSize(), (UINT)6, (UINT)6, &m_SphereMesh, NULL);
+}
+
+void CEntity::DrawSphere(/*D3DXVECTOR3 _vPos, float _size*/)
+{
+	m_SphereMesh->DrawSubset(0);
 }
 
 void CEntity::Rotation()
@@ -84,6 +130,13 @@ void CEntity::Rotation()
 	D3DXQuaternionRotationYawPitchRoll(&m_AxisRot, m_fAngle[AT_X], m_fAngle[AT_Y], m_fAngle[AT_Z]);
 	D3DXMatrixRotationQuaternion(&m_matRot, &m_AxisRot);
 }
+
+void CEntity::Move()
+{
+	//충돌체크(충돌체크후 슬라이딩 벡터 연산)
+	Collision();
+}
+
 
 void CEntity::SetScale(const float& fScaleX, const float& fScaleY, const float& fScaleZ)
 {
@@ -109,12 +162,6 @@ void CEntity::SetShader(const eSHADER_KEY& pShader)
 {
 	m_eShader = pShader;
 }
-//
-//void CEntity::SetMeshNum(const eMUSH_NUM& eMeshNum)
-//{
-//	Mesh_num = eMeshNum;
-//}
-
 
 void CEntity::Update()
 {
@@ -133,7 +180,7 @@ void CEntity::Update()
 	if(m_bTransformUpdate)
 	{
 		Rotation();
-
+		Move();
 		for(int i = 0; i < AT_MAX; ++i)
 		{
 			//축 세팅
@@ -164,6 +211,7 @@ void CEntity::Render()
 	{
 		m_pMesh->Render(pShader, m_vecPass[i]);
 	}
+	m_SphereMesh->DrawSubset(0);
 }
 
 void CEntity::SetRenderType(const eRENDER_TYPE& eRender)
