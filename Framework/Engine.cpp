@@ -69,11 +69,23 @@ HRESULT CEngine::CreateEntity()
 {
 	//_SINGLE(CResourceManager)->Load(MT_STATIC, "Tiger", _T("tiger.x"));
 
+
 	CEntity* pSylva = _SINGLE(CObjectManager)->CreateEntity(MT_STATIC, RTYPE_ENTITY, "Tiger", MN_TIGER, _T("tiger.x"));
 	pSylva->SetPos(D3DXVECTOR3(0.f, 0.f, 0.f));
 	pSylva->SetShader(SHADER_DEFAULT);
 	pSylva->SetTechKey("DefaultTech");
 	pSylva->SetPass(PASS_DEFAULT);
+
+	for(int i = 0; i < 50; ++i)
+	{
+		string strName = "Tiger";
+		strName += i;
+		pSylva = _SINGLE(CObjectManager)->CreateEntity(MT_STATIC, RTYPE_ENTITY, strName, MN_TIGER, _T("tiger.x"));
+		pSylva->SetPos(D3DXVECTOR3(0.f, 0.5f * i, 0.f));
+		pSylva->SetShader(SHADER_DEFAULT);
+		pSylva->SetTechKey("DefaultTech");
+		pSylva->SetPass(PASS_DEFAULT);
+	}
 
 	CEntity* pTerrain = _SINGLE(CObjectManager)->CreateEntity(MT_TERRAIN, RTYPE_TERRAIN, "MainTerrain", MN_TERRAIN, _T("MainTerrain"));
 	pTerrain->SetShader(SHADER_DEFAULT);
@@ -106,7 +118,6 @@ HRESULT CEngine::CreateCamera()
 	CCamera* pCam = _SINGLE(CCameraManager)->CreateCamera(CN_THIRD);
 	_SINGLE(CCameraManager)->AddCamera("MainCamera", pCam);
 	_SINGLE(CCameraManager)->SetMainCamera("MainCamera");
-
 	//Camera
 	CCamera* pCam1 = _SINGLE(CCameraManager)->CreateCamera(CN_THIRD);
 	pCam1->SetPos(D3DXVECTOR3(10.f, 0.f, -10.f));

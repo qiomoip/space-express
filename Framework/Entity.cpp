@@ -151,6 +151,7 @@ void CEntity::Render()
 	m_matWorld = m_matScale * m_matRot * m_matTrans;
 	const D3DXMATRIX* pMatProj = _SINGLE(CCameraManager)->GetCurCam()->GetMatProj();
 	const D3DXMATRIX* pMatView = _SINGLE(CCameraManager)->GetCurCam()->GetMatView();
+
 	D3DXMATRIX matWVP = m_matWorld * (*pMatView);
 
 	CShader* pShader = _SINGLE(CShaderManager)->FindShader(m_eShader);
@@ -220,12 +221,6 @@ const eSHADER_KEY&		CEntity::GetShader() const
 	return m_eShader;
 }
 
-/*const */float	CEntity::GetSize() /*const*/
-{
-	return m_pMesh->GetSize();
-}
-
-
 const vector<UINT>&			CEntity::GetPassList()	const
 {
 	return m_vecPass;
@@ -234,4 +229,29 @@ const vector<UINT>&			CEntity::GetPassList()	const
 const string&		CEntity::GetTechKey() const
 {
 	return m_strTechKey;
+}
+
+/*const */float	CEntity::GetSize() /*const*/
+{
+	return m_pMesh->GetSize();
+}
+
+const D3DXMATRIX&	CEntity::GetMatWorld() const
+{
+	return m_matWorld;
+}
+
+const D3DXMATRIX&	CEntity::GetMatRotation() const
+{
+	return m_matRot;
+}
+
+const D3DXQUATERNION& CEntity::GetRotQuaternion() const
+{
+	return m_AxisRot;
+}
+
+const float&		CEntity::GetRotationAngle(const eAxis_TYPE& eAngle) const
+{
+	return m_fAngle[eAngle];
 }

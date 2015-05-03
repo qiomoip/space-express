@@ -69,14 +69,16 @@ void CCameraManager::Update()
 	_SINGLE(CDebug)->VectorToString(vLook, m_pCurCam->GetCameraInfo().vLook );
 	_SINGLE(CDebug)->VectorToString(vUp, m_pCurCam->GetCameraInfo().vUp );
 	_SINGLE(CDebug)->VectorToString(vRight, m_pCurCam->GetCameraInfo().vRight );
-	_SINGLE(CDebug)->AddStaticLog(LOG_CAMERA_INFO_0, _T("vPos : %s"), vPos );
-	_SINGLE(CDebug)->AddStaticLog(LOG_CAMERA_INFO_1, _T("vLook : %s"), vLook);
-	_SINGLE(CDebug)->AddStaticLog(LOG_CAMERA_INFO_2, _T("vUp : %s"), vUp );
-	_SINGLE(CDebug)->AddStaticLog(LOG_CAMERA_INFO_3, _T("vRight : %s"), vRight );
-	_SINGLE(CDebug)->AddStaticLog(LOG_CAMERA_INFO_4, _T("fAngle : %d, %d, %d"),
+	
+	_SINGLE(CDebug)->AddStaticLog(LOG_CAMERA_INFO_1, _T("vPos : %s"), vPos );
+	_SINGLE(CDebug)->AddStaticLog(LOG_CAMERA_INFO_2, _T("vLook : %s"), vLook);
+	_SINGLE(CDebug)->AddStaticLog(LOG_CAMERA_INFO_3, _T("vUp : %s"), vUp );
+	_SINGLE(CDebug)->AddStaticLog(LOG_CAMERA_INFO_4, _T("vRight : %s"), vRight );
+	_SINGLE(CDebug)->AddStaticLog(LOG_CAMERA_INFO_5, _T("fAngle : %d, %d, %d"),
 		m_pCurCam->GetCameraInfo().iAngle[0], 
 		m_pCurCam->GetCameraInfo().iAngle[1], 
 		m_pCurCam->GetCameraInfo().iAngle[2]);
+	
 #endif
 	//절두체 설정
 	_SINGLE(CFrustum)->setFrustum( GetCurCam()->GetMatViewProj() );
@@ -84,7 +86,7 @@ void CCameraManager::Update()
 
 void CCameraManager::Input()
 {
-	CheckKey();
+	/*CheckKey();
 	
 	CAMERA pCamera = m_pCurCam->GetCameraInfo();
 
@@ -153,7 +155,7 @@ void CCameraManager::Input()
 		pCamera.iAngle[AT_X] = 1;
 	}
 
-	m_pCurCam->SetCamera( pCamera );
+	m_pCurCam->SetCamera( pCamera );*/
 	
 }
 
@@ -171,6 +173,19 @@ bool CCameraManager::SetMainCamera(const string& strName)
 		return false;
 	}
 	m_pCurCam = iter->second;
+
+	
+#ifdef _DEBUG
+	
+	const char* szName = strName.c_str();
+	TCHAR szRet[100];
+	MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, strName.c_str(), strlen(strName.c_str()) + 1,
+		szRet, _tcslen(szRet) + 1);
+
+	_SINGLE(CDebug)->AddStaticLog(LOG_CAMERA_INFO_0, _T("CameraName: %s"), 
+		szRet );
+#endif
+
 	return true;
 }
 

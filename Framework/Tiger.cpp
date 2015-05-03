@@ -23,7 +23,7 @@ void CTiger::Update()
 
 void CTiger::Input()
 {
-	/*const KEYINFO* pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_RIGHT);
+	const KEYINFO* pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_RIGHT);
 	if(!pInfo)
 		return;
 	if(pInfo->bPush || pInfo->bDown)
@@ -81,5 +81,5 @@ void CTiger::Input()
 	{
 		m_fAngle[AT_X] += 0.01f;
 		m_bTransformUpdate = true;
-	}*/
+	}
 }

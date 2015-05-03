@@ -282,25 +282,7 @@ HRESULT CDebug::DrawLog()
 	m_LogRect.top  = 10;
 	return S_OK;
 }
-/*
-HRESULT CDebug::AddLog(LPTSTR _log, ...)
-{
-	va_list ap;
-	va_start(ap, _log);
-	//로그 카운트가 맥스일 경우 위에 덮어쓴다
-	if( m_LogCount >= LOG_COUNT )
-	{
-		_vstprintf( m_Log[0] , 255, _log, ap);
-		//CTString::Tstrcpy(m_Log[0], _log);
-		//m_Log[0] = _log;
-		m_LogCount = 1;
-	}
-	else
-		//아닐 경우 그냥 로그 카운트에 넣는다
-		_vstprintf( m_Log[m_LogCount++] , 255, _log, ap);
-		//m_Log[m_LogCount++] = _log;
-	return S_OK;
-}*/
+
 
 
 HRESULT CDebug::AddLog(int idx, LPTSTR _log, ...)
@@ -329,7 +311,7 @@ HRESULT CDebug::AddStaticLog(int idx, LPTSTR _log, ...)
 
 	if ( idx >= LOG_COUNT ||  idx < 0)
 	{
-		//로그수가 최대하면 맨위에 로그부터 덮어 씌운다.
+		//로그수가 최대라면 맨위에 로그부터 덮어 씌운다.
 		if ( m_StaticLogCount >= LOG_COUNT )
 			m_StaticLogCount = 0;
 		_vstprintf( m_StaticLog[m_StaticLogCount++], 255, _log, ap);

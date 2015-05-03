@@ -61,12 +61,10 @@ public:
 
 	VOID			InitLog();
 	VOID			InitFont();
-	//즉석에서 띄울 메세지
+	//정적로그 출력
 	HRESULT			DrawStaticLog();
-	//항상 화면에 듸울 메세지
+	//로그 출력
 	HRESULT			DrawLog();
-	//로그 추가
-	//HRESULT			AddLog(LPTSTR _log, ...);
 	//특정 인덱스에 로그 추가
 	HRESULT			AddLog(int _idx, LPTSTR _log, ...);
 	//고정된 위치(우측상단)에 로그 출력.enum으로 번호 배정

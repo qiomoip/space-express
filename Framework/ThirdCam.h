@@ -8,6 +8,7 @@ class CThirdCam
 {
 private:
 	CEntity*		m_pLookObject;
+	D3DXVECTOR3		m_vDist;
 public:
 	virtual void Init();
 	virtual void Update();

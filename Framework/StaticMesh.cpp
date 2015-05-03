@@ -214,14 +214,14 @@ void CStaticMesh::Render(CShader* pShader, const UINT& uPass)
 _SINGLE(CDebug)->AddFaceCount( (UINT)m_pMeshInfo->pMesh->GetNumFaces() );
 	}
 
-	//경계구 그리기
-	LPD3DXMESH _mesh = NULL;
-	HRESULT r = D3DXCreateSphere( _SINGLE(CDevice)->GetDevice(),
-		 m_pMeshInfo->fSize * 0.5f , (UINT)8, (UINT)8, &_mesh, NULL);
-	pShader->BeginPass(PASS_NOTEXTURE);
-	r = _mesh->DrawSubset(0);
-	pShader->EndPass();
-	Safe_Release( _mesh);
+	////경계구 그리기
+	//LPD3DXMESH _mesh = NULL;
+	//HRESULT r = D3DXCreateSphere( _SINGLE(CDevice)->GetDevice(),
+	//	 m_pMeshInfo->fSize * 0.5f , (UINT)8, (UINT)8, &_mesh, NULL);
+	//pShader->BeginPass(PASS_NOTEXTURE);
+	//r = _mesh->DrawSubset(0);
+	//pShader->EndPass();
+	//Safe_Release( _mesh);
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 

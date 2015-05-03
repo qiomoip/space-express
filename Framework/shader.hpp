@@ -78,7 +78,7 @@ PS_OUTPUT NotexPS()
 {
 	PS_OUTPUT output = (PS_OUTPUT)0;
 
-	output.vColor = float4(1.0, 1.f, 1.0f, 1.0);
+	output.vColor = g_mtrlMesh.vDif;
 
 	return output;
 }

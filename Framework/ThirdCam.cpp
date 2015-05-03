@@ -1,23 +1,13 @@
 #include "ThirdCam.h"
 #include "KeyManager.h"
 #include "Entity.h"
-
-
 #include "Debug.h"
-//typedef struct _tagCamera
-//{
-//      D3DXMATRIX matView;
-//      D3DXMATRIX matProj;
-//      D3DXVECTOR3 vPos;
-//      D3DXVECTOR3 vLook;
-//      D3DXVECTOR3 vUp;
-//      D3DXVECTOR3 vRight;
-//}CAMERA;
 
-CThirdCam::CThirdCam(void)
+CThirdCam::CThirdCam(void) 
 	: CCamera()
 	, m_pLookObject(NULL)
 {
+	memset(&m_vDist, 0, sizeof(D3DXVECTOR3) );
 }
 
 
@@ -29,11 +19,60 @@ CThirdCam::~CThirdCam(void)
 void CThirdCam::Init()
 {
 	CCamera::Init();
+	m_vDist = D3DXVECTOR3(0.f, 0.f, -10.f);
+	m_tCam.vPos = D3DXVECTOR3( -3.f, 10.f, -50.f );
 }
 void CThirdCam::Update()
 {
-	Move();
-	Rotation();
+	if( m_pLookObject == NULL)
+	{
+		Move();
+		Rotation();
+	}
+	//else
+	//{ 
+
+	//	D3DXVECTOR3 vDist;
+	//	memset(&vDist, 0, sizeof(D3DXVECTOR3));
+	//	D3DXVec3TransformCoord(&vDist, &m_vDist, &m_pLookObject->GetMatWorld());
+	//	m_tCam.vPos = vDist;
+
+	//	D3DXVec3Normalize(&vDist, &vDist);
+
+	//	D3DXVECTOR3 vRight(1.f, 0.f, 0.f);
+	//	D3DXVECTOR3 vUp(0.f, 1.f, 0.f);
+
+	//	//¾å
+	//	//D3DXMATRIX matRot;
+	//	//
+	//	//D3DXMatrixRotationAxis(&matRot, &/*m_tCam.vUp*/vRight, m_pLookObject->m_fAngle[AT_X]);
+
+	//	//memcpy(&matRot._41, &m_pLookObject->m_vPos, sizeof(D3DXVECTOR3));
+
+	//	//m_tCam.vLook = m_pLookObject->GetPos() - m_tCam.vPos;
+
+	//	//D3DXVec3Normalize(&m_tCam.vLook, &m_tCam.vLook);
+
+	//	//D3DXVec3Cross(&m_tCam.vRight, &vUp, &m_tCam.vLook);
+	//	//D3DXVec3Cross(&m_tCam.vUp, &m_tCam.vLook, &m_tCam.vRight);
+
+	//	//D3DXVec3Normalize(&m_tCam.vRight, &m_tCam.vRight);
+	//	//D3DXVec3Normalize(&m_tCam.vUp, &m_tCam.vUp);
+	//	const float fAngle = m_pLookObject->GetRotationAngle(AT_Y);
+	//	
+	//	//¾å
+
+
+
+	//	m_tCam.vLook = m_pLookObject->GetPos() - m_tCam.vPos;
+	//	D3DXVec3Normalize(&m_tCam.vLook, &m_tCam.vLook);
+	//	D3DXVec3TransformNormal(&m_tCam.vRight, &vRight, &m_pLookObject->GetMatWorld());
+	//	D3DXVec3TransformNormal(&m_tCam.vUp, &vUp, &m_pLookObject->GetMatWorld());
+	//	D3DXVec3Normalize(&m_tCam.vRight, &m_tCam.vRight);
+	//	D3DXVec3Normalize(&m_tCam.vUp, &m_tCam.vUp);
+
+	//}
+
 	CCamera::Update();
 }
 
@@ -180,4 +219,11 @@ void CThirdCam::Move()
 void CThirdCam::SetLookObject(CEntity* pEntity)
 {
 	m_pLookObject = pEntity;
+
+	/*m_tCam.vLook = m_pLookObject->GetPos() - m_tCam.vPos;
+	D3DXVec3Normalize(&m_tCam.vLook, &m_tCam.vLook);
+	D3DXVec3TransformNormal(&m_tCam.vRight, &m_tCam.vRight, &m_pLookObject->GetMatWorld());
+	D3DXVec3TransformNormal(&m_tCam.vUp, &m_tCam.vUp, &m_pLookObject->GetMatWorld());
+	D3DXVec3Normalize(&m_tCam.vRight, &m_tCam.vRight);
+	D3DXVec3Normalize(&m_tCam.vUp, &m_tCam.vUp);*/
 }

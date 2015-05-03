@@ -12,7 +12,7 @@ class CMesh;
 
 class CEntity
 {
-protected:
+public:
 	std::string		m_strName;
 	//eMESH_NUM		Mesh_num;
 	//eTEXTURE_NUM	Texture_num;
@@ -29,7 +29,7 @@ protected:
 	D3DXQUATERNION	m_AxisRot;
 	float			m_fScale[AT_MAX];
 	bool			m_bVisiable;
-	eSHADER_KEY	m_eShader;
+	eSHADER_KEY		m_eShader;
 	string			m_strTechKey;
 	vector<UINT>	m_vecPass;
 	bool			m_bTransformUpdate;
@@ -66,6 +66,10 @@ public:
 	const vector<UINT>&			GetPassList()	const;
 	const string&		GetTechKey() const;
 	/*const*/ float			GetSize() /*const*/;
+	const D3DXMATRIX&	GetMatWorld() const;
+	const D3DXMATRIX&	GetMatRotation() const;
+	const D3DXQUATERNION& GetRotQuaternion() const;
+	const float&		GetRotationAngle(const eAxis_TYPE& eAngle) const;
 
 public:
 	CEntity(void);
