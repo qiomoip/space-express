@@ -16,6 +16,14 @@ typedef struct _tagVertex
 
 #define	VTXCOLORFVF	D3DFVF_XYZ | D3DFVF_DIFFUSE
 
+typedef struct _tagSphereVertex
+{
+	D3DXVECTOR3 vPos;
+	D3DXVECTOR3 vNormal;
+}D3DVERTEX;
+
+#define D3DVERTEXFVF	D3DFVF_XYZ | D3DFVF_NORMAL 
+
 typedef struct _tagTerrainVertex
 {
 	D3DXVECTOR3 vPos;

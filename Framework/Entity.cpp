@@ -89,7 +89,6 @@ bool CEntity::Collision()
 		//충돌체크
 		if( size + (*iter)->GetSize() >= len ) 
 		{
-			
 			BOOL isHit = false;
 			DWORD dwFaceIndex = 0;
 			float fDist = 0;
@@ -110,7 +109,7 @@ bool CEntity::Collision()
 			m_SphereMesh->GetIndexBuffer( &pIB ); 
 
 			WORD* pIndices; 
-			VERTEXTERRAIN* pVertices; 
+			D3DVERTEX* pVertices; 
 
 			pIB->Lock( 0, 0, (void**)&pIndices, 0 ); 
 			pVB->Lock( 0, 0,(void**)&pVertices, 0); 
@@ -138,8 +137,9 @@ bool CEntity::Collision()
 			
 			D3DXVec3Normalize( &vLenth, &vLenth);
 			D3DXVec3Normalize( &m_vMove, &m_vMove);
+
 			//슬라이딩 벡터 수식(vLenth가 법선 벡터로 쓰임)
-			m_vMove -= D3DXVec3Dot( &m_vMove, &out) * out;
+			m_vMove -= D3DXVec3Dot( &m_vMove, &vLenth) * vLenth;
 			//연산이 끝난후 벡터의 길이를 이동속도로 조정.
 			D3DXVec3Normalize( &m_vMove, &m_vMove);
 			m_vMove *= m_fMoveSpeed;
