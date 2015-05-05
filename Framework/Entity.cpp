@@ -11,6 +11,7 @@
 #include "Camera.h"
 #include "Frustum.h"
 #include "Debug.h"
+#include "StaticMesh.h"
 CEntity::CEntity(void)
 	: m_pMesh(NULL)
 	, m_strName("")
@@ -88,13 +89,57 @@ bool CEntity::Collision()
 		//충돌체크
 		if( size + (*iter)->GetSize() >= len ) 
 		{
+			
+			BOOL isHit = false;
+			DWORD dwFaceIndex = 0;
+			float fDist = 0;
+			LPD3DXBUFFER ppAllhit;
+			DWORD pCountOfHits;
+			//LPD3DXMESH pMesh = ((CStaticMesh*)(*iter)->GetMesh())->GetMesh();
+			_SINGLE(CDevice)->GetDevice()->SetFVF( m_SphereMesh->GetFVF() );
+
+			if( S_OK != D3DXIntersect( 
+					m_SphereMesh,
+					&m_vPos, &m_vMove, &isHit, &dwFaceIndex , NULL,
+					NULL, &fDist, &ppAllhit, &pCountOfHits ) )
+				assert(false);
+			LPDIRECT3DVERTEXBUFFER9 pVB; 
+			LPDIRECT3DINDEXBUFFER9 pIB; 
+
+			m_SphereMesh->GetVertexBuffer(&pVB); 
+			m_SphereMesh->GetIndexBuffer( &pIB ); 
+
+			WORD* pIndices; 
+			VERTEXTERRAIN* pVertices; 
+
+			pIB->Lock( 0, 0, (void**)&pIndices, 0 ); 
+			pVB->Lock( 0, 0,(void**)&pVertices, 0); 
+
+			D3DXVECTOR3 v0 = pVertices[pIndices[3*dwFaceIndex+0]].vPos; 
+			D3DXVECTOR3 v1 = pVertices[pIndices[3*dwFaceIndex+1]].vPos; 
+			D3DXVECTOR3 v2 = pVertices[pIndices[3*dwFaceIndex+2]].vPos; 
+
+			D3DXVECTOR3 u = v1 - v0; 
+			D3DXVECTOR3 v = v2 - v0; 
+
+			D3DXVECTOR3 out; 
+
+			D3DXVec3Cross( &out, &u, &v ); 
+			D3DXVec3Normalize( &out, &out ); 
+			//out *= m_fMoveSpeed;
+			pVB->Unlock(); 
+			pIB->Unlock(); 
+			Safe_Release(pVB); 
+			Safe_Release(pIB); 
+			out.y = 0.f;
+
 			//vLenth벡터를 법선 벡터처럼 사용하는 과정
 			vLenth = m_vPos - (*iter)->GetPos();
-
+			
 			D3DXVec3Normalize( &vLenth, &vLenth);
 			D3DXVec3Normalize( &m_vMove, &m_vMove);
 			//슬라이딩 벡터 수식(vLenth가 법선 벡터로 쓰임)
-			m_vMove -= D3DXVec3Dot( &m_vMove, &vLenth) * vLenth;
+			m_vMove -= D3DXVec3Dot( &m_vMove, &out) * out;
 			//연산이 끝난후 벡터의 길이를 이동속도로 조정.
 			D3DXVec3Normalize( &m_vMove, &m_vMove);
 			m_vMove *= m_fMoveSpeed;
@@ -117,7 +162,7 @@ bool CEntity::Collision()
 void CEntity::InitSphereMesh()
 {
 	D3DXCreateSphere( _SINGLE(CDevice)->GetDevice(), 
-		GetSize(), (UINT)6, (UINT)6, &m_SphereMesh, NULL);
+		GetSize(), (UINT)8, (UINT)8, &m_SphereMesh, NULL);
 }
 
 void CEntity::DrawSphere(/*D3DXVECTOR3 _vPos, float _size*/)

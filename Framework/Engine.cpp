@@ -78,17 +78,15 @@ HRESULT CEngine::CreateEntity()
 	pSylva->SetTechKey("DefaultTech");
 	pSylva->SetPass(PASS_DEFAULT);
 	
-	CEntity* pSylvas[50];
+	CEntity* pSylvas[1];
 	//테스트용 NPC생성
-	for ( int i = 0; i < 50; ++i)
+	for ( int i = 0; i < 1; ++i)
 	{
-		char ch[2]  = "";
-		itoa(i, ch, 10);
 		string str = "Npc"; 
-		str += ch;
+		str += i;
 		pSylvas[i] = _SINGLE(CObjectManager)->CreateEntity(
 			MT_STATIC, RTYPE_ENTITY, str, MN_NULL, _T("tiger.x"));
-		pSylvas[i]->SetPos(D3DXVECTOR3(sin(i) * 10.f, 0.0f, cos(i) * 30.0f));
+		pSylvas[i]->SetPos(D3DXVECTOR3(sin(i) * (-10.f), 0.0f, cos(i) * (0.0f) ));
 		pSylvas[i]->SetShader(SHADER_DEFAULT);
 		pSylvas[i]->SetTechKey("DefaultTech");
 		pSylvas[i]->SetPass(PASS_DEFAULT);

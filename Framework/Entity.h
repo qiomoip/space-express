@@ -12,7 +12,7 @@ class CMesh;
 
 class CEntity
 {
-public:
+protected:
 	std::string		m_strName;
 	CMesh*			m_pMesh;
 	eRENDER_TYPE	m_eRenderType;
@@ -38,9 +38,13 @@ public:
 	float			m_fScale[AT_MAX];
 	//그리기 여부 판정
 	bool			m_bVisiable;
+	//쉐이더 키 (default: none, all : default)
 	eSHADER_KEY		m_eShader;
+	//테크닉 키
 	string			m_strTechKey;
+	//패스 리스트
 	vector<UINT>	m_vecPass;
+	//회전, 이동 여부 (변환)
 	bool			m_bTransformUpdate;
 
 	//이동속도
