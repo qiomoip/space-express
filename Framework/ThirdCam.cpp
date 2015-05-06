@@ -19,7 +19,12 @@ CThirdCam::~CThirdCam(void)
 void CThirdCam::Init()
 {
 	CCamera::Init();
-	m_vDist = D3DXVECTOR3(0.f, 0.f, -10.f);
+
+	////정면 보기
+	//m_vDist = D3DXVECTOR3(0.f, 0.f, 10.f);
+
+	//탑뷰
+	m_vDist = D3DXVECTOR3(0.f, 30.f, 0.f);
 	m_tCam.vPos = D3DXVECTOR3( 0.f, 30.f, -10.f );
 }
 void CThirdCam::Update()
@@ -29,49 +34,41 @@ void CThirdCam::Update()
 		Move();
 		Rotation();
 	}
-	//else
-	//{ 
+	else
+	{ 
+		//따라갑니다
+		D3DXVECTOR3 vLookObjectPos = m_pLookObject->GetPos();
+		m_tCam.vPos = vLookObjectPos + m_vDist;
 
-	//	D3DXVECTOR3 vDist;
-	//	memset(&vDist, 0, sizeof(D3DXVECTOR3));
-	//	D3DXVec3TransformCoord(&vDist, &m_vDist, &m_pLookObject->GetMatWorld());
-	//	m_tCam.vPos = vDist;
+		////y축 회전 값만 뽑아옴
+		////이 값으로 카메라의 축들을 회전시킨다
+		//float fAngle = m_pLookObject->GetRotationAngle(AT_Y);
+		//D3DXMATRIX matRot;
+		//D3DXMatrixRotationY(&matRot, fAngle);
 
-	//	D3DXVec3Normalize(&vDist, &vDist);
+		////카메라와 오브젝트 거리 값에 회전값을 곱한 벡터
+		//D3DXVECTOR3 vDist;
 
-	//	D3DXVECTOR3 vRight(1.f, 0.f, 0.f);
-	//	D3DXVECTOR3 vUp(0.f, 1.f, 0.f);
+		//D3DXVec3TransformCoord(&vDist, &m_vDist, &matRot);
 
-	//	//얍
-	//	//D3DXMATRIX matRot;
-	//	//
-	//	//D3DXMatrixRotationAxis(&matRot, &/*m_tCam.vUp*/vRight, m_pLookObject->m_fAngle[AT_X]);
+		////카메라 위치 구하기 (거리 * 회전 벡터 + 오브젝트 위치 벡터)
+		//m_tCam.vPos = vDist + vLookObjectPos;
 
-	//	//memcpy(&matRot._41, &m_pLookObject->m_vPos, sizeof(D3DXVECTOR3));
+		////룩 벡터는 오브젝트 위치와 카메라 위치의 차벡터를 정규화한 값
+		////즉, 카메라에서 오브젝트를 바라보는 값
+		//D3DXVECTOR3 vMinus = -vDist;
+		//D3DXVec3Normalize(&m_tCam.vLook, &vMinus);
 
-	//	//m_tCam.vLook = m_pLookObject->GetPos() - m_tCam.vPos;
+		////업 벡터는 처음 오브젝트를 보던 업 벡터에서 누적 회전값을 곱한 값
+		////Init값이 아니라 m_tCam.vUp을 하면 계속 미친듯이 돎. 라이트 벡터도 마찬가지...
+		//D3DXVec3TransformCoord(&m_tCam.vUp, &m_vInitUp, &matRot);
+		//D3DXVec3Normalize(&m_tCam.vUp, &m_tCam.vUp);
 
-	//	//D3DXVec3Normalize(&m_tCam.vLook, &m_tCam.vLook);
+		////라이트 벡터는 처음 오브젝트를 보던 라이트 벡터에서 누적 회전값을 곱한 값
+		//D3DXVec3TransformCoord(&m_tCam.vRight, &m_vInitRight, &matRot);
+		//D3DXVec3Normalize(&m_tCam.vRight, &m_tCam.vRight);
 
-	//	//D3DXVec3Cross(&m_tCam.vRight, &vUp, &m_tCam.vLook);
-	//	//D3DXVec3Cross(&m_tCam.vUp, &m_tCam.vLook, &m_tCam.vRight);
-
-	//	//D3DXVec3Normalize(&m_tCam.vRight, &m_tCam.vRight);
-	//	//D3DXVec3Normalize(&m_tCam.vUp, &m_tCam.vUp);
-	//	const float fAngle = m_pLookObject->GetRotationAngle(AT_Y);
-	//	
-	//	//얍
-
-
-
-	//	m_tCam.vLook = m_pLookObject->GetPos() - m_tCam.vPos;
-	//	D3DXVec3Normalize(&m_tCam.vLook, &m_tCam.vLook);
-	//	D3DXVec3TransformNormal(&m_tCam.vRight, &vRight, &m_pLookObject->GetMatWorld());
-	//	D3DXVec3TransformNormal(&m_tCam.vUp, &vUp, &m_pLookObject->GetMatWorld());
-	//	D3DXVec3Normalize(&m_tCam.vRight, &m_tCam.vRight);
-	//	D3DXVec3Normalize(&m_tCam.vUp, &m_tCam.vUp);
-
-	//}
+	}
 
 	CCamera::Update();
 }
@@ -220,10 +217,19 @@ void CThirdCam::SetLookObject(CEntity* pEntity)
 {
 	m_pLookObject = pEntity;
 
-	/*m_tCam.vLook = m_pLookObject->GetPos() - m_tCam.vPos;
+	m_tCam.vPos = m_vDist + m_pLookObject->GetPos();
+
+	m_tCam.vLook = m_pLookObject->GetPos() - m_tCam.vPos;
 	D3DXVec3Normalize(&m_tCam.vLook, &m_tCam.vLook);
-	D3DXVec3TransformNormal(&m_tCam.vRight, &m_tCam.vRight, &m_pLookObject->GetMatWorld());
-	D3DXVec3TransformNormal(&m_tCam.vUp, &m_tCam.vUp, &m_pLookObject->GetMatWorld());
+	
+	D3DXVec3Cross(&m_tCam.vUp, &m_tCam.vLook, &m_tCam.vRight);
+	D3DXVec3Normalize(&m_tCam.vUp, &m_tCam.vUp);
+
+	D3DXVec3Cross(&m_tCam.vRight, &m_tCam.vUp, &m_tCam.vLook);
 	D3DXVec3Normalize(&m_tCam.vRight, &m_tCam.vRight);
-	D3DXVec3Normalize(&m_tCam.vUp, &m_tCam.vUp);*/
+
+	//이 값을 반대로 해야 호랑이가 제대로 보이는데
+	//이건 호랑이 로컬축 문제인가 아니면 카메라 축 문제인가;;
+	m_vInitRight = -m_tCam.vRight;
+	m_vInitUp = -m_tCam.vUp;
 }

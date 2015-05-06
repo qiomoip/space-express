@@ -77,6 +77,7 @@ HRESULT CEngine::CreateEntity()
 	pSylva->SetShader(SHADER_DEFAULT);
 	pSylva->SetTechKey("DefaultTech");
 	pSylva->SetPass(PASS_DEFAULT);
+	pSylva->SetRotation(AT_Y, D3DX_PI);
 	
 	CEntity* pSylvas[1];
 	//테스트용 NPC생성
@@ -92,13 +93,14 @@ HRESULT CEngine::CreateEntity()
 		pSylvas[i]->SetPass(PASS_DEFAULT);
 	}
 	
-	/*
+	//*
 	CEntity* pTerrain = _SINGLE(CObjectManager)->CreateEntity(
 		MT_TERRAIN, RTYPE_TERRAIN, "MainTerrain", MN_TERRAIN, _T("MainTerrain"));
 	pTerrain->SetShader(SHADER_DEFAULT);
 	pTerrain->SetTechKey("DefaultTech");
 	pTerrain->SetPass(PASS_DEFAULT);
 	//*/
+
 	CEntity* pEnvi = _SINGLE(CObjectManager)->CreateEntity(
 		MT_STATIC, RTYPE_ENVIRONMENT, "Envi", MN_ENVIRONMENT, _T("Environment.X"));
 	pEnvi->SetPos(D3DXVECTOR3(0.f, 10.f, 0.f));
@@ -114,6 +116,32 @@ HRESULT CEngine::CreateEntity()
 	pGrid->SetTechKey("DefaultTech");
 	pGrid->SetPass(PASS_NOTEXTURE);
 #endif
+
+	//박스로 빌딩 역할 (임시)
+	CEntity* pBox;
+
+	srand(0);
+
+	for(int i = 0; i < 10; ++i)
+	{
+		int iScale = rand() % 10;
+		int iPosX = rand()  % 20;
+		int iPosZ = rand() % 20;
+
+		string strName = "Box"; 
+		strName += i;
+
+		pBox = _SINGLE(CObjectManager)->CreateEntity(
+			MT_BOX, RTYPE_ENTITY, strName, MN_BOX);
+		pBox->SetPos(D3DXVECTOR3(iPosX, 0.f, iPosZ));
+		pBox->SetScale(iScale, iScale, iScale);
+		pBox->SetShader(SHADER_DEFAULT);
+		pBox->SetTechKey("DefaultTech");
+		pBox->SetPass(PASS_NOTEXTURE);
+	}
+	//
+
+
 	return S_OK;
 }
 
@@ -123,6 +151,8 @@ HRESULT CEngine::CreateCamera()
 	CCamera* pCam = _SINGLE(CCameraManager)->CreateCamera(CN_THIRD);
 	_SINGLE(CCameraManager)->AddCamera("MainCamera", pCam);
 	_SINGLE(CCameraManager)->SetMainCamera("MainCamera");
+
+	((CThirdCam*)pCam)->SetLookObject(_SINGLE(CObjectManager)->FindObject("Tiger"));
 	//Camera 3인칭
 	CCamera* pCam1 = _SINGLE(CCameraManager)->CreateCamera(CN_THIRD);
 	pCam1->SetPos(D3DXVECTOR3(10.f, 0.f, -10.f));

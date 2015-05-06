@@ -5,6 +5,7 @@
 #include "StaticMesh.h"
 #include "Texture.h"
 #include "GridMesh.h"
+#include "BoxMesh.h"
 
 CResourceManager::CResourceManager(void)
 {
@@ -82,6 +83,11 @@ CMesh* CResourceManager::LoadMesh(const eMESH_TYPE& eMeshType, const eMESH_NUM& 
 	case MT_TERRAIN:
 		{
 			pMesh = new CTerrainMesh;
+		}
+		break;
+	case MT_BOX:
+		{
+			pMesh = new CBoxMesh;
 		}
 		break;
 #ifdef _DEBUG

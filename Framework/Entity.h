@@ -83,6 +83,7 @@ public:
 	void SetPass(const UINT& uPass);
 	void SetShader(const eSHADER_KEY& pShader);
 	void SetVisiable(bool);
+	void SetRotation(const eAxis_TYPE& eAxis, const float& fAngle);
 
 //Getter
 public:

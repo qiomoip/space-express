@@ -72,18 +72,29 @@ void CGridMesh::Render(CShader* pShader, const UINT& uPass)
 	pShader->SetValue("g_mtrlMesh", &m_tGridMaterial, sizeof(D3DMATERIAL9));
 	pShader->SetTexture("g_BaseTex", NULL);
 
+	D3DXMATRIX mat;
+	D3DXMatrixIdentity(&mat);
+	D3DXMATRIX matVP = _SINGLE(CCameraManager)->GetCurCam()->GetMatViewProj();
+	
+	mat *= matVP;
+
+	pShader->SetMatrix("g_matWVP", &mat);
 
 	pShader->BeginPass(uPass);
-	
+
 	_SINGLE(CDevice)->GetDevice()->SetFVF(VTXCOLORFVF);
 	_SINGLE(CDevice)->GetDevice()->SetMaterial(&m_tGridMaterial);
 	_SINGLE(CDevice)->GetDevice()->SetStreamSource( 0, m_pGridVB, 0, sizeof( VERTEXCOLOR ) );
 	_SINGLE(CDevice)->GetDevice()->DrawPrimitive(D3DPT_LINELIST, 0, m_iCnt/2);
 
+	pShader->EndPass();
+
+	pShader->BeginPass(PASS_COLOR);
+
 	_SINGLE(CDevice)->GetDevice()->SetStreamSource( 0, m_pLineVB, 0, sizeof(VERTEXCOLOR) );
 	_SINGLE(CDevice)->GetDevice()->SetFVF(VTXCOLORFVF);
 	_SINGLE(CDevice)->GetDevice()->DrawPrimitive( D3DPT_LINELIST, 0, 3 );
-	
+
 	pShader->EndPass();
 
 	//_SINGLE(CShaderManager)->EndShader(SHADER_DEFAULT);
@@ -122,36 +133,35 @@ HRESULT CGridMesh::CreateVertexBuffer()
 
 	m_pGridVB->Lock(0, 0, (void**)&tempVB, 0);
 
-    for ( float x = x1; x<=x2; x+= stepX )
-    {
+	for ( float x = x1; x<=x2; x+= stepX )
+	{
 		tempVB[m_iCnt].vPos = D3DXVECTOR3(x, 0.f, y1);
-        tempVB[m_iCnt].dwColor = gridColor;
-        ++m_iCnt;
-        tempVB[m_iCnt].vPos = D3DXVECTOR3(x, 0.f, y2);
-        tempVB[m_iCnt].dwColor = gridColor;
-        ++m_iCnt;
-    }
+		tempVB[m_iCnt].dwColor = gridColor;
+		++m_iCnt;
+		tempVB[m_iCnt].vPos = D3DXVECTOR3(x, 0.f, y2);
+		tempVB[m_iCnt].dwColor = gridColor;
+		++m_iCnt;
+	}
 
 	m_pGridVB->Unlock();
- 
-    for ( float y = y1; y<= y2; y+= stepY )
-    {
-        tempVB[m_iCnt].vPos = D3DXVECTOR3(x1, 0.f, y);
-        tempVB[m_iCnt].dwColor = gridColor;
-        ++m_iCnt;
-        tempVB[m_iCnt].vPos = D3DXVECTOR3(x2, 0.f, y);
-        tempVB[m_iCnt].dwColor = gridColor;
-        ++m_iCnt;
-    }
+
+	for ( float y = y1; y<= y2; y+= stepY )
+	{
+		tempVB[m_iCnt].vPos = D3DXVECTOR3(x1, 0.f, y);
+		tempVB[m_iCnt].dwColor = gridColor;
+		++m_iCnt;
+		tempVB[m_iCnt].vPos = D3DXVECTOR3(x2, 0.f, y);
+		tempVB[m_iCnt].dwColor = gridColor;
+		++m_iCnt;
+	}
 
 	if(_SINGLE(CDevice)->GetDevice()->CreateVertexBuffer(
 		6 * sizeof(VERTEXCOLOR),
-		D3DUSAGE_WRITEONLY,	VTXTERRAINFVF, D3DPOOL_MANAGED, &m_pLineVB, 0))
+		D3DUSAGE_WRITEONLY,	VTXCOLORFVF, D3DPOOL_MANAGED, &m_pLineVB, 0))
 	{
 		return E_FAIL;
 	}
 
-	//VERTEXCOLOR colorVtx[] = { {D3DXVECTOR3(-200.0f, 0.0f, 0.0f),  0xffff0000 }, // red = +x Axis
 	VERTEXCOLOR colorVtx[] = { {D3DXVECTOR3(0.f, 0.0f, 0.0f),  0xffff0000 }, // red = +x Axis
 	{ D3DXVECTOR3(200.0f, 0.0f, 0.0f),  0xffff0000 },
 	//{ D3DXVECTOR3(0.0f, -200.0f, 0.0f),  0xff00ff00 }, // green = +y Axis
@@ -160,11 +170,12 @@ HRESULT CGridMesh::CreateVertexBuffer()
 	{ D3DXVECTOR3(0.0f, 0.0f, 200.0f),  0xff0000ff }, // blue = +z Axis
 	//{ D3DXVECTOR3(0.0f, 0.0f, -200.0f),  0xff0000ff }};
 	{ D3DXVECTOR3(0.0f, 0.0f, 0.f),  0xff0000ff }};
+
 	void *pVertices = NULL;
 
-    m_pLineVB->Lock( 0, sizeof(colorVtx), (void**)&pVertices, 0 );
-    memcpy( pVertices, colorVtx, sizeof(colorVtx) );
-    m_pLineVB->Unlock();
+	m_pLineVB->Lock( 0, sizeof(colorVtx), (void**)&pVertices, 0 );
+	memcpy( pVertices, colorVtx, sizeof(colorVtx) );
+	m_pLineVB->Unlock();
 
 	return S_OK;
 }

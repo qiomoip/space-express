@@ -158,8 +158,6 @@ float CStaticMesh::GetSize()
 			m_pMeshInfo->fSize = fRadius;
 
 		m_pMeshInfo->pMesh->UnlockVertexBuffer();
-
-		
 	}
 	
 	//_SINGLE(CDevice)->GetDevice()->SetFVF(VTXCOLORFVF);

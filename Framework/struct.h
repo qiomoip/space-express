@@ -16,6 +16,7 @@ typedef struct _tagVertex
 
 #define	VTXCOLORFVF	D3DFVF_XYZ | D3DFVF_DIFFUSE
 
+
 typedef struct _tagSphereVertex
 {
 	D3DXVECTOR3 vPos;

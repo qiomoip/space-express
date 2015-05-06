@@ -172,7 +172,7 @@ void CEntity::DrawSphere(/*D3DXVECTOR3 _vPos, float _size*/)
 
 void CEntity::Rotation()
 {
-	D3DXQuaternionRotationYawPitchRoll(&m_AxisRot, m_fAngle[AT_X], m_fAngle[AT_Y], m_fAngle[AT_Z]);
+	D3DXQuaternionRotationYawPitchRoll(&m_AxisRot, m_fAngle[AT_Y], m_fAngle[AT_X], m_fAngle[AT_Z]);
 	D3DXMatrixRotationQuaternion(&m_matRot, &m_AxisRot);
 }
 
@@ -256,7 +256,9 @@ void CEntity::Render()
 	{
 		m_pMesh->Render(pShader, m_vecPass[i]);
 	}
+	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 	m_SphereMesh->DrawSubset(0);
+	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 }
 
 void CEntity::SetRenderType(const eRENDER_TYPE& eRender)
@@ -286,6 +288,13 @@ void CEntity::SetVisiable()
 void CEntity::SetVisiable(bool _visiable)
 {
 	m_bVisiable = _visiable;
+}
+
+void CEntity::SetRotation(const eAxis_TYPE& eAxis, const float& fAngle)
+{
+	m_fAngle[eAxis] = fAngle;
+
+	m_bTransformUpdate = true;
 }
 
 
@@ -326,7 +335,9 @@ const string&		CEntity::GetTechKey() const
 
 /*const */float	CEntity::GetSize() /*const*/
 {
-	return m_pMesh->GetSize();
+	float fMax = m_fScale[AT_X] > m_fScale[AT_Y] ? m_fScale[AT_X] : m_fScale[AT_Y];
+	fMax = fMax > m_fScale[AT_Z] ? fMax : m_fScale[AT_Z];
+	return m_pMesh->GetSize() * fMax;
 }
 
 const D3DXMATRIX&	CEntity::GetMatWorld() const

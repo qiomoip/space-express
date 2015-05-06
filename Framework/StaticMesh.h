@@ -6,6 +6,7 @@ class CStaticMesh
 {
 private:
 	MESH_INFO*			m_pMeshInfo;
+	
 	LPD3DXBUFFER		m_pD3DXMtrlBuffer;
 
 public:
