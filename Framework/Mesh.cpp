@@ -4,6 +4,7 @@
 
 CMesh::CMesh(void)
 	: m_arrayTexture(NULL)
+	, m_ColType(MT_NULL)
 {
 }
 

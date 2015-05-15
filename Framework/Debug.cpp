@@ -31,7 +31,11 @@ CDebug::CDebug(void)
 	, m_EndTime(0)
 	, m_FPS(0)
 	, m_bWireFrame(false)
+	, m_Line(NULL)
+	, m_LineCount(0)
 {
+	memset(&m_Line, 0, sizeof(m_Line[0]) * LOG_COUNT * 2);
+	memset(&m_ColorList, 0, sizeof(m_ColorList[0])* LOG_COUNT);
 }
 
 
@@ -64,6 +68,8 @@ void CDebug::Initialize()
 
 	InitFont();
 	InitLog();
+	InitLine();
+
 }
 
 void CDebug::CreateVertexBuffer()
@@ -160,12 +166,19 @@ void CDebug::Destroy()
 	Safe_Release(m_pLineVB);
 
 	for( int i = 0; i < LOG_COUNT; ++i)
+	{
 		Safe_Delete_Array(m_StaticLog[i]);
-	Safe_Delete_Array(m_StaticLog);
-	for( int i = 0; i < LOG_COUNT; ++i)
 		Safe_Delete_Array(m_Log[i]);
+
+		//Safe_Delete_Array(m_vList[i]);
+	}
+	Safe_Delete_Array(m_StaticLog);
 	Safe_Delete_Array(m_Log);
+	//Safe_Release(m_Line);
 	Safe_Release(m_pFont); // 폰트 구조체해제
+
+	
+	
 }
 
 void CDebug::Input()
@@ -187,6 +200,7 @@ void CDebug::DrawInfo()
 
 	DrawStaticLog();
 	DrawLog();
+	DrawLine();
 }
 
 
@@ -264,6 +278,23 @@ VOID CDebug::InitFont()
 	SetRect(&m_LogRect,10,10,400,SCREEN_HEIGHT); 
 }
 
+void CDebug::InitLine()
+{
+	D3DXCreateLine(m_pDevice, &m_Line);
+	m_Line->SetWidth(3);
+	//두개(시작,끝)의 벡터를 갖는 라인 배열
+	//m_vList = new D3DXVECTOR3*[LOG_COUNT];
+	//m_ColorList = new D3DXCOLOR[LOG_COUNT];
+	//memset(&m_ColorList, 0, sizeof(m_ColorList[0]) * LOG_COUNT );
+	////memset(&m_vList, 0, sizeof(m_vList[0])* LOG_COUNT );
+
+	//for( int i = 0; i < LOG_COUNT; ++i)
+	//{
+	//	m_vList[i] = new D3DXVECTOR3[2];
+	//	
+	//	//memset(&m_vList, 0, sizeof(m_vList[0]) * LOG_COUNT * 2 );
+	//}
+}
 
 
 HRESULT CDebug::DrawStaticLog()
@@ -288,6 +319,23 @@ HRESULT CDebug::DrawLog()
 	m_LogRect.top  = 10;
 	return S_OK;
 }
+
+void CDebug::DrawLine()
+{
+	D3DXMATRIXA16 mat = _SINGLE(CCameraManager)->GetCurCam()->GetMatViewProj();
+	//D3DXMatrixIdentity( &mat);
+	LPD3DXLINE line;
+	D3DXCreateLine(m_pDevice, &line);
+	
+	line->Begin();
+	for(int i = 0; i < m_LineCount; ++i)
+		line->DrawTransform(m_vList[i],2, &mat,  m_ColorList[i]);
+    
+	line->End();
+    line->Release(); 
+
+}
+
 
 
 
@@ -330,12 +378,20 @@ HRESULT CDebug::AddStaticLog(int idx, LPTSTR _log, ...)
 
 HRESULT CDebug::VectorToString(LPTSTR dest, D3DXVECTOR3 vec)
 {
-	LPTSTR _vec = new TCHAR[30];
+	TCHAR _vec[255] = _T("");
 	_stprintf(_vec, _T("(%.2f, %.2f, %.2f)"), vec.x, vec.y, vec.z );
 	_tcscpy(dest, _vec);
-	Safe_Delete_Array(_vec);
 
 	return S_OK;
+}
+
+void CDebug::AddLine(D3DXVECTOR3 vStart, D3DXVECTOR3 vEnd, D3DCOLOR _color)
+{
+	m_vList[m_LineCount][0] = vStart;
+	m_vList[m_LineCount][1] = vEnd;
+	m_ColorList[m_LineCount] = _color;
+
+	m_LineCount > LOG_COUNT ? m_LineCount = 0 : m_LineCount++;
 }
 
 
@@ -353,15 +409,20 @@ void CDebug::AddFaceCount(UINT _faces)
 
 void CDebug::CheckFPS()
 {
-	m_EndTime = GetTickCount();
-	m_ElapsedTime = m_EndTime - m_StartTime;
-	
+	m_EndTime = timeGetTime();
+	m_ElapsedTime = (m_EndTime - m_StartTime)  ;
 	++m_FPS;
-	if( m_ElapsedTime >= 1000L )
-	{
-		AddStaticLog(LOG_FPS, _T("FPS : %d"), m_FPS );
-		m_FPS = 0;
-		m_StartTime = m_EndTime;
-	}
 
+	if( m_ElapsedTime >= 100L )
+	{
+		AddStaticLog(LOG_FPS, _T("FPS : %d"), m_FPS * 10 );
+		m_StartTime = m_EndTime;	
+		m_FPS = 0;
+	}
+}
+
+void CDebug::ResetLine()
+{
+	memset(&m_vList, 0, sizeof(m_vList[0]) * LOG_COUNT);
+	memset(&m_ColorList, 0, sizeof(m_ColorList[0]) * LOG_COUNT);
 }

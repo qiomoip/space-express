@@ -120,3 +120,8 @@ typedef struct _tagLightInfo
 
 
 
+typedef struct _tagBoxSize
+{
+	D3DXVECTOR3 vMin;
+	D3DXVECTOR3 vMax;
+}BOXSIZE;

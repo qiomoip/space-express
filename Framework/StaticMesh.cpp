@@ -9,8 +9,9 @@
 CStaticMesh::CStaticMesh(void)
 	: m_pMeshInfo(NULL)
 	, m_pD3DXMtrlBuffer(NULL)
+	
 {
-
+	m_ColType = MT_STATIC;
 }
 
 
@@ -253,7 +254,7 @@ void CStaticMesh::Render(CShader* pShader, const UINT& uPass)
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
-LPD3DXMESH CStaticMesh::GetMesh()
+const LPD3DXMESH CStaticMesh::GetMesh() const 
 {
 	return m_pMeshInfo->pMesh;
 }
@@ -282,4 +283,9 @@ void CStaticMesh::Destroy()
 	}
 
 	Safe_Delete( m_pMeshInfo );
+}
+
+ const eMESH_TYPE CStaticMesh::GetType() const 
+{
+	return m_ColType;
 }

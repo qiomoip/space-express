@@ -12,6 +12,8 @@
 #include "Frustum.h"
 #include "Debug.h"
 #include "StaticMesh.h"
+#include "BoxMesh.h"
+
 CEntity::CEntity(void)
 	: m_pMesh(NULL)
 	, m_strName("")
@@ -31,6 +33,8 @@ CEntity::CEntity(void)
 CEntity::~CEntity(void)
 {
 	Safe_Release(m_SphereMesh);
+	std::wstring str;
+	str.c_str();
 }
 
 void CEntity::Initialize()
@@ -69,12 +73,21 @@ bool CEntity::Collision()
 
 	//두 엔티티 벡터 차
 	D3DXVECTOR3 vLenth = D3DXVECTOR3(0,0,0);
+	//노말 벡터
+	D3DXVECTOR3 vNormal = D3DXVECTOR3(0,0,0);
+	//타겟의 위치
+	D3DXVECTOR3 vTarPos = D3DXVECTOR3(0,0,0);
+
+	//충돌지점
+	D3DXVECTOR3 pCol = D3DXVECTOR3(0.f, 0.f, 0.f); 
 	//엔티티 크기
-	float size = GetSize();
+	float fSize = GetSize();
+	float fTarSize = 0.f;
 	//두 엔티티간의 길이
 	float len  = 0.f;
+	//엔티티의 메시
+	eMESH_TYPE _eTarMesh_type = MT_NULL;
 	
-	static int cnt = 0;
 	//int i = RTYPE_ENTITY;
 	for(list<CEntity*>::iterator iter = RenderList[RTYPE_ENTITY].begin();
 		iter != RenderList[RTYPE_ENTITY].end(); ++iter)
@@ -82,77 +95,177 @@ bool CEntity::Collision()
 		//체크하려는 객체와 같은 객체라면 넘어가라
 		if( (*iter)->GetName() == m_strName )
 			continue;
+		vTarPos = (*iter)->GetPos();
 		//이동 예정인 위치와 오브젝트의 차벡터
-		vLenth = (m_vPos + m_vMove) - (*iter)->GetPos();
-		//차벡터 길이 계산
+		vLenth = (m_vPos + m_vMove) - vTarPos;
+		//엔티티간의 거리
 		len = D3DXVec3Length(&vLenth );
+		//타겟의 사이즈 
+		fTarSize = (*iter)->GetSize();
+		//타겟의 메시정보
+		const CMesh* _pTarMesh = (*iter)->GetMesh();
+		//타겟의 충돌 타입
+		_eTarMesh_type = _pTarMesh->GetColliderType();
+
 		//충돌체크
-		if( size + (*iter)->GetSize() >= len ) 
+		if(  _eTarMesh_type == MT_STATIC && //구 충돌 
+			fSize + fTarSize > len) 
 		{
-			BOOL isHit = false;
-			DWORD dwFaceIndex = 0;
-			float fDist = 0;
-			LPD3DXBUFFER ppAllhit;
-			DWORD pCountOfHits;
-			//LPD3DXMESH pMesh = ((CStaticMesh*)(*iter)->GetMesh())->GetMesh();
-			_SINGLE(CDevice)->GetDevice()->SetFVF( m_SphereMesh->GetFVF() );
-
-			if( S_OK != D3DXIntersect( 
-					m_SphereMesh,
-					&m_vPos, &m_vMove, &isHit, &dwFaceIndex , NULL,
-					NULL, &fDist, &ppAllhit, &pCountOfHits ) )
-				assert(false);
-			LPDIRECT3DVERTEXBUFFER9 pVB; 
-			LPDIRECT3DINDEXBUFFER9 pIB; 
-
-			m_SphereMesh->GetVertexBuffer(&pVB); 
-			m_SphereMesh->GetIndexBuffer( &pIB ); 
-
-			WORD* pIndices; 
-			D3DVERTEX* pVertices; 
-
-			pIB->Lock( 0, 0, (void**)&pIndices, 0 ); 
-			pVB->Lock( 0, 0,(void**)&pVertices, 0); 
-
-			D3DXVECTOR3 v0 = pVertices[pIndices[3*dwFaceIndex+0]].vPos; 
-			D3DXVECTOR3 v1 = pVertices[pIndices[3*dwFaceIndex+1]].vPos; 
-			D3DXVECTOR3 v2 = pVertices[pIndices[3*dwFaceIndex+2]].vPos; 
-
-			D3DXVECTOR3 u = v1 - v0; 
-			D3DXVECTOR3 v = v2 - v0; 
-
-			D3DXVECTOR3 out; 
-
-			D3DXVec3Cross( &out, &u, &v ); 
-			D3DXVec3Normalize( &out, &out ); 
-			//out *= m_fMoveSpeed;
-			pVB->Unlock(); 
-			pIB->Unlock(); 
-			Safe_Release(pVB); 
-			Safe_Release(pIB); 
-			out.y = 0.f;
-
-			//vLenth벡터를 법선 벡터처럼 사용하는 과정
-			vLenth = m_vPos - (*iter)->GetPos();
+			ComputeNormalVector( 
+				(*iter)->GetCollider(), vNormal, pCol, (*iter));
+			//법선벡터
+			vNormal = m_vPos - vTarPos;
+				
+#ifdef _DEBUG
+			TCHAR vecPos[100];
+			TCHAR vecTarget[100];
+			TCHAR vecCol[100];
+			TCHAR vecMove[100];
+			TCHAR vecNormal[100];
+			TCHAR vecSliding[100];
+			_SINGLE(CDebug)->VectorToString(vecPos, m_vPos);
+			_SINGLE(CDebug)->VectorToString(vecTarget, (*iter)->GetPos() );
+			_SINGLE(CDebug)->VectorToString(vecCol, pCol);
+			_SINGLE(CDebug)->VectorToString(vecNormal, vNormal);
+			_SINGLE(CDebug)->VectorToString(vecMove, m_vMove);
 			
-			D3DXVec3Normalize( &vLenth, &vLenth);
-			D3DXVec3Normalize( &m_vMove, &m_vMove);
-
-			//슬라이딩 벡터 수식(vLenth가 법선 벡터로 쓰임)
-			m_vMove -= D3DXVec3Dot( &m_vMove, &vLenth) * vLenth;
-			//연산이 끝난후 벡터의 길이를 이동속도로 조정.
-			D3DXVec3Normalize( &m_vMove, &m_vMove);
-			m_vMove *= m_fMoveSpeed;
+			_SINGLE(CDebug)->AddLog( 8, _T("vPos : %s, vTarget : %s"), 
+				vecPos, vecTarget);
+			_SINGLE(CDebug)->AddLog( 9, _T("pCol : %s, Normal: %s(주황)"), 
+				vecCol, vecNormal);
+			_SINGLE(CDebug)->AddLog( 10, _T("Move: %s(보라)"), vecMove);
 			
+			//법선
+			_SINGLE(CDebug)->AddLine( 
+				pCol, pCol + vNormal * 3000.f, COLOR_ORANGE);
+			//이동벡터
+			_SINGLE(CDebug)->AddLine( m_vPos, m_vPos + m_vMove * 3000.f, COLOR_PURPLE );
+			
+#endif
+			//벡터의 길이도 연산에 중요한 요소기 때문에 정규화 하지 않는다.
+			//D3DXVec3Normalize( &vNormal, &vNormal);
+			//D3DXVec3Normalize( &m_vMove, &m_vMove);
+			m_vMove -= D3DXVec3Dot( &m_vMove, &vNormal ) * vNormal ;
+			m_vMove.y = 0.f;
+
+			break;
 			//슬라이딩 벡터를 계산했으면 이 벡터를 기준으로 다시 충돌 체크
 			iter = RenderList[RTYPE_ENTITY].begin();
-			//충돌했으면 슬라이딩 벡터 계산
-			//return true;
-			_SINGLE(CDebug)->AddLog(6, _T("충돌했음 %d번 리셋"), ++cnt);
-			
+
+#ifdef _DEBUG
+			_SINGLE(CDebug)->AddLog(11, _T("slide : %s(검정)"), vecMove);
+			//슬라이딩 벡터
+			_SINGLE(CDebug)->AddLine( m_vPos, m_vPos + m_vMove * 3000.f, COLOR_BLACK);
+#endif
 		}
+		//박스 충돌
+		else if( _eTarMesh_type == MT_BOX &&
+			fSize + fTarSize > len )
+		{
+			LPD3DXMESH pMesh = _pTarMesh->GetMesh();
+			BOXSIZE size = ((CBoxMesh*)_pTarMesh)->GetMinMax();
+			size.vMax *= fTarSize ;
+			size.vMin *= fTarSize ;
+
+			size.vMax += vTarPos;
+			size.vMin += vTarPos;
+
+			float a, b;
+			b = 0.2f;
+			a = 0.1f;
+
+			D3DXVECTOR3 vPrePos = m_vPos + m_vMove;
+			if (vPrePos.x < size.vMin.x - fSize || 
+				vPrePos.x > size.vMax.x + fSize ||
+				vPrePos.z < size.vMin.z - fSize || 
+				vPrePos.z > size.vMax.z + fSize )
+				continue;
+			else 
+				m_vMove = D3DXVECTOR3(0,0,0);
+			/*
+			//노말 벡터 구하기
+			ComputeNormalVector( 
+				pMesh, vNormal, pCol, (*iter));
+					
+			//LPDIRECT3DVERTEXBUFFER9 pVB; 
+			//LPDIRECT3DINDEXBUFFER9 pIB; 
+			//pMesh->GetVertexBuffer(&pVB); 
+			//pMesh->GetIndexBuffer( &pIB ); 
+			//WORD* pIndices; 
+			//D3DVERTEX* pVertices; 
+			//pIB->Lock( 0, 0, (void**)&pIndices, 0 ); 
+			//pVB->Lock( 0, 0,(void**)&pVertices, 0); 
+			//D3DXVECTOR3 v0 = pVertices[pIndices[3*dwFaceIndex+0]].vPos; 
+			//D3DXVECTOR3 v1 = pVertices[pIndices[3*dwFaceIndex+1]].vPos; 
+			//D3DXVECTOR3 v2 = pVertices[pIndices[3*dwFaceIndex+2]].vPos; 
+			//D3DXVECTOR3 u = v1 - v0 ; 
+			//D3DXVECTOR3 v = v2 - v0; 
+			//D3DXVECTOR3 out; 
+			//D3DXVec3Cross( &out, &u, &v ); 
+			//D3DXVec3Normalize( &out, &out ); 
+			////out *= m_fMoveSpeed;
+			//pVB->Unlock(); 
+			//pIB->Unlock(); 
+			//Safe_Release(pVB); 
+			//Safe_Release(pIB); 
+			
+			//충돌 체크를 위한 4개의 면
+			D3DXPLANE plane[4];
+			D3DXVECTOR3 vtx[8];
+			memset(vtx, 0, sizeof(vtx[0]) * 8 );
+			memset(plane, 0 , sizeof(plane[0]) * 4 );
+
+			vtx[0] = size.vMin;
+			vtx[1] = size.vMin;
+			vtx[1].z = size.vMax.z;
+			vtx[2] = size.vMin;
+			vtx[2].x = size.vMax.x;
+			vtx[3] = size.vMax;
+			vtx[3].y = size.vMin.y;
+			vtx[4] = size.vMin;
+			vtx[4].y = size.vMax.y;
+			vtx[5] = size.vMax;
+			vtx[5].x = size.vMin.x;
+			vtx[6] = size.vMax;
+			vtx[6].z = size.vMin.z;
+			vtx[7] = size.vMax;
+
+			for(int i = 0; i < 8; ++i)
+				vtx[i] += vTarPos;
+			//그리는 순서는 시계방향.
+			D3DXPlaneFromPoints(&plane[0], &vtx[2], &vtx[4], &vtx[0]);//정면
+			D3DXPlaneFromPoints(&plane[1], &vtx[3], &vtx[7], &vtx[2]);//우측
+			D3DXPlaneFromPoints(&plane[2], &vtx[4], &vtx[1], &vtx[0]);//좌측
+			D3DXPlaneFromPoints(&plane[3], &vtx[1], &vtx[7], &vtx[3]);//뒷면
+			float fDist = 0.f;
+			int inCount = 0;
+			bool isInBox = true;
+			for( int i  = 0; i< 4; ++i)
+			{
+				fDist = D3DXPlaneDotCoord( &plane[i], &(pCol + vTarPos) );
+
+				if( fDist > fSize )
+				{
+					isInBox = false ;//충돌 아님
+					break;
+				}
+				else
+					isInBox = true;
+
+			}
+			//이동벡터
+			_SINGLE(CDebug)->AddLine( m_vPos, m_vPos + m_vMove * 3000.f, COLOR_PURPLE );
+			_SINGLE(CDebug)->AddLine( 
+				pCol, pCol + vNormal * 3000.f, COLOR_ORANGE);
+			//충돌;
+			if( isInBox )
+				m_vMove -= D3DXVec3Dot( &m_vMove, &vNormal ) * vNormal ;
+			//슬라이딩 벡터
+			_SINGLE(CDebug)->AddLine( m_vPos, m_vPos + m_vMove * 3000.f, COLOR_BLACK);
+			*/
+		}
+
 	}
-	cnt = 0;
 	//충돌 안했으면 고고
 	m_vPos += m_vMove;
 
@@ -162,13 +275,78 @@ bool CEntity::Collision()
 void CEntity::InitSphereMesh()
 {
 	D3DXCreateSphere( _SINGLE(CDevice)->GetDevice(), 
-		GetSize(), (UINT)8, (UINT)8, &m_SphereMesh, NULL);
+		GetSize(), (UINT)16, (UINT)16, &m_SphereMesh, NULL);
 }
 
 void CEntity::DrawSphere(/*D3DXVECTOR3 _vPos, float _size*/)
 {
 	m_SphereMesh->DrawSubset(0);
 }
+
+bool CEntity::ComputeNormalVector(
+	LPD3DXMESH _pMesh, D3DXVECTOR3& _vNormal, D3DXVECTOR3& _vCol, CEntity* target)
+{
+	BOOL isHit = false;
+	DWORD dwFaceIndex = 0;
+	float fDist = 0;
+	LPD3DXBUFFER ppAllhit;
+	DWORD pCountOfHits;
+	D3DXVECTOR3 vtar = target->GetPos() - m_vPos;
+	D3DXVec3Normalize( &vtar, &vtar);
+
+
+	D3DXIntersect( _pMesh, &m_vPos, &vtar, &isHit, 
+		&dwFaceIndex, NULL, NULL, &fDist, &ppAllhit, &pCountOfHits );
+
+	//if ( !isHit || fDist >= GetSize() )
+	//	return false;// 충돌이 안됬거나 거리가 멀다면 리턴;
+
+	LPDIRECT3DVERTEXBUFFER9 pVB; 
+	LPDIRECT3DINDEXBUFFER9 pIB; 
+
+	_pMesh->GetVertexBuffer(&pVB); 
+	_pMesh->GetIndexBuffer( &pIB ); 
+
+	WORD* pIndices; 
+	D3DVERTEX* pVertices; 
+
+	pIB->Lock( 0, 0, (void**)&pIndices, 0 ); 
+	pVB->Lock( 0, 0,(void**)&pVertices, 0); 
+
+	D3DXVECTOR3 v0 = pVertices[pIndices[3*dwFaceIndex+0]].vPos; 
+	D3DXVECTOR3 v1 = pVertices[pIndices[3*dwFaceIndex+1]].vPos; 
+	D3DXVECTOR3 v2 = pVertices[pIndices[3*dwFaceIndex+2]].vPos; 
+	
+	D3DXPLANE plane;
+	
+	D3DXPlaneFromPoints( &plane, &v0, &v1, &v2);
+	
+	//v2.y = v1.y = v0.y = 0.f;
+	_vCol = (v0 + v1 + v2)/3.f;
+	/*D3DXVECTOR3 u = v0 - v1; 
+	D3DXVECTOR3 v = v0 - v2; 
+	D3DXVec3Normalize( &u, &u);
+	D3DXVec3Normalize( &v, &v);
+	D3DXVec3Cross( &_vNormal, &u, &v ); */
+
+	_vNormal.x = plane.a;
+	_vNormal.y = plane.b;
+	_vNormal.z = plane.c;
+	
+	//_vNormal += target->GetPos();
+	_SINGLE(CDebug)->AddLine( 
+		target->GetPos(), target->GetPos() + _vNormal* 3000.f, COLOR_WHITE);
+	
+	//D3DXVec3Normalize( &_vCol, &_vCol);
+	//D3DXVec3Normalize( &_vNormal , &_vNormal); 
+	pVB->Unlock(); 
+	pIB->Unlock(); 
+	Safe_Release(pVB); 
+	Safe_Release(pIB); 
+
+	return true;
+}
+
 
 void CEntity::Rotation()
 {
@@ -224,6 +402,7 @@ void CEntity::Update()
 
 	if(m_bTransformUpdate)
 	{
+		_SINGLE(CDebug)->ResetLine();
 		Rotation();
 		Move();
 		for(int i = 0; i < AT_MAX; ++i)
@@ -258,7 +437,7 @@ void CEntity::Render()
 	}
 	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 	m_SphereMesh->DrawSubset(0);
-	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+//	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 }
 
 void CEntity::SetRenderType(const eRENDER_TYPE& eRender)
@@ -358,4 +537,9 @@ const D3DXQUATERNION& CEntity::GetRotQuaternion() const
 const float&		CEntity::GetRotationAngle(const eAxis_TYPE& eAngle) const
 {
 	return m_fAngle[eAngle];
+}
+
+const LPD3DXMESH CEntity::GetCollider() const
+{
+	return m_SphereMesh;
 }

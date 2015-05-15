@@ -19,7 +19,9 @@ public:
 	HRESULT LoadTexture();
 	//메쉬의 사이즈를 메쉬 정보(sphere)에 저장
 	float	GetSize();
-	LPD3DXMESH GetMesh();
+	const LPD3DXMESH GetMesh() const ;
+
+	 const eMESH_TYPE GetType() const ;
 
 public:
 	CStaticMesh(void);

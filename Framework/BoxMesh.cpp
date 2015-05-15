@@ -6,6 +6,9 @@ CBoxMesh::CBoxMesh(void)
 	: m_pMesh(NULL)
 {
 	memset(&m_tMaterial, 0, sizeof(D3DMATERIAL9));
+	memset(&m_Size.vMax, 0, sizeof(D3DXVECTOR3));
+	memset(&m_Size.vMin, 0, sizeof(D3DXVECTOR3));
+	m_ColType = MT_BOX;
 }
 
 
@@ -42,18 +45,18 @@ HRESULT CBoxMesh::LoadResource(const LPTSTR szMeshName)
 	m_tMaterial.Power = 0.2f;
 	m_tMaterial.Specular = m_tMaterial.Diffuse;
 	m_tMaterial.Ambient = m_tMaterial.Diffuse;
-
+	SetSize();
 	return S_OK;
 }
 
-float CBoxMesh::GetSize()
+void CBoxMesh::SetSize()
 {
 	D3DXVECTOR3 vPos = D3DXVECTOR3(10.f, 0.f, 10.f);
-	D3DXVECTOR3 vMax;
-	D3DXVECTOR3 vMin;
-	
-	memset(&vMax, 0, sizeof(D3DXVECTOR3));
-	memset(&vMin, 0, sizeof(D3DXVECTOR3));
+	//D3DXVECTOR3 vMax;
+	//D3DXVECTOR3 vMin;
+	//
+	//memset(&vMax, 0, sizeof(D3DXVECTOR3));
+	//memset(&vMin, 0, sizeof(D3DXVECTOR3));
 
 	float fRadius = -1.f;
 	if(m_pMesh )	
@@ -62,14 +65,36 @@ float CBoxMesh::GetSize()
 		m_pMesh->LockVertexBuffer( 0, (VOID**) &ppVB);
 
 		if(FAILED(D3DXComputeBoundingBox((D3DXVECTOR3*)ppVB, m_pMesh->GetNumVertices(),
-			m_pMesh->GetNumBytesPerVertex(), &vMin, &vMax)))
+			m_pMesh->GetNumBytesPerVertex(), &m_Size.vMin, &m_Size.vMax)))
 		{
-			return fRadius;
+			m_fRadius = fRadius;
+			return;
 		}
 
-		D3DXVECTOR3 vLen = vMax - vMin;
+		D3DXVECTOR3 vLen = m_Size.vMax - m_Size.vMin;
 		fRadius = D3DXVec3Length(&vLen);
 		fRadius *= 0.5f;
 	}
-	return fRadius;
+	m_fRadius = fRadius;
 }
+
+
+float CBoxMesh::GetSize()
+{
+	return m_fRadius;
+}
+
+BOXSIZE CBoxMesh::GetMinMax()
+{
+	return m_Size;
+}
+
+ const eMESH_TYPE CBoxMesh::GetType() const 
+{
+	return m_ColType;
+}
+
+ const LPD3DXMESH CBoxMesh::GetMesh() const 
+ {
+	 return m_pMesh;
+ }

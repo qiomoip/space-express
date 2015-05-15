@@ -65,6 +65,8 @@ public:
 	VOID			InitSphereMesh();
 	//경계구 그리기
 	void DrawSphere(/*D3DXVECTOR3, float*/);
+
+	bool ComputeNormalVector(LPD3DXMESH, D3DXVECTOR3&, D3DXVECTOR3&, CEntity* );
 public:
 	//회전
 	void Rotation();
@@ -99,6 +101,7 @@ public:
 	const D3DXMATRIX&	GetMatRotation() const;
 	const D3DXQUATERNION& GetRotQuaternion() const;
 	const float&		GetRotationAngle(const eAxis_TYPE& eAngle) const;
+	const LPD3DXMESH	GetCollider() const;
 
 public:
 	CEntity(void);

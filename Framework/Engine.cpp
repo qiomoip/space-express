@@ -70,7 +70,6 @@ HRESULT CEngine::CreateEntity()
 {
 	//_SINGLE(CResourceManager)->Load(MT_STATIC, "Tiger", _T("tiger.x"));
 
-
 	CEntity* pSylva = _SINGLE(CObjectManager)->CreateEntity(
 		MT_STATIC, RTYPE_ENTITY, "Tiger", MN_TIGER, _T("tiger.x"));
 	pSylva->SetPos(D3DXVECTOR3(-5.f, 0.f, 0.f));
@@ -79,21 +78,21 @@ HRESULT CEngine::CreateEntity()
 	pSylva->SetPass(PASS_DEFAULT);
 	pSylva->SetRotation(AT_Y, D3DX_PI);
 	
-	CEntity* pSylvas[1];
+	//CEntity* pSylvas[2];
 	//테스트용 NPC생성
-	for ( int i = 0; i < 1; ++i)
+	for ( int i = 1; i <= 10; ++i)
 	{
 		string str = "Npc"; 
 		str += i;
-		pSylvas[i] = _SINGLE(CObjectManager)->CreateEntity(
+		pSylva = _SINGLE(CObjectManager)->CreateEntity(
 			MT_STATIC, RTYPE_ENTITY, str, MN_NULL, _T("tiger.x"));
-		pSylvas[i]->SetPos(D3DXVECTOR3(sin(i) * (-10.f), 0.0f, cos(i) * (0.0f) ));
-		pSylvas[i]->SetShader(SHADER_DEFAULT);
-		pSylvas[i]->SetTechKey("DefaultTech");
-		pSylvas[i]->SetPass(PASS_DEFAULT);
+		pSylva->SetPos(D3DXVECTOR3(3.f + (i * 3.f), 0.0f, sin(i) * 3.f) );
+		pSylva->SetShader(SHADER_DEFAULT);
+		pSylva->SetTechKey("DefaultTech");
+		pSylva->SetPass(PASS_DEFAULT);
 	}
 	
-	//*
+	/*
 	CEntity* pTerrain = _SINGLE(CObjectManager)->CreateEntity(
 		MT_TERRAIN, RTYPE_TERRAIN, "MainTerrain", MN_TERRAIN, _T("MainTerrain"));
 	pTerrain->SetShader(SHADER_DEFAULT);
@@ -122,11 +121,11 @@ HRESULT CEngine::CreateEntity()
 
 	srand(0);
 
-	for(int i = 0; i < 10; ++i)
+	for(int i = 0; i < 1; ++i)
 	{
-		int iScale = rand() % 10;
-		int iPosX = rand()  % 20;
-		int iPosZ = rand() % 20;
+		int iScale = 3;
+		int iPosX = -5;
+		int iPosZ = -5;
 
 		string strName = "Box"; 
 		strName += i;
@@ -139,9 +138,6 @@ HRESULT CEngine::CreateEntity()
 		pBox->SetTechKey("DefaultTech");
 		pBox->SetPass(PASS_NOTEXTURE);
 	}
-	//
-
-
 	return S_OK;
 }
 

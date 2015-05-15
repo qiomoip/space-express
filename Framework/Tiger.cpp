@@ -17,6 +17,7 @@ void CTiger::Initialize()
 	m_vLocalAxis[AT_X] = D3DXVECTOR3(1.f, 0.f, 0.f);
 	m_vLocalAxis[AT_Y] = D3DXVECTOR3(0.f, 1.f, 0.f);
 	m_vLocalAxis[AT_Z] = D3DXVECTOR3(0.f, 0.f, -1.f);
+	
 }
 
 void CTiger::Update()
@@ -68,6 +69,7 @@ void CTiger::Input()
 	D3DXVec3Normalize( &m_vMove, &vInput);
 	m_vMove *= m_fMoveSpeed;
 
+/* //회전 제한
 	pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_TURN_RIGHT);
 	if(pInfo->bPush || pInfo->bDown)
 	{
@@ -94,5 +96,5 @@ void CTiger::Input()
 	{
 		m_fAngle[AT_X] -= 0.01f;
 		m_bTransformUpdate = true;
-	}
+	}*/
 }

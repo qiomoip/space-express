@@ -108,3 +108,10 @@ enum eSTATIC_LOG
 	LOG_FACE_COUNT,
 	LOG_FPS,
 };
+
+
+enum eCOLLIDER
+{
+	COL_SPHERE,
+	COL_BOX,
+};
