@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include "Tiger.h"
 #include "Frustum.h"
+#include "Zombie.h"
 
 //임시
 #include "Mesh.h"
@@ -62,6 +63,11 @@ CEntity* CObjectManager::CreateEntity(
 	case MN_TERRAIN:
 		pEntity = new CEntity;
 		break;*/
+	case MN_ZOMBIE:
+		pEntity = new CZombie;
+		iter = m_mapObject.find("Tiger");
+		 ((CZombie*)pEntity)->SetHero(iter->second );
+		break;
 	default:
 		pEntity = new CEntity;
 		break;
@@ -82,6 +88,9 @@ CEntity* CObjectManager::CreateEntity(
 	
 	//메시크기로 경계구 생성
 	pEntity->InitSphereMesh();
+
+
+	
 	return pEntity;
 }
 

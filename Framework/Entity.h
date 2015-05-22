@@ -71,7 +71,7 @@ public:
 	//회전
 	void Rotation();
 	//이동
-	void Move();
+	virtual void Move();
 
 //Setter
 public:

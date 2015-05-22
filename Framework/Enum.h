@@ -14,6 +14,7 @@ enum eMESH_NUM{
 	MN_ENVIRONMENT,
 	MN_GRID,
 	MN_BOX,
+	MN_ZOMBIE,
 };
 
 enum eTEXTURE_NUM{

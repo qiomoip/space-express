@@ -85,8 +85,8 @@ HRESULT CEngine::CreateEntity()
 		string str = "Npc"; 
 		str += i;
 		pSylva = _SINGLE(CObjectManager)->CreateEntity(
-			MT_STATIC, RTYPE_ENTITY, str, MN_NULL, _T("tiger.x"));
-		pSylva->SetPos(D3DXVECTOR3(3.f + (i * 3.f), 0.0f, sin(i) * 3.f) );
+			MT_STATIC, RTYPE_ENTITY, str, MN_ZOMBIE, _T("tiger.x"));
+		pSylva->SetPos(D3DXVECTOR3(-3.f + (i * 5.f), 0.0f, sin(i) * 5.f) );
 		pSylva->SetShader(SHADER_DEFAULT);
 		pSylva->SetTechKey("DefaultTech");
 		pSylva->SetPass(PASS_DEFAULT);
@@ -117,11 +117,11 @@ HRESULT CEngine::CreateEntity()
 #endif
 
 	//박스로 빌딩 역할 (임시)
-	CEntity* pBox;
+	/*CEntity* pBox;
 
 	srand(0);
 
-	for(int i = 0; i < 1; ++i)
+	for(int i = 0; i < 0; ++i)
 	{
 		int iScale = 3;
 		int iPosX = -5;
@@ -137,7 +137,7 @@ HRESULT CEngine::CreateEntity()
 		pBox->SetShader(SHADER_DEFAULT);
 		pBox->SetTechKey("DefaultTech");
 		pBox->SetPass(PASS_NOTEXTURE);
-	}
+	}*/
 	return S_OK;
 }
 

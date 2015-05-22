@@ -109,53 +109,42 @@ bool CEntity::Collision()
 
 		//충돌체크
 		if(  _eTarMesh_type == MT_STATIC && //구 충돌 
-			fSize + fTarSize > len) 
+			2.f * (fSize + fTarSize) >= len) 
 		{
-			ComputeNormalVector( 
-				(*iter)->GetCollider(), vNormal, pCol, (*iter));
-			//법선벡터
-			vNormal = m_vPos - vTarPos;
-				
 #ifdef _DEBUG
-			TCHAR vecPos[100];
-			TCHAR vecTarget[100];
-			TCHAR vecCol[100];
-			TCHAR vecMove[100];
-			TCHAR vecNormal[100];
-			TCHAR vecSliding[100];
-			_SINGLE(CDebug)->VectorToString(vecPos, m_vPos);
-			_SINGLE(CDebug)->VectorToString(vecTarget, (*iter)->GetPos() );
-			_SINGLE(CDebug)->VectorToString(vecCol, pCol);
-			_SINGLE(CDebug)->VectorToString(vecNormal, vNormal);
-			_SINGLE(CDebug)->VectorToString(vecMove, m_vMove);
-			
-			_SINGLE(CDebug)->AddLog( 8, _T("vPos : %s, vTarget : %s"), 
-				vecPos, vecTarget);
-			_SINGLE(CDebug)->AddLog( 9, _T("pCol : %s, Normal: %s(주황)"), 
-				vecCol, vecNormal);
-			_SINGLE(CDebug)->AddLog( 10, _T("Move: %s(보라)"), vecMove);
-			
+			_SINGLE(CDebug)->ResetLine();
+#endif
+			if( !ComputeNormalVector( (*iter)->GetCollider(), 
+				vNormal, pCol, (*iter)) )
+				continue;
+			m_vPos += vNormal * m_fMoveSpeed;
+			m_vPos.y = 0.f;
+#ifdef _DEBUG
 			//법선
 			_SINGLE(CDebug)->AddLine( 
-				pCol, pCol + vNormal * 3000.f, COLOR_ORANGE);
+				pCol, pCol + vNormal * 30.f, COLOR_ORANGE);
 			//이동벡터
-			_SINGLE(CDebug)->AddLine( m_vPos, m_vPos + m_vMove * 3000.f, COLOR_PURPLE );
+			_SINGLE(CDebug)->AddLine( m_vPos, m_vPos + m_vMove * 300.f, COLOR_PURPLE );
 			
 #endif
 			//벡터의 길이도 연산에 중요한 요소기 때문에 정규화 하지 않는다.
 			//D3DXVec3Normalize( &vNormal, &vNormal);
 			//D3DXVec3Normalize( &m_vMove, &m_vMove);
+			
 			m_vMove -= D3DXVec3Dot( &m_vMove, &vNormal ) * vNormal ;
-			m_vMove.y = 0.f;
-
-			break;
+			//m_vMove *= 0.9f;
 			//슬라이딩 벡터를 계산했으면 이 벡터를 기준으로 다시 충돌 체크
+							
 			iter = RenderList[RTYPE_ENTITY].begin();
 
 #ifdef _DEBUG
-			_SINGLE(CDebug)->AddLog(11, _T("slide : %s(검정)"), vecMove);
 			//슬라이딩 벡터
-			_SINGLE(CDebug)->AddLine( m_vPos, m_vPos + m_vMove * 3000.f, COLOR_BLACK);
+			_SINGLE(CDebug)->AddLine( m_vPos, m_vPos + m_vMove * 300.f, COLOR_BLACK);
+			float length = D3DXVec3Length( &m_vMove );
+			int a = 0;
+			TCHAR slide[255] ;
+			_SINGLE(CDebug)->VectorToString(slide, m_vMove);
+			_SINGLE(CDebug)->AddLog(-1, slide);
 #endif
 		}
 		//박스 충돌
@@ -267,6 +256,7 @@ bool CEntity::Collision()
 
 	}
 	//충돌 안했으면 고고
+	m_vMove.y = 0.f;
 	m_vPos += m_vMove;
 
 	return false;
@@ -291,15 +281,16 @@ bool CEntity::ComputeNormalVector(
 	float fDist = 0;
 	LPD3DXBUFFER ppAllhit;
 	DWORD pCountOfHits;
-	D3DXVECTOR3 vtar = target->GetPos() - m_vPos;
+	
+	D3DXVECTOR3 vPos = m_vPos - target->GetPos();
+	D3DXVECTOR3 vtar = (-vPos);
 	D3DXVec3Normalize( &vtar, &vtar);
 
-
-	D3DXIntersect( _pMesh, &m_vPos, &vtar, &isHit, 
+	D3DXIntersect( _pMesh, &vPos, &vtar, &isHit, 
 		&dwFaceIndex, NULL, NULL, &fDist, &ppAllhit, &pCountOfHits );
 
-	//if ( !isHit || fDist >= GetSize() )
-	//	return false;// 충돌이 안됬거나 거리가 멀다면 리턴;
+	if ( !isHit || fDist > GetSize() )
+		return false;// 충돌이 안됬거나 거리가 멀다면 리턴;
 
 	LPDIRECT3DVERTEXBUFFER9 pVB; 
 	LPDIRECT3DINDEXBUFFER9 pIB; 
@@ -321,8 +312,8 @@ bool CEntity::ComputeNormalVector(
 	
 	D3DXPlaneFromPoints( &plane, &v0, &v1, &v2);
 	
-	//v2.y = v1.y = v0.y = 0.f;
 	_vCol = (v0 + v1 + v2)/3.f;
+	_vCol += target->GetPos();
 	/*D3DXVECTOR3 u = v0 - v1; 
 	D3DXVECTOR3 v = v0 - v2; 
 	D3DXVec3Normalize( &u, &u);
@@ -333,12 +324,20 @@ bool CEntity::ComputeNormalVector(
 	_vNormal.y = plane.b;
 	_vNormal.z = plane.c;
 	
-	//_vNormal += target->GetPos();
+#ifdef _DEBUG
 	_SINGLE(CDebug)->AddLine( 
-		target->GetPos(), target->GetPos() + _vNormal* 3000.f, COLOR_WHITE);
+		target->GetPos(), target->GetPos() + _vNormal* 30.f, COLOR_WHITE);
+
+	D3DXVECTOR3 Col1 = D3DXVECTOR3(3.f, 0, 0);
+	D3DXVECTOR3 Col2 = D3DXVECTOR3(0, 0, 3.f);
 	
+	_SINGLE(CDebug)->AddLine( 
+		_vCol+Col1, _vCol-Col1, COLOR_BLACK);
+	_SINGLE(CDebug)->AddLine( 
+		_vCol+Col2, _vCol-Col2, COLOR_BLACK);
+#endif
 	//D3DXVec3Normalize( &_vCol, &_vCol);
-	//D3DXVec3Normalize( &_vNormal , &_vNormal); 
+	D3DXVec3Normalize( &_vNormal , &_vNormal); 
 	pVB->Unlock(); 
 	pIB->Unlock(); 
 	Safe_Release(pVB); 
@@ -402,7 +401,6 @@ void CEntity::Update()
 
 	if(m_bTransformUpdate)
 	{
-		_SINGLE(CDebug)->ResetLine();
 		Rotation();
 		Move();
 		for(int i = 0; i < AT_MAX; ++i)
