@@ -107,14 +107,15 @@
     <Filter Include="Engine\Director\Frustum">
       <UniqueIdentifier>{3bb8fd5f-acbb-4099-8e83-a5c5a7166247}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Director\DeviceRes\Mesh\BoxMesh">
-      <UniqueIdentifier>{8be9b1a8-ea31-42ac-9796-dfce41ca15dc}</UniqueIdentifier>
+    <Filter Include="Engine\Director\Manager\ObjeceManager\Entity\Zombie">
+      <UniqueIdentifier>{691140b9-8e7b-46d3-be68-5fda926507c1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXUT\Optional\directx.ico">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entity.cpp">
@@ -192,8 +193,10 @@
     <ClCompile Include="Frustum.cpp">
       <Filter>Engine\Director\Frustum</Filter>
     </ClCompile>
-    <ClCompile Include="TString.cpp" />
     <ClCompile Include="BoxMesh.cpp" />
+    <ClCompile Include="Zombie.cpp">
+      <Filter>Engine\Director\Manager\ObjeceManager\Entity\Zombie</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -286,8 +289,10 @@
     <ClInclude Include="Frustum.h">
       <Filter>Engine\Director\Frustum</Filter>
     </ClInclude>
-    <ClInclude Include="TString.h" />
     <ClInclude Include="BoxMesh.h" />
+    <ClInclude Include="Zombie.h">
+      <Filter>Engine\Director\Manager\ObjeceManager\Entity\Zombie</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
