@@ -117,13 +117,13 @@ HRESULT CEngine::CreateEntity()
 #endif
 
 	//박스로 빌딩 역할 (임시)
-	/*CEntity* pBox;
+	CEntity* pBox;
 
 	srand(0);
 
-	for(int i = 0; i < 0; ++i)
+	for(int i = 0; i < 1; ++i)
 	{
-		int iScale = 3;
+		int iScale = 1;
 		int iPosX = -5;
 		int iPosZ = -5;
 
@@ -137,7 +137,7 @@ HRESULT CEngine::CreateEntity()
 		pBox->SetShader(SHADER_DEFAULT);
 		pBox->SetTechKey("DefaultTech");
 		pBox->SetPass(PASS_NOTEXTURE);
-	}*/
+	}
 	return S_OK;
 }
 

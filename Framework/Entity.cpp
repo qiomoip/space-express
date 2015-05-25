@@ -1,4 +1,3 @@
-
 #include "Entity.h"
 #include "Mesh.h"
 #include "ObjectManager.h"
@@ -77,9 +76,8 @@ bool CEntity::Collision()
 	D3DXVECTOR3 vNormal = D3DXVECTOR3(0,0,0);
 	//타겟의 위치
 	D3DXVECTOR3 vTarPos = D3DXVECTOR3(0,0,0);
-
 	//충돌지점
-	D3DXVECTOR3 pCol = D3DXVECTOR3(0.f, 0.f, 0.f); 
+	D3DXVECTOR3 vCol = D3DXVECTOR3(0.f, 0.f, 0.f); 
 	//엔티티 크기
 	float fSize = GetSize();
 	float fTarSize = 0.f;
@@ -87,7 +85,7 @@ bool CEntity::Collision()
 	float len  = 0.f;
 	//엔티티의 메시
 	eMESH_TYPE _eTarMesh_type = MT_NULL;
-	
+	const CMesh* _pTarMesh = NULL;
 	//int i = RTYPE_ENTITY;
 	for(list<CEntity*>::iterator iter = RenderList[RTYPE_ENTITY].begin();
 		iter != RenderList[RTYPE_ENTITY].end(); ++iter)
@@ -95,15 +93,16 @@ bool CEntity::Collision()
 		//체크하려는 객체와 같은 객체라면 넘어가라
 		if( (*iter)->GetName() == m_strName )
 			continue;
+		//대상 오브젝트의 위치
 		vTarPos = (*iter)->GetPos();
-		//이동 예정인 위치와 오브젝트의 차벡터
+		//이동 예정인 위치와 대상 오브젝트의 차벡터
 		vLenth = (m_vPos + m_vMove) - vTarPos;
-		//엔티티간의 거리
+		//두 엔티티간의 거리
 		len = D3DXVec3Length(&vLenth );
 		//타겟의 사이즈 
 		fTarSize = (*iter)->GetSize();
 		//타겟의 메시정보
-		const CMesh* _pTarMesh = (*iter)->GetMesh();
+		_pTarMesh = (*iter)->GetMesh();
 		//타겟의 충돌 타입
 		_eTarMesh_type = _pTarMesh->GetColliderType();
 
@@ -115,14 +114,15 @@ bool CEntity::Collision()
 			_SINGLE(CDebug)->ResetLine();
 #endif
 			if( !ComputeNormalVector( (*iter)->GetCollider(), 
-				vNormal, pCol, (*iter)) )
+				vNormal, vCol, (*iter)) )
 				continue;
 			m_vPos += vNormal * m_fMoveSpeed;
 			m_vPos.y = 0.f;
+
 #ifdef _DEBUG
 			//법선
 			_SINGLE(CDebug)->AddLine( 
-				pCol, pCol + vNormal * 30.f, COLOR_ORANGE);
+				vCol, vCol + vNormal * 30.f, COLOR_ORANGE);
 			//이동벡터
 			_SINGLE(CDebug)->AddLine( m_vPos, m_vPos + m_vMove * 300.f, COLOR_PURPLE );
 			
@@ -130,18 +130,17 @@ bool CEntity::Collision()
 			//벡터의 길이도 연산에 중요한 요소기 때문에 정규화 하지 않는다.
 			//D3DXVec3Normalize( &vNormal, &vNormal);
 			//D3DXVec3Normalize( &m_vMove, &m_vMove);
-			
 			m_vMove -= D3DXVec3Dot( &m_vMove, &vNormal ) * vNormal ;
-			//m_vMove *= 0.9f;
 			//슬라이딩 벡터를 계산했으면 이 벡터를 기준으로 다시 충돌 체크
-							
 			iter = RenderList[RTYPE_ENTITY].begin();
-
+			int static cnt = 0;
+			if( cnt++ >= 10)
+				break;
+				
 #ifdef _DEBUG
 			//슬라이딩 벡터
-			_SINGLE(CDebug)->AddLine( m_vPos, m_vPos + m_vMove * 300.f, COLOR_BLACK);
+			_SINGLE(CDebug)->AddLine( m_vPos, m_vPos + m_vMove * 3000.f, COLOR_CYAN);
 			float length = D3DXVec3Length( &m_vMove );
-			int a = 0;
 			TCHAR slide[255] ;
 			_SINGLE(CDebug)->VectorToString(slide, m_vMove);
 			_SINGLE(CDebug)->AddLog(-1, slide);
@@ -151,26 +150,52 @@ bool CEntity::Collision()
 		else if( _eTarMesh_type == MT_BOX &&
 			fSize + fTarSize > len )
 		{
+			//
 			LPD3DXMESH pMesh = _pTarMesh->GetMesh();
 			BOXSIZE size = ((CBoxMesh*)_pTarMesh)->GetMinMax();
-			size.vMax *= fTarSize ;
-			size.vMin *= fTarSize ;
+		
+#ifdef _DEBUG
+			_SINGLE(CDebug)->ResetLine();
+#endif
+			if( !ComputeNormalVector( pMesh, 
+				vNormal, vCol, (*iter)) )
+				continue;
 
+#ifdef _DEBUG
+			//법선
+			_SINGLE(CDebug)->AddLine( 
+				vCol, vCol + vNormal * 30.f, COLOR_ORANGE);
+			//이동벡터
+			_SINGLE(CDebug)->AddLine( m_vPos, m_vPos + m_vMove * 300.f, COLOR_PURPLE );
+#endif
+			//사각형이기 때문에 추가적인 충돌체크
 			size.vMax += vTarPos;
 			size.vMin += vTarPos;
 
-			float a, b;
-			b = 0.2f;
-			a = 0.1f;
-
+#ifdef _DEBUG
+			D3DXVECTOR3 Col1 = D3DXVECTOR3(1.f, 0, 0);
+			D3DXVECTOR3 Col2 = D3DXVECTOR3(0, 0, 1.f);
+			//충돌지점 표시
+			_SINGLE(CDebug)->AddLine( 
+				size.vMax + Col1, size.vMax - Col1, COLOR_MAGENTA);
+			_SINGLE(CDebug)->AddLine( 
+				size.vMax + Col2, size.vMax - Col2, COLOR_MAGENTA);
+			//충돌지점 표시
+			_SINGLE(CDebug)->AddLine( 
+				size.vMin + Col1, size.vMin - Col1, COLOR_MAGENTA);
+			_SINGLE(CDebug)->AddLine( 
+				size.vMin + Col2, size.vMin - Col2, COLOR_MAGENTA);
+#endif
 			D3DXVECTOR3 vPrePos = m_vPos + m_vMove;
-			if (vPrePos.x < size.vMin.x - fSize || 
-				vPrePos.x > size.vMax.x + fSize ||
-				vPrePos.z < size.vMin.z - fSize || 
-				vPrePos.z > size.vMax.z + fSize )
+
+			if (vCol.x < size.vMin.x - fSize || 
+				vCol.x > size.vMax.x + fSize ||
+				vCol.z < size.vMin.z - fSize || 
+				vCol.z > size.vMax.z + fSize )
 				continue;
-			else 
-				m_vMove = D3DXVECTOR3(0,0,0);
+			m_vPos += vNormal * m_fMoveSpeed;
+			m_vPos.y = 0.f;
+			m_vMove -= D3DXVec3Dot( &m_vMove, &vNormal ) * vNormal ;
 			/*
 			//노말 벡터 구하기
 			ComputeNormalVector( 
@@ -289,7 +314,7 @@ bool CEntity::ComputeNormalVector(
 	D3DXIntersect( _pMesh, &vPos, &vtar, &isHit, 
 		&dwFaceIndex, NULL, NULL, &fDist, &ppAllhit, &pCountOfHits );
 
-	if ( !isHit || fDist > GetSize() )
+	if ( !isHit || fDist > GetSize()  )
 		return false;// 충돌이 안됬거나 거리가 멀다면 리턴;
 
 	LPDIRECT3DVERTEXBUFFER9 pVB; 
@@ -314,30 +339,26 @@ bool CEntity::ComputeNormalVector(
 	
 	_vCol = (v0 + v1 + v2)/3.f;
 	_vCol += target->GetPos();
-	/*D3DXVECTOR3 u = v0 - v1; 
-	D3DXVECTOR3 v = v0 - v2; 
-	D3DXVec3Normalize( &u, &u);
-	D3DXVec3Normalize( &v, &v);
-	D3DXVec3Cross( &_vNormal, &u, &v ); */
 
 	_vNormal.x = plane.a;
 	_vNormal.y = plane.b;
 	_vNormal.z = plane.c;
 	
+	//D3DXVec3Normalize( &_vNormal , &_vNormal); 
 #ifdef _DEBUG
-	_SINGLE(CDebug)->AddLine( 
-		target->GetPos(), target->GetPos() + _vNormal* 30.f, COLOR_WHITE);
+	//노말벡터 그리기
+	/*_SINGLE(CDebug)->AddLine( 
+		target->GetPos(), target->GetPos() + _vNormal* 30.f, COLOR_WHITE);*/
 
 	D3DXVECTOR3 Col1 = D3DXVECTOR3(3.f, 0, 0);
 	D3DXVECTOR3 Col2 = D3DXVECTOR3(0, 0, 3.f);
-	
+	//충돌지점 표시
 	_SINGLE(CDebug)->AddLine( 
 		_vCol+Col1, _vCol-Col1, COLOR_BLACK);
 	_SINGLE(CDebug)->AddLine( 
 		_vCol+Col2, _vCol-Col2, COLOR_BLACK);
 #endif
-	//D3DXVec3Normalize( &_vCol, &_vCol);
-	D3DXVec3Normalize( &_vNormal , &_vNormal); 
+	
 	pVB->Unlock(); 
 	pIB->Unlock(); 
 	Safe_Release(pVB); 
@@ -435,7 +456,7 @@ void CEntity::Render()
 	}
 	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 	m_SphereMesh->DrawSubset(0);
-//	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 }
 
 void CEntity::SetRenderType(const eRENDER_TYPE& eRender)

@@ -31,7 +31,7 @@ void CBoxMesh::Destroy()
 
 HRESULT CBoxMesh::LoadResource(const LPTSTR szMeshName)
 {
-	if(FAILED(D3DXCreateBox(_SINGLE(CDevice)->GetDevice(), 1.f, 1.f, 1.f, &m_pMesh,
+	if(FAILED(D3DXCreateBox(_SINGLE(CDevice)->GetDevice(), 3.f, 3.f, 3.f, &m_pMesh,
 		NULL)))
 	{
 		return E_FAIL;
