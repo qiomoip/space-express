@@ -1,5 +1,8 @@
 #include "Tiger.h"
 #include "KeyManager.h"
+#include "CameraManager.h"
+#include "Camera.h"
+#include "Debug.h"
 CTiger::CTiger(void)
 {
 }
@@ -23,6 +26,7 @@ void CTiger::Initialize()
 void CTiger::Update()
 {
 	CEntity::Update();
+	//_SINGLE(CDebug)->AddLog(6,_T("vPos : %s"), m_vPos );
 }
 
 void CTiger::Input()
@@ -35,7 +39,22 @@ void CTiger::Input()
 		assert(false);
 	if(pInfo->bPush || pInfo->bDown)
 	{
-		vInput += m_vWorldAxis[AT_X] * (-m_fMoveSpeed);
+		//vInput += m_vWorldAxis[AT_X] * (-m_fMoveSpeed);
+		
+		//카메라의 right 벡터, 플레이어의 룩 벡터 내적
+		//그 값이 0인 경우 두 벡터는 수직
+		//따라서 회전시킨다
+		/*const CAMERA tCam = _SINGLE(CCameraManager)->GetCurCam()->GetCameraInfo();
+		float fDot = D3DXVec3Dot(&tCam.vRight, &m_vWorldAxis[AT_Z]);
+		if(fDot < 1.f)
+		{
+			m_fAngle[AT_Y] += D3DX_PI * 0.5f;
+		}
+		else*/
+		{
+			vInput += m_vWorldAxis[AT_X] * (-m_fMoveSpeed);
+		}
+
 		m_bTransformUpdate = true;
 	}
 
@@ -45,6 +64,7 @@ void CTiger::Input()
 	if(pInfo->bPush || pInfo->bDown)
 	{
 		vInput +=  m_vWorldAxis[AT_X] * m_fMoveSpeed;
+		
 		m_bTransformUpdate = true;
 	}
 

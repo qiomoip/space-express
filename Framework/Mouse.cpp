@@ -5,6 +5,7 @@
 CMouse* CMouse::m_pInstance = 0;
 
 CMouse::CMouse(void)
+	: m_hWnd(NULL)
 {
 	memset(&m_pt, 0, sizeof(POINT));
 	memset(&m_tRay, 0, sizeof(RAY));

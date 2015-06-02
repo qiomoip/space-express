@@ -31,7 +31,7 @@ public:
 	const D3DXMATRIX*			GetMatView()const;
 	const D3DXMATRIX*			GetMatProj()const;
 	const D3DXMATRIX			GetMatViewProj()const;
-	CAMERA				GetCameraInfo();
+	const CAMERA				GetCameraInfo() const;
 
 public:
 	void SetTransform();

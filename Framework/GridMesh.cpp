@@ -10,6 +10,7 @@ CGridMesh::CGridMesh(void)
 	, m_pLineVB(NULL)
 	, m_iCnt(0)
 {
+	memset(&m_tGridMaterial, 0, sizeof(D3DMATERIAL9));
 }
 
 

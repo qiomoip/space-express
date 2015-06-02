@@ -12,6 +12,7 @@ CTerrainMesh::CTerrainMesh(void)
 	, m_pIB(NULL)
 	, m_pTexture(NULL)
 	, m_strFileName("")
+	, m_iTriNum(0)
 {
 	memset(&m_tInfo, 0, sizeof(m_tInfo));
 	memset(&m_tMtrl, 0, sizeof(m_tMtrl));
@@ -26,6 +27,70 @@ CTerrainMesh::~CTerrainMesh(void)
 float CTerrainMesh::GetSize()
 {
 	return 129 * 1.4f;
+}
+
+float CTerrainMesh::GetHeight(float fPosX, float fPosZ)
+{
+	//지형의 시작점을 원점으로 이동하는 변환으로 xz평면 상에서 이동
+	//pV[iIndex].vPos = D3DXVECTOR3( j * m_tInfo.fCellSpacing - m_tInfo.iRow * 0.5f, 0.f, i * m_tInfo.fCellSpacing- m_tInfo.iCol * 0.5f) * 0.2f;	
+	
+	//fPosX = m_tInfo.iRow * 10.f + fPosX;
+	//fPosZ = m_tInfo.iCol * 10.f + fPosZ;
+
+	//셀 간격을 1로 만들어 변환 배율을 낮춤
+	fPosX /= m_tInfo.fCellSpacing;
+	fPosZ /= m_tInfo.fCellSpacing;
+
+	float fRow = floorf(fPosX);
+	float fCol = floorf(fPosZ);
+
+	if(fRow < 0 || fCol < 0)
+		return 0.f;
+
+	VERTEXTERRAIN* tempVB = NULL;
+
+	D3DXVECTOR3 vPos[4];
+	memset(vPos, 0, sizeof(D3DXVECTOR3) * 4);
+
+	m_pVB->Lock(0, 0, (void**)&tempVB, 0);
+
+	//INDEX* pI = NULL;
+
+	//m_pIB->Lock(0, 0, (void**)&pI, 0);
+
+	//정점 정보 가져오기
+	int iIndex = fCol * m_tInfo.iRow + fRow;
+	if(iIndex < 0)
+		return 0.f;
+	else if(iIndex >= m_tInfo.iCol * m_tInfo.iRow)
+		return 0.f;
+	vPos[0] = tempVB[iIndex].vPos;
+	vPos[1] = tempVB[iIndex + 1].vPos;
+	vPos[2] = tempVB[iIndex + m_tInfo.iRow].vPos;
+	vPos[3] = tempVB[iIndex + m_tInfo.iRow + 1].vPos;
+
+	m_pVB->Unlock();
+
+	//y좌표 얻기
+	//비율
+	float fRatioX = (fPosX - vPos[0].x) / m_tInfo.fCellSpacing;
+	float fRatioZ = (fPosZ - vPos[0].z) / m_tInfo.fCellSpacing;
+
+	
+	if(fRatioX > fRatioZ)
+	{
+		return vPos[0].y + (vPos[1].y - vPos[0].y) * fRatioX + (vPos[2].y - vPos[0].y) * fRatioZ;
+
+	}
+
+	else
+	{
+		return vPos[0].y + (vPos[3].y - vPos[2].y) * fRatioX + (vPos[3].y - vPos[1].y) * fRatioZ;
+	}
+	
+
+	
+	
 }
 
 HRESULT CTerrainMesh::LoadResource(const LPTSTR _meshName)
@@ -65,7 +130,10 @@ void CTerrainMesh::Render(CShader* pShader, const UINT& uPass)
 	_SINGLE(CDevice)->GetDevice()->SetIndices(m_pIB);
 
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, false);
-	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	if(GetAsyncKeyState(VK_LSHIFT) & 0x8000)
+		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	else
+		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 	_SINGLE(CDevice)->GetDevice()->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_tInfo.iVtxNum,
 		0, m_iTriNum);
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, true);
@@ -143,7 +211,8 @@ bool CTerrainMesh::CreateVertexInfo()
 		for(int j = 0; j < m_tInfo.iRow; ++j)
 		{
 			int iIndex = i * m_tInfo.iRow + j;
-			pV[iIndex].vPos = D3DXVECTOR3( j * m_tInfo.fCellSpacing - m_tInfo.iRow * 0.5f, 0.f, i * m_tInfo.fCellSpacing- m_tInfo.iCol * 0.5f) * 0.2f;	
+			//pV[iIndex].vPos = D3DXVECTOR3( j * m_tInfo.fCellSpacing - m_tInfo.iRow * 0.5f, 0.f, i * m_tInfo.fCellSpacing- m_tInfo.iCol * 0.5f) * 0.2f;	
+			pV[iIndex].vPos = D3DXVECTOR3( j * m_tInfo.fCellSpacing, 0.f, i * m_tInfo.fCellSpacing)/* * 0.2f*/;	
 			pV[iIndex].vPos.y = (pPixel[iIndex] & 0x000000ff) * 0.05f;
 			//if(pPixel[iIndex] & 0x000000ff >= 200)
 			//	pV[iIndex].vPos.y = 10.f;

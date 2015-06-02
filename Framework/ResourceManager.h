@@ -19,8 +19,6 @@ private:
 	
 	//LPD3DXBUFFER					m_pD3DXMtrlBuffer ;
 
-	LPTSTR							m_tResourceStr;
-
 public:
 
 	void							Init();

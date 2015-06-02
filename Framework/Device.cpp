@@ -1,5 +1,5 @@
 #include "Device.h"
-#include "TString.h"
+//#include "TString.h"
 
 CDevice::CDevice(void)
 	: m_pD3D(NULL)

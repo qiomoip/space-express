@@ -3,6 +3,7 @@
 
 CLight::CLight(void)
 {
+	memset(&m_tLightInfo, 0, sizeof(D3DLIGHT9));
 }
 
 

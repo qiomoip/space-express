@@ -6,7 +6,7 @@
 #include "KeyManager.h"
 #include "ResourceManager.h"
 #include "ObjectManager.h"
-#include "TString.h"
+//#include "TString.h"
 #include "Entity.h"
 #include "ThirdCam.h"
 #include "Mouse.h"
@@ -92,7 +92,7 @@ HRESULT CEngine::CreateEntity()
 		pSylva->SetPass(PASS_DEFAULT);
 	}
 	
-	/*
+	//*
 	CEntity* pTerrain = _SINGLE(CObjectManager)->CreateEntity(
 		MT_TERRAIN, RTYPE_TERRAIN, "MainTerrain", MN_TERRAIN, _T("MainTerrain"));
 	pTerrain->SetShader(SHADER_DEFAULT);
@@ -145,6 +145,8 @@ HRESULT CEngine::CreateCamera()
 {
 	//Camera 메인 자유시점
 	CCamera* pCam = _SINGLE(CCameraManager)->CreateCamera(CN_THIRD);
+	/*pCam->SetPos(D3DXVECTOR3(50.f,148.f, 10.f));
+	pCam->SetData(D3DXVECTOR3(0.f, 0.f, 1.f), D3DXVECTOR3(0.f, -1.f, 0.f), D3DXVECTOR3(1.f, 0.f, 0.f));*/ 
 	_SINGLE(CCameraManager)->AddCamera("MainCamera", pCam);
 	_SINGLE(CCameraManager)->SetMainCamera("MainCamera");
 
@@ -159,6 +161,8 @@ HRESULT CEngine::CreateCamera()
 
 HRESULT CEngine::CreateLight()
 {
+	m_vecLight.reserve(10);
+
 	CLight* pLight = new CLight;
 	
 	D3DLIGHT9 tLight;
@@ -193,8 +197,9 @@ HRESULT CEngine::CreateShader()
 
 void CEngine::Update()
 {
-	_SINGLE(CCameraManager)->Update();
+	
 	_SINGLE(CObjectManager)->Update();
+	_SINGLE(CCameraManager)->Update();
 	#ifdef _DEBUG
 	_SINGLE(CDebug)->Update();
 #endif

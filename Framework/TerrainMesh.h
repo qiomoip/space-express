@@ -22,6 +22,8 @@ public:
 public:
 	//가장 멀리 있는 두 점의 거리 리턴
 	float GetSize();
+	//셀의 높이값 리턴
+	float GetHeight(float fPosX, float fPosZ); 
 
 public:
 	HRESULT LoadResource(const LPTSTR szMeshName);

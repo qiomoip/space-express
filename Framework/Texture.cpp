@@ -4,6 +4,8 @@
 #include "Shader.h"
 
 CTexture::CTexture(void)
+	: m_strTextureName("")
+	, m_pTex(NULL)
 {
 }
 

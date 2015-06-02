@@ -1,7 +1,7 @@
 #include "StaticMesh.h"
 #include "Device.h"
 #include "ResourceManager.h"
-#include "TString.h"
+//#include "TString.h"
 #include "Texture.h"
 #include "Shader.h"
 #include "Debug.h"

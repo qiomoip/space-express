@@ -1,6 +1,6 @@
 #include "ResourceManager.h"
 #include "Device.h"
-#include "TString.h"
+//#include "TString.h"
 #include "TerrainMesh.h"
 #include "StaticMesh.h"
 #include "Texture.h"
@@ -8,6 +8,7 @@
 #include "BoxMesh.h"
 
 CResourceManager::CResourceManager(void)
+	: m_mapMesh(NULL)
 {
 	Init();
 }

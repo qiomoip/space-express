@@ -26,7 +26,7 @@ private:
 	LPDIRECT3DVERTEXBUFFER9		m_pLineVB;
 	D3DMATERIAL9				m_tGridMaterial;
 	int							m_iCnt;
-	//터레인 변수
+	//터레인 변수0
 	CEntity*		m_pTerrain;
 
 	//D3D 폰트 변수

@@ -4,6 +4,7 @@
 
 CCamera::CCamera(void)
 {
+	memset(&m_tCam, 0, sizeof(CAMERA));
 }
 
 
@@ -56,7 +57,7 @@ const D3DXMATRIX CCamera::GetMatViewProj() const
 	return (m_tCam.matView * m_tCam.matProj);
 }
 
-CAMERA CCamera::GetCameraInfo()
+const CAMERA CCamera::GetCameraInfo() const
 {
 	return m_tCam;
 }

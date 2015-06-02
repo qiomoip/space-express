@@ -4,6 +4,9 @@
 #include "Device.h"
 CFrustum::CFrustum(void) 
 {
+	memset(m_plane, 0 , sizeof(m_plane[0]) * 6 );
+	memset(m_vPos, 0 , sizeof(m_vPos) );
+	memset(m_vtx, 0 , sizeof(m_vtx[0]) * 8 );
 }
 
 

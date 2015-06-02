@@ -4,6 +4,7 @@
 
 CBoxMesh::CBoxMesh(void)
 	: m_pMesh(NULL)
+	, m_fRadius(0.f)
 {
 	memset(&m_tMaterial, 0, sizeof(D3DMATERIAL9));
 	memset(&m_Size.vMax, 0, sizeof(D3DXVECTOR3));

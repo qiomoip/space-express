@@ -6,21 +6,21 @@
 #include "KeyManager.h"
 #include "ResourceManager.h"
 #include "ObjectManager.h"
-#include "TString.h"
+//#include "TString.h"
 #include "ShaderManager.h"
 #include "Shader.h"
 
 
 CDebug::CDebug(void)
-	: m_pGridVB(NULL)
+	: m_pDevice(NULL)
+	, m_pGridVB(NULL)
 	, m_pTerrain(NULL)
-	, m_pDevice(NULL)
 	, m_iCnt(0)
 	, m_pLineVB(NULL)
 	, m_pFont(NULL)
-	, m_Desc()
-	, m_LogRect()
-	, m_StaticLogRect()
+	//, m_Desc()
+	//, m_LogRect()
+	//, m_StaticLogRect()
 	, m_Log(NULL)
 	, m_StaticLog(NULL)
 	, m_LogCount(0)
@@ -34,8 +34,13 @@ CDebug::CDebug(void)
 	, m_Line(NULL)
 	, m_LineCount(0)
 {
-	memset(&m_Line, 0, sizeof(m_Line[0]) * LOG_COUNT * 2);
+	memset(&m_Line, 0, sizeof(LPD3DXLINE));
 	memset(&m_ColorList, 0, sizeof(m_ColorList[0])* LOG_COUNT);
+	memset(&m_tGridMaterial, 0, sizeof(D3DMATERIAL9));
+	memset(m_vList, 0, sizeof(D3DXVECTOR3) * LOG_COUNT * 2);
+	memset(&m_Desc, 0, sizeof(D3DXFONT_DESC));
+	memset(&m_LogRect, 0, sizeof(RECT));
+	memset(&m_StaticLogRect, 0, sizeof(RECT));
 }
 
 

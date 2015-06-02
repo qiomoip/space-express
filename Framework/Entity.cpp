@@ -12,6 +12,7 @@
 #include "Debug.h"
 #include "StaticMesh.h"
 #include "BoxMesh.h"
+#include "TerrainMesh.h"
 
 CEntity::CEntity(void)
 	: m_pMesh(NULL)
@@ -21,11 +22,24 @@ CEntity::CEntity(void)
 	, m_eShader(SHADER_NONE)
 	, m_strTechKey("")
 	, m_bTransformUpdate(false)
-	, m_fMoveSpeed(0.01f)
+	, m_fMoveSpeed(0.05f)
 	, m_SphereMesh(NULL)
 {
 	m_vecPass.reserve(10);
 	memset(&m_vPos, 0, sizeof(D3DXVECTOR3));
+	memset(m_AxisRot, 0, sizeof(D3DXQUATERNION));
+	memset(m_fAngle, 0, sizeof(float) * AT_MAX);
+	memset(m_vWorldAxis, 0, sizeof(D3DXVECTOR3) * AT_MAX);
+	memset(m_vLocalAxis, 0, sizeof(D3DXVECTOR3) * AT_MAX);
+
+	D3DXMatrixIdentity(&m_matWorld);
+	D3DXMatrixIdentity(&m_matRot);
+	D3DXMatrixIdentity(&m_matScale);
+	D3DXMatrixIdentity(&m_matTrans);
+
+	D3DXMatrixIdentity(&m_matScale);
+
+	memset(&m_vMove, 0, sizeof(D3DXVECTOR3));
 }
 
 
@@ -38,17 +52,6 @@ CEntity::~CEntity(void)
 
 void CEntity::Initialize()
 {
-	memset(&m_vPos, 0, sizeof(D3DXVECTOR3));
-	D3DXMatrixIdentity(&m_matWorld);
-	D3DXMatrixIdentity(&m_matRot);
-	D3DXMatrixIdentity(&m_matScale);
-	D3DXMatrixIdentity(&m_matTrans);
-	memset(m_fAngle, 0, sizeof(float) * AT_MAX);
-
-	D3DXMatrixIdentity(&m_matScale);
-
-	memset(m_AxisRot, 0, sizeof(D3DXQUATERNION));
-
 	for(int i = 0; i < AT_MAX; ++i)
 	{
 		m_fScale[i] = 1.f;
@@ -281,8 +284,20 @@ bool CEntity::Collision()
 
 	}
 	//충돌 안했으면 고고
-	m_vMove.y = 0.f;
+	//m_vMove.y = 0.f;
+
 	m_vPos += m_vMove;
+
+	CEntity* pTerrain = _SINGLE(CObjectManager)->FindObject("MainTerrain");
+	if(!pTerrain)
+		return false;
+
+	CTerrainMesh* pTerrainMesh = (CTerrainMesh*)pTerrain->GetMesh();
+	
+	if(!pTerrainMesh)
+		return false;
+
+	m_vPos.y = pTerrainMesh->GetHeight(m_vPos.x, m_vPos.z);
 
 	return false;
 }
@@ -454,8 +469,27 @@ void CEntity::Render()
 	{
 		m_pMesh->Render(pShader, m_vecPass[i]);
 	}
+
+	D3DMATERIAL9 tMaterial;
+	tMaterial.Diffuse.a = 1.f;
+	tMaterial.Diffuse.r = 1.f;
+	tMaterial.Diffuse.g = 1.f;
+	tMaterial.Diffuse.b = 1.f;
+
+	tMaterial.Ambient = tMaterial.Diffuse;
+	tMaterial.Specular = tMaterial.Diffuse;
+	tMaterial.Power = 1.f;
+
+	pShader->SetValue("g_mtrlMesh", &tMaterial, sizeof(D3DMATERIAL9));
+
 	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	
+	pShader->BeginPass(1);
+	
 	m_SphereMesh->DrawSubset(0);
+	
+	pShader->EndPass();
+
 	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 }
 
