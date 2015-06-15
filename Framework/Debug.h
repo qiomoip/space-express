@@ -2,6 +2,7 @@
 
 #include "Singleton.h"
 
+
 class CEntity;
 
 
@@ -59,12 +60,31 @@ private:
 	//FPS
 	UINT			m_FPS;
 	//FPS측정용 시간
-	DWORD			m_StartTime;
-	DWORD			m_EndTime;
-	DWORD			m_ElapsedTime;
+	double			m_CurrentTime;
+	double			m_PreviousTime;
+	double			m_DeltaTime;
+	double			m_ElapsedTime;
+	float			m_FrameCnt;
 
 	//와이어프레임 트리거
 	bool			m_bWireFrame;
+
+	//좌표 출력용 십자가의 크기
+	float			m_PosMarkSize;
+	
+	//3차원 글씨 출력 관련 변수
+	LPD3DXMESH		m_Text3D[LOG_COUNT];
+	int				m_Text3dCount;
+	D3DXVECTOR3		m_Text3dPos[LOG_COUNT];
+	D3DXMATRIXA16	m_TextMat;
+	D3DXMATRIXA16	m_TextScale;
+	D3DXMATRIXA16	m_TextMove;
+	D3DXMATRIXA16	m_TextRot;
+	LOGFONT			m_FontDefine;
+	HDC				m_hdc;
+	HFONT			m_hFont;
+	D3DMATERIAL9	m_TextMaterial;
+	
 
 public:
 	void CreateVertexBuffer();
@@ -82,6 +102,8 @@ public:
 	HRESULT			DrawStaticLog();
 	//항상 화면에 듸울 메세지
 	HRESULT			DrawLog();
+	//3D텍스트 출력
+	HRESULT			DrawText3D();
 	//벡터를 그리는 함수
 	void			DrawLine();
 	//로그 추가
@@ -90,10 +112,14 @@ public:
 	HRESULT			AddLog(int _idx, LPTSTR _log, ...);
 	//고정된 위치(우측상단)에 로그 출력.enum으로 번호 배정
 	HRESULT			AddStaticLog(int, LPTSTR , ...);
+	//화면에 3차원 텍스트 출력
+	HRESULT			AddText3D(int, D3DXVECTOR3, LPTSTR);
 	//벡터 출력을 위한 문자열 변환
 	HRESULT			VectorToString(LPTSTR dest, D3DXVECTOR3 vec);
 	//출력할 벡터 추가
 	void			AddLine(D3DXVECTOR3, D3DXVECTOR3, D3DCOLOR );
+	//좌표 출력용 십자 추가
+	void			AddPosMark(D3DXVECTOR3, D3DCOLOR );
 	//폴리곤수 초기화(렌더 함수 시작시 초기화)
 	void			InitFaceCount();
 	//폴리곤수 추가(그릴때마다 호출)
@@ -101,9 +127,11 @@ public:
 	//초당 프레임수 체크
 	void			CheckFPS();
 	
-	DWORD			GetDeltaTime(){return m_ElapsedTime;}
+	double		GetDeltaTime();
 
 	void			ResetLine();
+
+	void			ResetText3D();
 	
 private:
 	CDebug(void);

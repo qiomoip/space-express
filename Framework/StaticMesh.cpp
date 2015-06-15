@@ -135,8 +135,7 @@ HRESULT CStaticMesh::LoadTexture()
 
 	return S_OK;
 }
-
-float CStaticMesh::GetSize() 
+void CStaticMesh::SetSize()
 {
 	if(m_pMeshInfo->pMesh )	
 	{
@@ -160,57 +159,12 @@ float CStaticMesh::GetSize()
 
 		m_pMeshInfo->pMesh->UnlockVertexBuffer();
 	}
-	
-	//_SINGLE(CDevice)->GetDevice()->SetFVF(VTXCOLORFVF);
-	//LPDIRECT3DVERTEXBUFFER9 pVB = NULL;
-	//m_pMeshInfo->pMesh->GetVertexBuffer( &pVB);
+}
 
 
-	//// 버텍스정보를 받아오기 위한 포인터를 생성하구요.
-	//VOID* pVertices;
-
-	//// 버텍스버퍼의 락을 걸고 버텍스정보를 받아와요. 여기서 쓰이는게 x파일의 fvf를 구조체로 정의한
-	//// XFILE_FVF_INFO의 크기구요. 왜냐면 여기다 저장할꺼니까요. 위에다 적어놓았죠?
-	//pVB->Lock(0, sizeof(VERTEXCOLOR) * m_pMeshInfo->pMesh->GetNumVertices(), 
-	//	(void**)&pVertices, 0);
-
-	//// 구조체안에다가 포인터의 내용을 전달하면 이제 pVertex 안에
-	//// 버텍스의 포지션, 방향값, 텍스쳐좌표가 들어있으므로 게임 끝난거죠^^
-	//VERTEXCOLOR* pVertex = (VERTEXCOLOR*)pVertices;
-
-	//float minX, /*minY, */maxX/*, maxY*/, minZ, maxZ;
-	//minX = /*minY = */minZ = INT_MAX ;
-	//maxX = /*maxY = */maxZ = INT_MIN;
-	//// 하지만 pVertex는 현재 메쉬의 모든 위치정보도 같이있으므로, 이런식으로 응용해서 작성합니다.
-	//for(DWORD i = 0; i < dwVertexNum; ++i)
-	//{
-	//	// x좌표의 위치를 1씩 왼쪽으로.. (뭐 이런식으로 사용하시면 되요~)
-	//	if ( pVertex[i].vPos.x < minX)
-	//		minX = pVertex[i].vPos.x ;
-	//	else if( pVertex[i].vPos.x > maxX)
-	//		maxX = pVertex[i].vPos.x;
-	//	/*
-	//	if ( pVertex[i].vPos.y < minY )
-	//		minY = pVertex[i].vPos.y;
-	//	else if( pVertex[i].vPos.y > maxY)
-	//		maxY = pVertex[i].vPos.y;
-	//		*/
-	//	if ( pVertex[i].vPos.z < minZ )
-	//		minZ = pVertex[i].vPos.z;
-	//	else if( pVertex[i].vPos.z > maxZ )
-	//		maxZ = pVertex[i].vPos.z;
-	//}
-
-	//D3DXVECTOR3 vMin = D3DXVECTOR3(minX, 0.f, minZ);
-	//D3DXVECTOR3 vMax = D3DXVECTOR3(maxX, 0.f, maxZ);
-	//D3DXVECTOR3 vlen = vMax - vMin;
-	//float len = D3DXVec3Length( &vlen) * 0.5f;
-
-
-	// 이제 다 썼으니 버텍스버퍼의 락을 해제해줘야겠죠.
-	//pVB->Unlock();
-
-return m_pMeshInfo->fSize;
+float CStaticMesh::GetSize() 
+{
+	return m_pMeshInfo->fSize/2.0f;
 }
 
 

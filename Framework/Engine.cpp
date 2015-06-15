@@ -15,6 +15,7 @@
 #include "ShaderManager.h"
 #include "Frustum.h"
 #include "SceneManager.h"
+#include <time.h>
 
 CEngine::CEngine(void)
 	: m_pDevice(NULL)
@@ -78,15 +79,21 @@ HRESULT CEngine::CreateEntity()
 	pSylva->SetPass(PASS_DEFAULT);
 	pSylva->SetRotation(AT_Y, D3DX_PI);
 	
+	
+	srand((unsigned)time(NULL));
 	//CEntity* pSylvas[2];
 	//테스트용 NPC생성
 	for ( int i = 1; i <= 10; ++i)
 	{
+		float x = (float)(rand()%100);
+		float y = (float)(rand()%100);
 		string str = "Npc"; 
 		str += i;
 		pSylva = _SINGLE(CObjectManager)->CreateEntity(
 			MT_STATIC, RTYPE_ENTITY, str, MN_ZOMBIE, _T("tiger.x"));
-		pSylva->SetPos(D3DXVECTOR3(-3.f + (i * 5.f), 0.0f, sin(i) * 5.f) );
+		/*pSylva->SetPos(D3DXVECTOR3(-3.f + ((float)i * 5.f), 0.0f, sin((float)i) * 5.f) );*/
+		pSylva->SetPos(D3DXVECTOR3(x, 0, y) );
+		pSylva->SetRotation(eAxis_TYPE::AT_X, D3DX_PI/2.0f);
 		pSylva->SetShader(SHADER_DEFAULT);
 		pSylva->SetTechKey("DefaultTech");
 		pSylva->SetPass(PASS_DEFAULT);
@@ -117,15 +124,16 @@ HRESULT CEngine::CreateEntity()
 #endif
 
 	//박스로 빌딩 역할 (임시)
+/*
 	CEntity* pBox;
 
 	srand(0);
 
 	for(int i = 0; i < 1; ++i)
 	{
-		int iScale = 1;
-		int iPosX = -5;
-		int iPosZ = -5;
+		float iScale = 1.f;
+		float iPosX = -5.f;
+		float iPosZ = -5.f;
 
 		string strName = "Box"; 
 		strName += i;
@@ -137,7 +145,7 @@ HRESULT CEngine::CreateEntity()
 		pBox->SetShader(SHADER_DEFAULT);
 		pBox->SetTechKey("DefaultTech");
 		pBox->SetPass(PASS_NOTEXTURE);
-	}
+	}*/
 	return S_OK;
 }
 

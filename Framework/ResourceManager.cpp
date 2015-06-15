@@ -126,6 +126,8 @@ CMesh* CResourceManager::LoadMesh(const eMESH_TYPE& eMeshType, const eMESH_NUM& 
 	//_tcscpy(pMesh->pName, _meshName);
 	//Safe_Delete_Array(str);
 
+	if( eMeshType == MT_STATIC )
+		((CStaticMesh*)pMesh)->SetSize();
 	m_mapMesh->insert(map<eMESH_NUM, CMesh*>::value_type(eMeshNum, pMesh));
 
 	return pMesh;

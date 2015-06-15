@@ -59,7 +59,7 @@ float CTerrainMesh::GetHeight(float fPosX, float fPosZ)
 	//m_pIB->Lock(0, 0, (void**)&pI, 0);
 
 	//정점 정보 가져오기
-	int iIndex = fCol * m_tInfo.iRow + fRow;
+	int iIndex = (int)(fCol * m_tInfo.iRow + fRow);
 	if(iIndex < 0)
 		return 0.f;
 	else if(iIndex >= m_tInfo.iCol * m_tInfo.iRow)
@@ -87,9 +87,6 @@ float CTerrainMesh::GetHeight(float fPosX, float fPosZ)
 	{
 		return vPos[0].y + (vPos[3].y - vPos[2].y) * fRatioX + (vPos[3].y - vPos[1].y) * fRatioZ;
 	}
-	
-
-	
 	
 }
 

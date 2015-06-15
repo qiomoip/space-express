@@ -22,7 +22,7 @@ CEntity::CEntity(void)
 	, m_eShader(SHADER_NONE)
 	, m_strTechKey("")
 	, m_bTransformUpdate(false)
-	, m_fMoveSpeed(0.05f)
+	, m_fMoveSpeed(0.0f)
 	, m_SphereMesh(NULL)
 {
 	m_vecPass.reserve(10);
@@ -66,7 +66,7 @@ void CEntity::Initialize()
 
 void CEntity::Input()
 {
-
+	//m_fMoveSpeed = 7.0 * (double)_SINGLE(CDebug)->GetDeltaTime();
 }
 
 bool CEntity::Collision()
@@ -109,17 +109,18 @@ bool CEntity::Collision()
 		//타겟의 충돌 타입
 		_eTarMesh_type = _pTarMesh->GetColliderType();
 
-		//충돌체크
-		if(  _eTarMesh_type == MT_STATIC && //구 충돌 
-			2.f * (fSize + fTarSize) >= len) 
-		{
 #ifdef _DEBUG
 			_SINGLE(CDebug)->ResetLine();
 #endif
+		//충돌체크
+		if(  _eTarMesh_type == MT_STATIC && //구 충돌 
+			(fSize + fTarSize) >= len) 
+		{
+
 			if( !ComputeNormalVector( (*iter)->GetCollider(), 
 				vNormal, vCol, (*iter)) )
 				continue;
-			m_vPos += vNormal * m_fMoveSpeed;
+			m_vPos += vNormal * m_fMoveSpeed/* * _SINGLE(CDebug)->GetDeltaTime()*/;
 			m_vPos.y = 0.f;
 
 #ifdef _DEBUG
@@ -143,23 +144,16 @@ bool CEntity::Collision()
 #ifdef _DEBUG
 			//슬라이딩 벡터
 			_SINGLE(CDebug)->AddLine( m_vPos, m_vPos + m_vMove * 3000.f, COLOR_CYAN);
-			float length = D3DXVec3Length( &m_vMove );
-			TCHAR slide[255] ;
-			_SINGLE(CDebug)->VectorToString(slide, m_vMove);
-			_SINGLE(CDebug)->AddLog(-1, slide);
 #endif
 		}
 		//박스 충돌
 		else if( _eTarMesh_type == MT_BOX &&
 			fSize + fTarSize > len )
 		{
-			//
+			
 			LPD3DXMESH pMesh = _pTarMesh->GetMesh();
 			BOXSIZE size = ((CBoxMesh*)_pTarMesh)->GetMinMax();
-		
-#ifdef _DEBUG
-			_SINGLE(CDebug)->ResetLine();
-#endif
+
 			if( !ComputeNormalVector( pMesh, 
 				vNormal, vCol, (*iter)) )
 				continue;
@@ -176,18 +170,8 @@ bool CEntity::Collision()
 			size.vMin += vTarPos;
 
 #ifdef _DEBUG
-			D3DXVECTOR3 Col1 = D3DXVECTOR3(1.f, 0, 0);
-			D3DXVECTOR3 Col2 = D3DXVECTOR3(0, 0, 1.f);
-			//충돌지점 표시
-			_SINGLE(CDebug)->AddLine( 
-				size.vMax + Col1, size.vMax - Col1, COLOR_MAGENTA);
-			_SINGLE(CDebug)->AddLine( 
-				size.vMax + Col2, size.vMax - Col2, COLOR_MAGENTA);
-			//충돌지점 표시
-			_SINGLE(CDebug)->AddLine( 
-				size.vMin + Col1, size.vMin - Col1, COLOR_MAGENTA);
-			_SINGLE(CDebug)->AddLine( 
-				size.vMin + Col2, size.vMin - Col2, COLOR_MAGENTA);
+			_SINGLE(CDebug)->AddPosMark( size.vMax, COLOR_MAGENTA );
+			_SINGLE(CDebug)->AddPosMark( size.vMin, COLOR_MAGENTA );
 #endif
 			D3DXVECTOR3 vPrePos = m_vPos + m_vMove;
 
@@ -196,98 +180,22 @@ bool CEntity::Collision()
 				vCol.z < size.vMin.z - fSize || 
 				vCol.z > size.vMax.z + fSize )
 				continue;
-			m_vPos += vNormal * m_fMoveSpeed;
-			m_vPos.y = 0.f;
-			m_vMove -= D3DXVec3Dot( &m_vMove, &vNormal ) * vNormal ;
-			/*
-			//노말 벡터 구하기
-			ComputeNormalVector( 
-				pMesh, vNormal, pCol, (*iter));
-					
-			//LPDIRECT3DVERTEXBUFFER9 pVB; 
-			//LPDIRECT3DINDEXBUFFER9 pIB; 
-			//pMesh->GetVertexBuffer(&pVB); 
-			//pMesh->GetIndexBuffer( &pIB ); 
-			//WORD* pIndices; 
-			//D3DVERTEX* pVertices; 
-			//pIB->Lock( 0, 0, (void**)&pIndices, 0 ); 
-			//pVB->Lock( 0, 0,(void**)&pVertices, 0); 
-			//D3DXVECTOR3 v0 = pVertices[pIndices[3*dwFaceIndex+0]].vPos; 
-			//D3DXVECTOR3 v1 = pVertices[pIndices[3*dwFaceIndex+1]].vPos; 
-			//D3DXVECTOR3 v2 = pVertices[pIndices[3*dwFaceIndex+2]].vPos; 
-			//D3DXVECTOR3 u = v1 - v0 ; 
-			//D3DXVECTOR3 v = v2 - v0; 
-			//D3DXVECTOR3 out; 
-			//D3DXVec3Cross( &out, &u, &v ); 
-			//D3DXVec3Normalize( &out, &out ); 
-			////out *= m_fMoveSpeed;
-			//pVB->Unlock(); 
-			//pIB->Unlock(); 
-			//Safe_Release(pVB); 
-			//Safe_Release(pIB); 
+			m_vPos += vNormal * m_fMoveSpeed/* * _SINGLE(CDebug)->GetDeltaTime()*/;
 			
-			//충돌 체크를 위한 4개의 면
-			D3DXPLANE plane[4];
-			D3DXVECTOR3 vtx[8];
-			memset(vtx, 0, sizeof(vtx[0]) * 8 );
-			memset(plane, 0 , sizeof(plane[0]) * 4 );
-
-			vtx[0] = size.vMin;
-			vtx[1] = size.vMin;
-			vtx[1].z = size.vMax.z;
-			vtx[2] = size.vMin;
-			vtx[2].x = size.vMax.x;
-			vtx[3] = size.vMax;
-			vtx[3].y = size.vMin.y;
-			vtx[4] = size.vMin;
-			vtx[4].y = size.vMax.y;
-			vtx[5] = size.vMax;
-			vtx[5].x = size.vMin.x;
-			vtx[6] = size.vMax;
-			vtx[6].z = size.vMin.z;
-			vtx[7] = size.vMax;
-
-			for(int i = 0; i < 8; ++i)
-				vtx[i] += vTarPos;
-			//그리는 순서는 시계방향.
-			D3DXPlaneFromPoints(&plane[0], &vtx[2], &vtx[4], &vtx[0]);//정면
-			D3DXPlaneFromPoints(&plane[1], &vtx[3], &vtx[7], &vtx[2]);//우측
-			D3DXPlaneFromPoints(&plane[2], &vtx[4], &vtx[1], &vtx[0]);//좌측
-			D3DXPlaneFromPoints(&plane[3], &vtx[1], &vtx[7], &vtx[3]);//뒷면
-			float fDist = 0.f;
-			int inCount = 0;
-			bool isInBox = true;
-			for( int i  = 0; i< 4; ++i)
-			{
-				fDist = D3DXPlaneDotCoord( &plane[i], &(pCol + vTarPos) );
-
-				if( fDist > fSize )
-				{
-					isInBox = false ;//충돌 아님
-					break;
-				}
-				else
-					isInBox = true;
-
-			}
-			//이동벡터
-			_SINGLE(CDebug)->AddLine( m_vPos, m_vPos + m_vMove * 3000.f, COLOR_PURPLE );
-			_SINGLE(CDebug)->AddLine( 
-				pCol, pCol + vNormal * 3000.f, COLOR_ORANGE);
-			//충돌;
-			if( isInBox )
-				m_vMove -= D3DXVec3Dot( &m_vMove, &vNormal ) * vNormal ;
-			//슬라이딩 벡터
-			_SINGLE(CDebug)->AddLine( m_vPos, m_vPos + m_vMove * 3000.f, COLOR_BLACK);
-			*/
+			m_vMove -= D3DXVec3Dot( &m_vMove, &vNormal ) * vNormal ;
+			m_vPos.y = 0.f;
 		}
 
 	}
 	//충돌 안했으면 고고
 	//m_vMove.y = 0.f;
+#ifdef _DEBUG
+	/*m_vMove *= _SINGLE(CDebug)->GetDeltaTime();*/
+#endif
+	D3DXVec3Normalize( &m_vMove, &m_vMove);
+	m_vPos += m_vMove * m_fMoveSpeed;
 
-	m_vPos += m_vMove;
-
+	//지형 위로 캐릭터 얹기
 	CEntity* pTerrain = _SINGLE(CObjectManager)->FindObject("MainTerrain");
 	if(!pTerrain)
 		return false;
@@ -359,19 +267,9 @@ bool CEntity::ComputeNormalVector(
 	_vNormal.y = plane.b;
 	_vNormal.z = plane.c;
 	
-	//D3DXVec3Normalize( &_vNormal , &_vNormal); 
 #ifdef _DEBUG
-	//노말벡터 그리기
-	/*_SINGLE(CDebug)->AddLine( 
-		target->GetPos(), target->GetPos() + _vNormal* 30.f, COLOR_WHITE);*/
-
-	D3DXVECTOR3 Col1 = D3DXVECTOR3(3.f, 0, 0);
-	D3DXVECTOR3 Col2 = D3DXVECTOR3(0, 0, 3.f);
 	//충돌지점 표시
-	_SINGLE(CDebug)->AddLine( 
-		_vCol+Col1, _vCol-Col1, COLOR_BLACK);
-	_SINGLE(CDebug)->AddLine( 
-		_vCol+Col2, _vCol-Col2, COLOR_BLACK);
+	_SINGLE(CDebug)->AddPosMark( _vCol, COLOR_BLACK);
 #endif
 	
 	pVB->Unlock(); 
@@ -481,7 +379,7 @@ void CEntity::Render()
 	tMaterial.Power = 1.f;
 
 	pShader->SetValue("g_mtrlMesh", &tMaterial, sizeof(D3DMATERIAL9));
-
+/*
 	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 	
 	pShader->BeginPass(1);
@@ -490,7 +388,7 @@ void CEntity::Render()
 	
 	pShader->EndPass();
 
-	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);*/
 }
 
 void CEntity::SetRenderType(const eRENDER_TYPE& eRender)

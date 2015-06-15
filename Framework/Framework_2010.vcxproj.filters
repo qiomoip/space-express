@@ -110,11 +110,21 @@
     <Filter Include="Engine\Director\Manager\ObjeceManager\Entity\Zombie">
       <UniqueIdentifier>{691140b9-8e7b-46d3-be68-5fda926507c1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Director\DeviceRes\Mesh\BoxMesh">
+      <UniqueIdentifier>{5a5a41af-6746-408f-9bee-e9c066531ec3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FSM">
+      <UniqueIdentifier>{c39224b1-1793-4838-9f6a-4840f3e96279}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FSM\State">
+      <UniqueIdentifier>{c755ebb0-2d68-480d-9612-0d2935bd2dc5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXUT\Optional\directx.ico">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entity.cpp">
@@ -129,30 +139,86 @@
     <ClCompile Include="Device.cpp">
       <Filter>Engine\Device</Filter>
     </ClCompile>
-    <ClCompile Include="App.cpp" />
-    <ClCompile Include="BoxMesh.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CameraManager.cpp" />
-    <ClCompile Include="Debug.cpp" />
-    <ClCompile Include="Frustum.cpp" />
-    <ClCompile Include="GridMesh.cpp" />
-    <ClCompile Include="KeyManager.cpp" />
-    <ClCompile Include="Light.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Mouse.cpp" />
-    <ClCompile Include="ObjectManager.cpp" />
-    <ClCompile Include="ResourceManager.cpp" />
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="ShaderManager.cpp" />
-    <ClCompile Include="StaticMesh.cpp" />
-    <ClCompile Include="TerrainMesh.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="ThirdCam.cpp" />
-    <ClCompile Include="Tiger.cpp" />
-    <ClCompile Include="TString.cpp" />
-    <ClCompile Include="Zombie.cpp" />
+    <ClCompile Include="App.cpp">
+      <Filter>App</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Engine\Director\DeviceRes\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticMesh.cpp">
+      <Filter>Engine\Director\DeviceRes\Mesh\StaticMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="GridMesh.cpp">
+      <Filter>Engine\Director\DeviceRes\Mesh\GridMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainMesh.cpp">
+      <Filter>Engine\Director\DeviceRes\Mesh\TerrainMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxMesh.cpp">
+      <Filter>Engine\Director\DeviceRes\Mesh\BoxMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Frustum.cpp">
+      <Filter>Engine\Director\Frustum</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Engine\Director\DeviceRes\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Engine\Director\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Engine\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderManager.cpp">
+      <Filter>Engine\Director\Manager\ShaderManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraManager.cpp">
+      <Filter>Engine\Director\Manager\CameraManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug.cpp">
+      <Filter>Engine\Director\Manager\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Engine\Director\Manager\CameraManager\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>Engine\Director\Manager\InputManager\Mouse</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyManager.cpp">
+      <Filter>Engine\Director\Manager\InputManager\Key</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>Engine\Director\Manager\ObjeceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Engine\Director\Manager\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Engine\Director\Manager\SceneManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Engine\Director\Manager\SceneManager\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdCam.cpp">
+      <Filter>Engine\Director\Manager\CameraManager\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Tiger.cpp">
+      <Filter>Engine\Director\Manager\ObjeceManager\Entity\Tiger</Filter>
+    </ClCompile>
+    <ClCompile Include="Zombie.cpp">
+      <Filter>Engine\Director\Manager\ObjeceManager\Entity\Zombie</Filter>
+    </ClCompile>
+    <ClCompile Include="FiniteStateMachine.cpp">
+      <Filter>FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="ZombieIdleState.cpp">
+      <Filter>FSM\State</Filter>
+    </ClCompile>
+    <ClCompile Include="ZombieTrackingState.cpp">
+      <Filter>FSM\State</Filter>
+    </ClCompile>
+    <ClCompile Include="ZombieFleeState.cpp" />
+    <ClCompile Include="ZombieAttackState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -170,34 +236,101 @@
     <ClInclude Include="Device.h">
       <Filter>Engine\Device</Filter>
     </ClInclude>
-    <ClInclude Include="App.h" />
-    <ClInclude Include="BoxMesh.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="CameraManager.h" />
-    <ClInclude Include="Debug.h" />
-    <ClInclude Include="Enum.h" />
-    <ClInclude Include="Frustum.h" />
-    <ClInclude Include="function.h" />
-    <ClInclude Include="GridMesh.h" />
-    <ClInclude Include="KeyManager.h" />
-    <ClInclude Include="Light.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Mouse.h" />
-    <ClInclude Include="ObjectManager.h" />
-    <ClInclude Include="ResourceManager.h" />
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="SceneManager.h" />
-    <ClInclude Include="Shader.h" />
-    <ClInclude Include="shader.hpp" />
-    <ClInclude Include="ShaderManager.h" />
-    <ClInclude Include="StaticMesh.h" />
-    <ClInclude Include="struct.h" />
-    <ClInclude Include="TerrainMesh.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="ThirdCam.h" />
-    <ClInclude Include="Tiger.h" />
-    <ClInclude Include="TString.h" />
-    <ClInclude Include="Zombie.h" />
+    <ClInclude Include="App.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Engine\Director\DeviceRes\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticMesh.h">
+      <Filter>Engine\Director\DeviceRes\Mesh\StaticMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="GridMesh.h">
+      <Filter>Engine\Director\DeviceRes\Mesh\GridMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainMesh.h">
+      <Filter>Engine\Director\DeviceRes\Mesh\TerrainMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxMesh.h">
+      <Filter>Engine\Director\DeviceRes\Mesh\BoxMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Engine\Director\DeviceRes\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Frustum.h">
+      <Filter>Engine\Director\Frustum</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Engine\Director\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="shader.hpp">
+      <Filter>Engine\Director\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Engine\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Enum.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="struct.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderManager.h">
+      <Filter>Engine\Director\Manager\ShaderManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraManager.h">
+      <Filter>Engine\Director\Manager\CameraManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug.h">
+      <Filter>Engine\Director\Manager\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Engine\Director\Manager\CameraManager\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="function.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>Engine\Director\Manager\InputManager\Mouse</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyManager.h">
+      <Filter>Engine\Director\Manager\InputManager\Key</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManager.h">
+      <Filter>Engine\Director\Manager\ObjeceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Engine\Director\Manager\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Engine\Director\Manager\SceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Engine\Director\Manager\SceneManager\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdCam.h">
+      <Filter>Engine\Director\Manager\CameraManager\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Tiger.h">
+      <Filter>Engine\Director\Manager\ObjeceManager\Entity\Tiger</Filter>
+    </ClInclude>
+    <ClInclude Include="Zombie.h">
+      <Filter>Engine\Director\Manager\ObjeceManager\Entity\Zombie</Filter>
+    </ClInclude>
+    <ClInclude Include="FiniteStateMachine.h">
+      <Filter>FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="State.h">
+      <Filter>FSM\State</Filter>
+    </ClInclude>
+    <ClInclude Include="ZombieIdleState.h">
+      <Filter>FSM\State</Filter>
+    </ClInclude>
+    <ClInclude Include="ZombieTrackingState.h">
+      <Filter>FSM\State</Filter>
+    </ClInclude>
+    <ClInclude Include="ZombieFleeState.h" />
+    <ClInclude Include="ZombieAttackState.h" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

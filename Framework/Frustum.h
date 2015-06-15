@@ -24,7 +24,7 @@ public:
 	//오브젝트가 절두체 안에 있는가?
 	bool isInFrustum(const D3DXVECTOR3&,const float) ;
 
-	bool checkFrustumCulling(CEntity&);
+	//bool checkFrustumCulling(CEntity&);
 
 	void Update(); 
 

@@ -6,10 +6,10 @@
 #include "KeyManager.h"
 #include "ResourceManager.h"
 #include "ObjectManager.h"
-//#include "TString.h"
+#include "Frustum.h"
 #include "ShaderManager.h"
 #include "Shader.h"
-
+#pragma comment(lib, "winmm.lib")
 
 CDebug::CDebug(void)
 	: m_pDevice(NULL)
@@ -18,21 +18,21 @@ CDebug::CDebug(void)
 	, m_iCnt(0)
 	, m_pLineVB(NULL)
 	, m_pFont(NULL)
-	//, m_Desc()
-	//, m_LogRect()
-	//, m_StaticLogRect()
 	, m_Log(NULL)
 	, m_StaticLog(NULL)
 	, m_LogCount(0)
 	, m_StaticLogCount(0)
 	, m_FaceCount(0)
-	, m_StartTime(0)
-	, m_ElapsedTime(0)
-	, m_EndTime(0)
 	, m_FPS(0)
+	, m_CurrentTime(0)
+	, m_PreviousTime(0)
+	, m_DeltaTime(0)
+	, m_ElapsedTime(0)
+	, m_FrameCnt(0)
 	, m_bWireFrame(false)
-	, m_Line(NULL)
 	, m_LineCount(0)
+	, m_PosMarkSize(10.f)
+	, m_Text3dCount(0)
 {
 	memset(&m_Line, 0, sizeof(LPD3DXLINE));
 	memset(&m_ColorList, 0, sizeof(m_ColorList[0])* LOG_COUNT);
@@ -41,6 +41,23 @@ CDebug::CDebug(void)
 	memset(&m_Desc, 0, sizeof(D3DXFONT_DESC));
 	memset(&m_LogRect, 0, sizeof(RECT));
 	memset(&m_StaticLogRect, 0, sizeof(RECT));
+	memset(&m_Text3D, 0, sizeof(LPD3DXMESH) * LOG_COUNT);
+	memset(&m_Text3dPos, 0, sizeof(D3DXVECTOR3) * LOG_COUNT);
+	memset(&m_TextMat, 0, sizeof(D3DXMATRIXA16));
+	memset(&m_TextMove, 0, sizeof(D3DXMATRIXA16));
+	memset(&m_TextRot, 0, sizeof(D3DXMATRIXA16));
+	memset(&m_TextScale, 0, sizeof(D3DXMATRIXA16));
+
+	D3DXMatrixRotationX( &m_TextRot, D3DX_PI * 0.5f );
+	float scale = 1.7f;
+	D3DXMatrixScaling( &m_TextScale, scale, scale, scale);
+
+	memset(&m_FontDefine, 0, sizeof(LOGFONT) );
+	memset(&m_hdc, 0, sizeof(HDC) );
+	m_hdc = CreateCompatibleDC(0);
+
+	memset(&m_TextMaterial, 0, sizeof(D3DMATERIAL9) );
+
 }
 
 
@@ -55,7 +72,7 @@ void CDebug::Initialize()
 	if(!m_pDevice)
 		return;
 
-	m_StartTime = GetTickCount();
+	m_PreviousTime = m_CurrentTime = GetTickCount() * 0.001;
 	//CreateVertexBuffer();
 
 	//memset(&m_tGridMaterial, 0, sizeof(D3DMATERIAL9));
@@ -74,6 +91,8 @@ void CDebug::Initialize()
 	InitFont();
 	InitLog();
 	InitLine();
+
+	//AddText3D( D3DXVECTOR3(10, 3, 10), _T("3D텍스트다!") );
 
 }
 
@@ -146,7 +165,6 @@ void CDebug::CreateVertexBuffer()
 
 void CDebug::Update()
 {
-	CheckFPS();
 	
 }
 
@@ -174,20 +192,23 @@ void CDebug::Destroy()
 	{
 		Safe_Delete_Array(m_StaticLog[i]);
 		Safe_Delete_Array(m_Log[i]);
-
+		Safe_Release(m_Text3D[i]);
 		//Safe_Delete_Array(m_vList[i]);
 	}
 	Safe_Delete_Array(m_StaticLog);
 	Safe_Delete_Array(m_Log);
-	//Safe_Release(m_Line);
+	Safe_Release(m_Line);
 	Safe_Release(m_pFont); // 폰트 구조체해제
-
+	
+	DeleteObject(m_hFont);
+	DeleteDC(m_hdc);
 	
 	
 }
 
 void CDebug::Input()
 {
+	CheckFPS();
 	const KEYINFO* keyInfo = _SINGLE(CKeyManager)->GetKey( KEYNAME_WIREFRAME_TRIGGER ) ;
 	
 	if ( keyInfo->bPush ) 
@@ -206,6 +227,7 @@ void CDebug::DrawInfo()
 	DrawStaticLog();
 	DrawLog();
 	DrawLine();
+	DrawText3D();
 }
 
 
@@ -281,12 +303,34 @@ VOID CDebug::InitFont()
 	D3DXCreateFontIndirect(_SINGLE(CDevice)->GetDevice(), &m_Desc, &m_pFont); 
 	SetRect(&m_StaticLogRect,SCREEN_WIDTH-400,10,SCREEN_WIDTH-30,SCREEN_HEIGHT); //폰트 위치
 	SetRect(&m_LogRect,10,10,400,SCREEN_HEIGHT); 
+
+
+	//3D폰트 설정
+	m_FontDefine.lfHeight = 50;
+	m_FontDefine.lfWidth = 24;
+	//굵기 0~1000(두꺼움)
+	m_FontDefine.lfWeight = 100;
+	m_FontDefine.lfItalic = false;
+	m_FontDefine.lfUnderline = false;
+	m_FontDefine.lfStrikeOut = false;
+	m_FontDefine.lfCharSet = DEFAULT_CHARSET;
+	_tcscpy_s(m_FontDefine.lfFaceName, _T("맑은 고딕") );
+	m_hFont = CreateFontIndirect(&m_FontDefine);
+
+	m_TextMaterial.Diffuse.a = 1.f;
+	m_TextMaterial.Diffuse.r = 0.3f;
+	m_TextMaterial.Diffuse.g = 0.8;
+	m_TextMaterial.Diffuse.b = 0.6f;
+	m_TextMaterial.Power = 0.2f;
+	m_TextMaterial.Specular = m_TextMaterial.Diffuse;
+	m_TextMaterial.Ambient = m_TextMaterial.Diffuse;
+
 }
 
 void CDebug::InitLine()
 {
 	D3DXCreateLine(m_pDevice, &m_Line);
-	m_Line->SetWidth(3);
+	m_Line->SetWidth(1.5f);
 	//두개(시작,끝)의 벡터를 갖는 라인 배열
 	//m_vList = new D3DXVECTOR3*[LOG_COUNT];
 	//m_ColorList = new D3DXCOLOR[LOG_COUNT];
@@ -300,6 +344,7 @@ void CDebug::InitLine()
 	//	//memset(&m_vList, 0, sizeof(m_vList[0]) * LOG_COUNT * 2 );
 	//}
 }
+
 
 
 HRESULT CDebug::DrawStaticLog()
@@ -325,19 +370,38 @@ HRESULT CDebug::DrawLog()
 	return S_OK;
 }
 
+HRESULT	CDebug::DrawText3D()
+{
+	m_pDevice->BeginScene();
+	for(int i = 0; i < m_Text3dCount; ++i)
+	{
+		if(!_SINGLE(CFrustum)->isInFrustum( m_Text3dPos[i], 3.f) )
+			continue;
+		D3DXMatrixTranslation( &m_TextMove, 
+			m_Text3dPos[i].x, m_Text3dPos[i].y + 3.0f, m_Text3dPos[i].z +3.0f);
+		m_TextMat = m_TextScale * m_TextRot * m_TextMove;
+		m_pDevice->SetMaterial( &m_TextMaterial);
+		m_pDevice->SetTransform(D3DTS_WORLD, &m_TextMat);
+		m_Text3D[i]->DrawSubset(0);
+	}
+	m_pDevice->EndScene();
+
+	//ResetText3D();
+
+	return S_OK;
+}
+
+
 void CDebug::DrawLine()
 {
 	D3DXMATRIXA16 mat = _SINGLE(CCameraManager)->GetCurCam()->GetMatViewProj();
 	//D3DXMatrixIdentity( &mat);
-	LPD3DXLINE line;
-	D3DXCreateLine(m_pDevice, &line);
 	
-	line->Begin();
+	m_Line->Begin();
 	for(int i = 0; i < m_LineCount; ++i)
-		line->DrawTransform(m_vList[i],2, &mat,  m_ColorList[i]);
+		m_Line->DrawTransform(m_vList[i],2, &mat,  m_ColorList[i]);
     
-	line->End();
-    line->Release(); 
+	m_Line->End();
 
 }
 
@@ -381,6 +445,37 @@ HRESULT CDebug::AddStaticLog(int idx, LPTSTR _log, ...)
 	return S_OK;
 }
 
+HRESULT CDebug::AddText3D( int _no, D3DXVECTOR3 _pos, LPTSTR _str)
+{
+	HFONT hFontOld;
+	hFontOld = (HFONT)SelectObject(m_hdc, m_hFont);
+	
+	if( _no >= LOG_COUNT  || _no < 0 )
+	{
+		if( m_Text3dCount >= LOG_COUNT ) 
+			m_Text3dCount = 0;
+		_no = m_Text3dCount ;
+	}
+	
+	m_Text3dPos[_no] = _pos;
+	if (D3DXCreateText( m_pDevice, 
+		m_hdc,
+		_str,
+		0.5f,
+		0.4f,
+		&m_Text3D[_no++],
+		NULL,
+		NULL)  != D3D_OK)
+		assert(false);
+		
+		
+	m_Text3dCount = _no;
+
+	SelectObject(m_hdc, hFontOld);
+	return S_OK;
+}
+
+
 HRESULT CDebug::VectorToString(LPTSTR dest, D3DXVECTOR3 vec)
 {
 	TCHAR _vec[255] = _T("");
@@ -399,6 +494,16 @@ void CDebug::AddLine(D3DXVECTOR3 vStart, D3DXVECTOR3 vEnd, D3DCOLOR _color)
 	m_LineCount > LOG_COUNT ? m_LineCount = 0 : m_LineCount++;
 }
 
+void CDebug::AddPosMark( D3DXVECTOR3 _pos, D3DCOLOR _color)
+{
+	D3DXVECTOR3 axisX = D3DXVECTOR3(m_PosMarkSize, 0, 0);
+	D3DXVECTOR3 axisZ = D3DXVECTOR3(0, 0, m_PosMarkSize);
+	//충돌지점 표시
+	AddLine( _pos + axisX, _pos - axisX, _color);
+	AddLine( _pos + axisZ, _pos - axisZ, _color);
+}
+
+
 
 
 void CDebug::InitFaceCount()
@@ -414,20 +519,36 @@ void CDebug::AddFaceCount(UINT _faces)
 
 void CDebug::CheckFPS()
 {
-	m_EndTime = timeGetTime();
-	m_ElapsedTime = (m_EndTime - m_StartTime)  ;
-	++m_FPS;
+	m_CurrentTime = timeGetTime() * 0.001;
+	m_DeltaTime = (m_CurrentTime - m_PreviousTime);
+	m_ElapsedTime += m_DeltaTime;
+	m_PreviousTime = m_CurrentTime;
+	m_FrameCnt++;
 
-	if( m_ElapsedTime >= 100L )
+	if(m_ElapsedTime >= 1.0)
 	{
-		AddStaticLog(LOG_FPS, _T("FPS : %d"), m_FPS * 10 );
-		m_StartTime = m_EndTime;	
-		m_FPS = 0;
+		m_FPS = (UINT)(m_FrameCnt / m_ElapsedTime);
+		AddStaticLog(LOG_FPS, _T("FPS : %d"), m_FPS );
+		m_ElapsedTime = 0.0;
+		m_FrameCnt = 0.f;
 	}
 }
+
+double CDebug::GetDeltaTime()
+{
+	return m_DeltaTime;
+}
+
 
 void CDebug::ResetLine()
 {
 	memset(&m_vList, 0, sizeof(m_vList[0]) * LOG_COUNT);
 	memset(&m_ColorList, 0, sizeof(m_ColorList[0]) * LOG_COUNT);
+}
+
+void CDebug::ResetText3D()
+{
+	memset(&m_Text3D, 0, sizeof(LPD3DXMESH) * LOG_COUNT);
+	memset(&m_Text3dPos, 0, sizeof(D3DXVECTOR3) * LOG_COUNT);
+	m_Text3dCount = 0;
 }

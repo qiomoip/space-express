@@ -54,13 +54,20 @@ CEntity* CObjectManager::CreateEntity(
 	case MN_TIGER:
 		pEntity = new CTiger;
 		break;
+		
+	case MN_TERRAIN:
+	case MN_ENVIRONMENT:
+	case MN_GRID:
+	case MN_BOX:
+		pEntity = new CEntity;
+		break;
 		/*case MN_ENVIRONMENT:
 		pEntity = new CEntity;
 		break;
-	case MN_GRID:
+	
 		pEntity = new CEntity;
 		break;
-	case MN_TERRAIN:
+	
 		pEntity = new CEntity;
 		break;*/
 	case MN_ZOMBIE:

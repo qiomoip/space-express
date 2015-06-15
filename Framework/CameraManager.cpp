@@ -184,7 +184,7 @@ bool CCameraManager::SetMainCamera(const string& strName)
 	
 #ifdef _DEBUG
 	
-	const char* szName = strName.c_str();
+	//const char* szName = strName.c_str();
 	TCHAR szRet[100];
 	MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, strName.c_str(), strlen(strName.c_str()) + 1,
 		szRet, _tcslen(szRet) + 1);
