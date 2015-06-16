@@ -83,7 +83,7 @@ void CDebug::Initialize()
 	//m_tGridMaterial.Power = 0.2f;
 	//m_tGridMaterial.Specular = m_tGridMaterial.Diffuse;
 	//m_tGridMaterial.Ambient = m_tGridMaterial.Diffuse;
-	
+
 	//m_pTerrain = new CTerrainMesh;
 
 	//m_pTerrain->Initialize();
@@ -117,27 +117,27 @@ void CDebug::CreateVertexBuffer()
 
 	m_pGridVB->Lock(0, 0, (void**)&tempVB, 0);
 
-    for ( float x = x1; x<=x2; x+= stepX )
-    {
+	for ( float x = x1; x<=x2; x+= stepX )
+	{
 		tempVB[m_iCnt].vPos = D3DXVECTOR3(x, 0.f, y1);
-        tempVB[m_iCnt].dwColor = gridColor;
-        ++m_iCnt;
-        tempVB[m_iCnt].vPos = D3DXVECTOR3(x, 0.f, y2);
-        tempVB[m_iCnt].dwColor = gridColor;
-        ++m_iCnt;
-    }
+		tempVB[m_iCnt].dwColor = gridColor;
+		++m_iCnt;
+		tempVB[m_iCnt].vPos = D3DXVECTOR3(x, 0.f, y2);
+		tempVB[m_iCnt].dwColor = gridColor;
+		++m_iCnt;
+	}
 
 	m_pGridVB->Unlock();
- 
-    for ( float y = y1; y<= y2; y+= stepY )
-    {
-        tempVB[m_iCnt].vPos = D3DXVECTOR3(x1, 0.f, y);
-        tempVB[m_iCnt].dwColor = gridColor;
-        ++m_iCnt;
-        tempVB[m_iCnt].vPos = D3DXVECTOR3(x2, 0.f, y);
-        tempVB[m_iCnt].dwColor = gridColor;
-        ++m_iCnt;
-    }
+
+	for ( float y = y1; y<= y2; y+= stepY )
+	{
+		tempVB[m_iCnt].vPos = D3DXVECTOR3(x1, 0.f, y);
+		tempVB[m_iCnt].dwColor = gridColor;
+		++m_iCnt;
+		tempVB[m_iCnt].vPos = D3DXVECTOR3(x2, 0.f, y);
+		tempVB[m_iCnt].dwColor = gridColor;
+		++m_iCnt;
+	}
 
 	if(_SINGLE(CDevice)->GetDevice()->CreateVertexBuffer(
 		6 * sizeof(VERTEXCOLOR),
@@ -157,15 +157,15 @@ void CDebug::CreateVertexBuffer()
 	{ D3DXVECTOR3(0.0f, 0.0f, 0.f),  0xff0000ff }};
 	void *pVertices = NULL;
 
-    m_pLineVB->Lock( 0, sizeof(colorVtx), (void**)&pVertices, 0 );
-    memcpy( pVertices, colorVtx, sizeof(colorVtx) );
-    m_pLineVB->Unlock();
+	m_pLineVB->Lock( 0, sizeof(colorVtx), (void**)&pVertices, 0 );
+	memcpy( pVertices, colorVtx, sizeof(colorVtx) );
+	m_pLineVB->Unlock();
 }
 
 
 void CDebug::Update()
 {
-	
+
 }
 
 void CDebug::Render()
@@ -199,18 +199,18 @@ void CDebug::Destroy()
 	Safe_Delete_Array(m_Log);
 	Safe_Release(m_Line);
 	Safe_Release(m_pFont); // 폰트 구조체해제
-	
+
 	DeleteObject(m_hFont);
 	DeleteDC(m_hdc);
-	
-	
+
+
 }
 
 void CDebug::Input()
 {
 	CheckFPS();
 	const KEYINFO* keyInfo = _SINGLE(CKeyManager)->GetKey( KEYNAME_WIREFRAME_TRIGGER ) ;
-	
+
 	if ( keyInfo->bPush ) 
 	{
 		m_bWireFrame = !m_bWireFrame;
@@ -273,6 +273,7 @@ void CDebug::DrawInfo()
 
 VOID CDebug::InitLog()
 {
+
 	m_StaticLog = new LPTSTR[LOG_COUNT];
 	m_Log = new LPTSTR[LOG_COUNT];
 	for(int i = 0; i < LOG_COUNT; ++i)
@@ -288,7 +289,7 @@ VOID CDebug::InitLog()
 VOID CDebug::InitFont()
 {
 	memset(&m_Desc, 0, sizeof(D3DXFONT_DESC)); //구조체 초기화
-	
+
 	m_Desc.CharSet = HANGUL_CHARSET;
 	_tcscpy_s(m_Desc.FaceName, _tcslen(_T("맑은 고딕")) + 1 , _T("맑은 고딕") ); //폰트 설정
 	m_Desc.Height = 16; //높이
@@ -396,11 +397,11 @@ void CDebug::DrawLine()
 {
 	D3DXMATRIXA16 mat = _SINGLE(CCameraManager)->GetCurCam()->GetMatViewProj();
 	//D3DXMatrixIdentity( &mat);
-	
+
 	m_Line->Begin();
 	for(int i = 0; i < m_LineCount; ++i)
 		m_Line->DrawTransform(m_vList[i],2, &mat,  m_ColorList[i]);
-    
+
 	m_Line->End();
 
 }
@@ -421,7 +422,7 @@ HRESULT CDebug::AddLog(int idx, LPTSTR _log, ...)
 		_vstprintf( m_Log[m_LogCount++] , 255, _log, ap);
 	}
 	else
-	
+
 		_vstprintf( m_Log[idx] , 255, _log, ap);
 
 	return S_OK;
@@ -449,14 +450,14 @@ HRESULT CDebug::AddText3D( int _no, D3DXVECTOR3 _pos, LPTSTR _str)
 {
 	HFONT hFontOld;
 	hFontOld = (HFONT)SelectObject(m_hdc, m_hFont);
-	
+
 	if( _no >= LOG_COUNT  || _no < 0 )
 	{
 		if( m_Text3dCount >= LOG_COUNT ) 
 			m_Text3dCount = 0;
 		_no = m_Text3dCount ;
 	}
-	
+
 	m_Text3dPos[_no] = _pos;
 	if (D3DXCreateText( m_pDevice, 
 		m_hdc,
@@ -467,8 +468,8 @@ HRESULT CDebug::AddText3D( int _no, D3DXVECTOR3 _pos, LPTSTR _str)
 		NULL,
 		NULL)  != D3D_OK)
 		assert(false);
-		
-		
+
+
 	m_Text3dCount = _no;
 
 	SelectObject(m_hdc, hFontOld);
