@@ -6,7 +6,6 @@
 #include "KeyManager.h"
 #include "ResourceManager.h"
 #include "ObjectManager.h"
-//#include "TString.h"
 #include "Entity.h"
 #include "ThirdCam.h"
 #include "Mouse.h"
@@ -16,6 +15,12 @@
 #include "Frustum.h"
 #include "SceneManager.h"
 #include <time.h>
+
+#include "ZombieAttackState.h"
+#include "ZombieIdleState.h"
+#include "ZombieTrackingState.h"
+#include "ZombieFleeState.h"
+
 
 CEngine::CEngine(void)
 	: m_pDevice(NULL)
@@ -205,9 +210,9 @@ HRESULT CEngine::CreateShader()
 
 void CEngine::Update()
 {
-	
-	_SINGLE(CObjectManager)->Update();
 	_SINGLE(CCameraManager)->Update();
+	_SINGLE(CObjectManager)->Update();
+	
 	#ifdef _DEBUG
 	_SINGLE(CDebug)->Update();
 #endif
@@ -274,6 +279,11 @@ VOID CEngine::Destroy()
 #ifdef _DEBUG
 	_SINGLE(CDebug)->KillInstance();
 #endif
+
+	_SINGLE(CZombieAttackState)->KillInstance();
+	_SINGLE(CZombieIdleState)->KillInstance();
+	_SINGLE(CZombieTrackingState)->KillInstance();
+	_SINGLE(CZombieFleeState)->KillInstance();
 
 	if(m_pDevice)
 		m_pDevice->KillInstance();
