@@ -3,6 +3,7 @@
 #include "CameraManager.h"
 #include "Camera.h"
 #include "Debug.h"
+#include "TimeManager.h"
 
 CTiger::CTiger(void)
 	: m_Durability(0)
@@ -34,7 +35,7 @@ void CTiger::Update()
 
 void CTiger::Input()
 {
-	m_fMoveSpeed = 7.0 * _SINGLE(CDebug)->GetDeltaTime();
+	m_fMoveSpeed = 10.0 * _SINGLE(CTimeManager)->GetDeltaTime();
 	const KEYINFO* pInfo = _SINGLE(CKeyManager)->GetKey(KEYNAME_RIGHT);
 	//중복키를 처리하기위한 벡터
 	D3DXVECTOR3 vInput = D3DXVECTOR3(0, 0, 0);

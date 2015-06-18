@@ -57,14 +57,7 @@ private:
 	//그려지는 폴리곤 수 
 	UINT			m_FaceCount;
 
-	//FPS
-	UINT			m_FPS;
-	//FPS측정용 시간
-	double			m_CurrentTime;
-	double			m_PreviousTime;
-	double			m_DeltaTime;
-	double			m_ElapsedTime;
-	float			m_FrameCnt;
+	
 
 	//와이어프레임 트리거
 	bool			m_bWireFrame;
@@ -112,8 +105,8 @@ public:
 	HRESULT			AddLog(int _idx, LPTSTR _log, ...);
 	//고정된 위치(우측상단)에 로그 출력.enum으로 번호 배정
 	HRESULT			AddStaticLog(int, LPTSTR , ...);
-	//화면에 3차원 텍스트 출력
-	HRESULT			AddText3D(int, D3DXVECTOR3, LPTSTR);
+	//화면에 3차원 텍스트 출력(_isUpdate : 문자열이 바뀌었으면 true)
+	HRESULT			AddText3D(int, D3DXVECTOR3, LPTSTR, bool = false);
 	//벡터 출력을 위한 문자열 변환
 	HRESULT			VectorToString(LPTSTR dest, D3DXVECTOR3 vec);
 	//출력할 벡터 추가
@@ -124,10 +117,6 @@ public:
 	void			InitFaceCount();
 	//폴리곤수 추가(그릴때마다 호출)
 	void			AddFaceCount(UINT);
-	//초당 프레임수 체크
-	void			CheckFPS();
-	
-	double		GetDeltaTime();
 
 	void			ResetLine();
 

@@ -172,6 +172,10 @@ void CStaticMesh::Render(CShader* pShader, const UINT& uPass)
 {
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
 	
+	//스트림 0으로 세팅 되어있는 메인 버텍스 버퍼 바인드
+	//g_NumBoxes 는 출력할 인스턴싱 데이터 개수
+	
+
 	for( DWORD i = 0; i < m_pMeshInfo->dwNumMaterials; i++ )
 	{
 		// Set the material and texture for this subset
@@ -183,6 +187,7 @@ void CStaticMesh::Render(CShader* pShader, const UINT& uPass)
 
 		// Draw the mesh subset
 		pShader->BeginPass(uPass);
+		
 		m_pMeshInfo->pMesh->DrawSubset( i );
 		pShader->EndPass();
 		

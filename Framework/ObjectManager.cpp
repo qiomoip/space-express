@@ -6,9 +6,11 @@
 #include "Tiger.h"
 #include "Frustum.h"
 #include "Zombie.h"
-
+#include "Debug.h"
 //임시
 #include "Mesh.h"
+
+#include "Device.h"
 
 
 CObjectManager::CObjectManager(void)
@@ -133,18 +135,35 @@ HRESULT CObjectManager::Render()
 	//{
 	//	iter->second->Render();
 	//}
+	
+	//LPDIRECT3DDEVICE9 pd3dDevice = _SINGLE(CDevice)->GetDevice();
+	//pd3dDevice->SetStreamSourceFreq( 0, D3DSTREAMSOURCE_INDEXEDDATA | g_NumBoxes );
+	//pd3dDevice->SetStreamSource( 0, g_pVBBox, 0, sizeof( BOX_VERTEX ) );
+
+	////스트림 1로 세팅 되어있는 세컨드 버텍스 버퍼 바인드
+	////버텍스당 하나의 인스턴싱 데이터를 가지므로 1과 바인드한다
+	//pd3dDevice->SetStreamSourceFreq( 1, D3DSTREAMSOURCE_INSTANCEDATA | 1ul );
+	//pd3dDevice->SetStreamSource( 1, g_pVBInstanceData, 0, sizeof( BOX_INSTANCEDATA_POS ) );
+	
+	static UINT dpcall ;
+	dpcall = 0;
 	for(int i = RTYPE_NONE + 1; i < RTYPE_MAX; ++i)
 	{
 		for(list<CEntity*>::iterator iter = m_listRenderList[i].begin(); iter != m_listRenderList[i].end();
 			++iter)
 		{
 			_SINGLE(CShaderManager)->BeginShader((*iter)->GetShader(), (*iter)->GetTechKey());
-
+			
+			dpcall++;
 			(*iter)->Render();
 
 			_SINGLE(CShaderManager)->EndShader((*iter)->GetShader());
 		}
 	}
+#ifdef _DEBUG
+	_SINGLE(CDebug)->AddStaticLog(LOG_DPCALL, _T("DP call : %d"), dpcall) ;
+#endif _DEBUG
+
 	//렌더리스트 초기화
 	Reset_RenderList();
 

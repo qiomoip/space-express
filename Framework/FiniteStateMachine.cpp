@@ -48,7 +48,7 @@ void CFiniteStateMachine::ChangeState( CState* _pState)
 	m_CurrentState->Enter(m_pOwner);
 	
 	_SINGLE(CDebug)->AddText3D( ((CZombie*)m_pOwner)->GetId() , m_pOwner->GetPos(),
-		m_CurrentState->ToString());
+		m_CurrentState->ToString(), true);
 }
 
 void CFiniteStateMachine::RevertState()

@@ -4,6 +4,7 @@
 #include "Frustum.h"
 #include "ObjectManager.h"
 #include "Tiger.h"
+#include "TimeManager.h"
 
 CZombie::CZombie(void) : 
 	m_Hero(NULL), 
@@ -78,7 +79,7 @@ void CZombie::Update()
 
 void CZombie::Input()
 {
-	m_fMoveSpeed = 3.f * _SINGLE(CDebug)->GetDeltaTime();
+	m_fMoveSpeed = 3.f * _SINGLE(CTimeManager)->GetDeltaTime();
 
 	m_pFSM->Update();
 	//D3DXVECTOR3 vLen = m_vPos - m_Hero->GetPos();
@@ -103,7 +104,7 @@ void CZombie::Input()
 void CZombie::Attack(/*CEntity* _ett*/)
 {
 	//힘 만큼 택배의 파손도를 증가시킴.
-	m_fElapsedTime -= _SINGLE(CDebug)->GetDeltaTime();
+	m_fElapsedTime -= _SINGLE(CTimeManager)->GetDeltaTime();
 	if( m_fElapsedTime <= 0.0 )
 	{
 		((CTiger*)m_Hero)->Attacked( m_fPower );

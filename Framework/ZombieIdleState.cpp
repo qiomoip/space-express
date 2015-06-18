@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "Zombie.h"
 #include "Debug.h"
+#include "TimeManager.h"
 
 #include <time.h>
 CZombieIdleState::CZombieIdleState(void) :
@@ -42,7 +43,7 @@ void CZombieIdleState::Excute(CEntity* _ett)
 	//배회하기 
 
 	static double elapsedTime = 0.0;
-	elapsedTime += _SINGLE(CDebug)->GetDeltaTime();
+	elapsedTime += _SINGLE(CTimeManager)->GetDeltaTime();
 	//멍때리는 상태라면
 	if( m_isStay)
 	{

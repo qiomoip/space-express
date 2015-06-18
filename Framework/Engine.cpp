@@ -15,7 +15,7 @@
 #include "Frustum.h"
 #include "SceneManager.h"
 #include <time.h>
-
+#include "TimeManager.h"
 #include "ZombieAttackState.h"
 #include "ZombieIdleState.h"
 #include "ZombieTrackingState.h"
@@ -111,15 +111,18 @@ HRESULT CEngine::CreateEntity()
 	pTerrain->SetTechKey("DefaultTech");
 	pTerrain->SetPass(PASS_DEFAULT);
 	//*/
-
+	
+	//*
 	CEntity* pEnvi = _SINGLE(CObjectManager)->CreateEntity(
 		MT_STATIC, RTYPE_ENVIRONMENT, "Envi", MN_ENVIRONMENT, _T("Environment.X"));
 	pEnvi->SetPos(D3DXVECTOR3(0.f, 10.f, 0.f));
 	pEnvi->SetScale(5.f, 5.f, 5.f);
 	pEnvi->SetShader(SHADER_DEFAULT);
 	pEnvi->SetTechKey("DefaultTech");
-	pEnvi->SetPass(PASS_DEFAULT/*PASS_NOTEXTURE*/);
-
+	pEnvi->SetPass(PASS_DEFAULT);//PASS_NOTEXTURE
+	//*/
+	
+	//*
 #ifdef _DEBUG
 	CEntity* pGrid = _SINGLE(CObjectManager)->CreateEntity(
 		MT_GRID, RTYPE_GRID, "DebugGrid", MN_GRID, _T("Grid"));
@@ -127,6 +130,7 @@ HRESULT CEngine::CreateEntity()
 	pGrid->SetTechKey("DefaultTech");
 	pGrid->SetPass(PASS_NOTEXTURE);
 #endif
+	//*/
 
 	//박스로 빌딩 역할 (임시)
 /*
@@ -279,7 +283,7 @@ VOID CEngine::Destroy()
 #ifdef _DEBUG
 	_SINGLE(CDebug)->KillInstance();
 #endif
-
+	_SINGLE(CTimeManager)->KillInstance();
 	_SINGLE(CZombieAttackState)->KillInstance();
 	_SINGLE(CZombieIdleState)->KillInstance();
 	_SINGLE(CZombieTrackingState)->KillInstance();
@@ -305,10 +309,12 @@ VOID CEngine::Run()
 
 void CEngine::Input()
 {
+	
+	_SINGLE(CTimeManager)->CheckFps();
 	_SINGLE(CKeyManager)->SetKeyState();
 	_SINGLE(CCameraManager)->Input();
 	_SINGLE(CObjectManager)->Input();
-
+	
 #ifdef _DEBUG
 	_SINGLE(CDebug)->Input();
 #endif

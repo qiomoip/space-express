@@ -42,12 +42,12 @@ void CKeyManager::SetKeyState()
 		CheckKey(iter);
 	}
 #ifdef _DEBUG
-	_SINGLE(CDebug)->AddLog(0, _T("카메라 상하 회전 : W,S")  );
-	_SINGLE(CDebug)->AddLog(1, _T("카메라 좌우 회전 : A,D")  );
-	_SINGLE(CDebug)->AddLog(2, _T("카메라 전후 이동 : HOME, END")  );
-	_SINGLE(CDebug)->AddLog(3, _T("카메라 상하 이동 : INS, PAGE_UP")  );
-	_SINGLE(CDebug)->AddLog(4, _T("카메라 좌우 이동 : DEL, PAGE_DOWN")  );
-	_SINGLE(CDebug)->AddLog(5, _T("캐릭터 4방향 이동: 화살표")  );
+	_SINGLE(CDebug)->AddStaticLog(LOG_KEY_INFO_0, _T("카메라 상하 회전 : W,S")  );
+	_SINGLE(CDebug)->AddStaticLog(LOG_KEY_INFO_1, _T("카메라 좌우 회전 : A,D")  );
+	_SINGLE(CDebug)->AddStaticLog(LOG_KEY_INFO_2, _T("카메라 전후 이동 : HOME, END")  );
+	_SINGLE(CDebug)->AddStaticLog(LOG_KEY_INFO_3, _T("카메라 상하 이동 : INS, PAGE_UP")  );
+	_SINGLE(CDebug)->AddStaticLog(LOG_KEY_INFO_4, _T("카메라 좌우 이동 : DEL, PAGE_DOWN")  );
+	_SINGLE(CDebug)->AddStaticLog(LOG_KEY_INFO_5, _T("캐릭터 4방향 이동: 화살표")  );
 #endif
 }
 

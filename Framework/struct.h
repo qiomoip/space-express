@@ -125,3 +125,13 @@ typedef struct _tagBoxSize
 	D3DXVECTOR3 vMin;
 	D3DXVECTOR3 vMax;
 }BOXSIZE;
+
+
+
+typedef struct _tagTime
+{
+	double			m_CurrentTime;
+	double			m_PreviousTime;
+	double			m_DeltaTime;
+	double			m_ElapsedTime;
+}TIME_INFO;

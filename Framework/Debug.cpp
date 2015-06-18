@@ -9,6 +9,7 @@
 #include "Frustum.h"
 #include "ShaderManager.h"
 #include "Shader.h"
+#include "TimeManager.h"
 #pragma comment(lib, "winmm.lib")
 
 CDebug::CDebug(void)
@@ -23,12 +24,6 @@ CDebug::CDebug(void)
 	, m_LogCount(0)
 	, m_StaticLogCount(0)
 	, m_FaceCount(0)
-	, m_FPS(0)
-	, m_CurrentTime(0)
-	, m_PreviousTime(0)
-	, m_DeltaTime(0)
-	, m_ElapsedTime(0)
-	, m_FrameCnt(0)
 	, m_bWireFrame(false)
 	, m_LineCount(0)
 	, m_PosMarkSize(10.f)
@@ -71,8 +66,7 @@ void CDebug::Initialize()
 	m_pDevice = _SINGLE(CDevice)->GetDevice();
 	if(!m_pDevice)
 		return;
-
-	m_PreviousTime = m_CurrentTime = GetTickCount() * 0.001;
+	_SINGLE(CTimeManager)->Init();
 	//CreateVertexBuffer();
 
 	//memset(&m_tGridMaterial, 0, sizeof(D3DMATERIAL9));
@@ -165,7 +159,7 @@ void CDebug::CreateVertexBuffer()
 
 void CDebug::Update()
 {
-
+	
 }
 
 void CDebug::Render()
@@ -208,7 +202,7 @@ void CDebug::Destroy()
 
 void CDebug::Input()
 {
-	CheckFPS();
+
 	const KEYINFO* keyInfo = _SINGLE(CKeyManager)->GetKey( KEYNAME_WIREFRAME_TRIGGER ) ;
 
 	if ( keyInfo->bPush ) 
@@ -373,6 +367,7 @@ HRESULT CDebug::DrawLog()
 
 HRESULT	CDebug::DrawText3D()
 {
+
 	m_pDevice->BeginScene();
 	for(int i = 0; i < m_Text3dCount; ++i)
 	{
@@ -383,7 +378,8 @@ HRESULT	CDebug::DrawText3D()
 		m_TextMat = m_TextScale * m_TextRot * m_TextMove;
 		m_pDevice->SetMaterial( &m_TextMaterial);
 		m_pDevice->SetTransform(D3DTS_WORLD, &m_TextMat);
-		m_Text3D[i]->DrawSubset(0);
+		if( m_Text3D[i] )
+			m_Text3D[i]->DrawSubset(0);
 	}
 	m_pDevice->EndScene();
 
@@ -446,32 +442,35 @@ HRESULT CDebug::AddStaticLog(int idx, LPTSTR _log, ...)
 	return S_OK;
 }
 
-HRESULT CDebug::AddText3D( int _no, D3DXVECTOR3 _pos, LPTSTR _str)
+HRESULT CDebug::AddText3D( int _no, D3DXVECTOR3 _pos, LPTSTR _str, bool _isUpdate)
 {
 	HFONT hFontOld;
 	hFontOld = (HFONT)SelectObject(m_hdc, m_hFont);
 
 	if( _no >= LOG_COUNT  || _no < 0 )
 	{
-		if( m_Text3dCount >= LOG_COUNT ) 
+		//로그 최대 갯수안에 들어오지 않거나 0보다 작으면 반환;
+		/*if( m_Text3dCount >= LOG_COUNT ) 
 			m_Text3dCount = 0;
-		_no = m_Text3dCount ;
+		_no = m_Text3dCount ;*/
+		AddLog(-1, _T("3D문자열 추가 실패 : %s"), _str);
+		return E_FAIL;
 	}
-
 	m_Text3dPos[_no] = _pos;
-	if (D3DXCreateText( m_pDevice, 
-		m_hdc,
-		_str,
-		0.5f,
-		0.4f,
-		&m_Text3D[_no++],
-		NULL,
-		NULL)  != D3D_OK)
-		assert(false);
 
-
-	m_Text3dCount = _no;
-
+	if( _no >= m_Text3dCount || _isUpdate )
+	{
+		if (D3DXCreateText( m_pDevice, 
+			m_hdc,
+			_str,
+			0.5f,
+			0.4f,
+			&m_Text3D[_no++],
+			NULL,
+			NULL)  != D3D_OK)
+			assert(false);
+		m_Text3dCount = _no;
+	}
 	SelectObject(m_hdc, hFontOld);
 	return S_OK;
 }
@@ -517,28 +516,6 @@ void CDebug::AddFaceCount(UINT _faces)
 	m_FaceCount += _faces;
 }
 
-
-void CDebug::CheckFPS()
-{
-	m_CurrentTime = timeGetTime() * 0.001;
-	m_DeltaTime = (m_CurrentTime - m_PreviousTime);
-	m_ElapsedTime += m_DeltaTime;
-	m_PreviousTime = m_CurrentTime;
-	m_FrameCnt++;
-
-	if(m_ElapsedTime >= 1.0)
-	{
-		m_FPS = (UINT)(m_FrameCnt / m_ElapsedTime);
-		AddStaticLog(LOG_FPS, _T("FPS : %d"), m_FPS );
-		m_ElapsedTime = 0.0;
-		m_FrameCnt = 0.f;
-	}
-}
-
-double CDebug::GetDeltaTime()
-{
-	return m_DeltaTime;
-}
 
 
 void CDebug::ResetLine()
