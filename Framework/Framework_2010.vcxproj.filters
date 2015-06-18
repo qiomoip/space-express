@@ -119,6 +119,12 @@
     <Filter Include="FSM\State">
       <UniqueIdentifier>{c755ebb0-2d68-480d-9612-0d2935bd2dc5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FSM\State\ZombieState">
+      <UniqueIdentifier>{681083cd-976b-45a2-aad6-0f4d086acce2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\Manager\TimeManager">
+      <UniqueIdentifier>{26ab653d-d85c-4af1-b9d0-cfe921a9fe55}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXUT\Optional\directx.ico">
@@ -211,14 +217,22 @@
     <ClCompile Include="FiniteStateMachine.cpp">
       <Filter>FSM</Filter>
     </ClCompile>
+    <ClCompile Include="ZombieAttackState.cpp">
+      <Filter>FSM\State\ZombieState</Filter>
+    </ClCompile>
+    <ClCompile Include="ZombieFleeState.cpp">
+      <Filter>FSM\State\ZombieState</Filter>
+    </ClCompile>
     <ClCompile Include="ZombieIdleState.cpp">
-      <Filter>FSM\State</Filter>
+      <Filter>FSM\State\ZombieState</Filter>
     </ClCompile>
     <ClCompile Include="ZombieTrackingState.cpp">
-      <Filter>FSM\State</Filter>
+      <Filter>FSM\State\ZombieState</Filter>
     </ClCompile>
-    <ClCompile Include="ZombieFleeState.cpp" />
-    <ClCompile Include="ZombieAttackState.cpp" />
+    <ClCompile Include="TimeManager.cpp">
+      <Filter>Engine\Director\Manager\TimeManager</Filter>
+    </ClCompile>
+    <ClCompile Include="QuadTree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -323,14 +337,22 @@
     <ClInclude Include="State.h">
       <Filter>FSM\State</Filter>
     </ClInclude>
+    <ClInclude Include="ZombieAttackState.h">
+      <Filter>FSM\State\ZombieState</Filter>
+    </ClInclude>
+    <ClInclude Include="ZombieFleeState.h">
+      <Filter>FSM\State\ZombieState</Filter>
+    </ClInclude>
     <ClInclude Include="ZombieIdleState.h">
-      <Filter>FSM\State</Filter>
+      <Filter>FSM\State\ZombieState</Filter>
     </ClInclude>
     <ClInclude Include="ZombieTrackingState.h">
-      <Filter>FSM\State</Filter>
+      <Filter>FSM\State\ZombieState</Filter>
     </ClInclude>
-    <ClInclude Include="ZombieFleeState.h" />
-    <ClInclude Include="ZombieAttackState.h" />
+    <ClInclude Include="TimeManager.h">
+      <Filter>Engine\Director\Manager\TimeManager</Filter>
+    </ClInclude>
+    <ClInclude Include="QuadTree.h" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
