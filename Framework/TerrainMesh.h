@@ -1,11 +1,13 @@
 #pragma once
 #include "Mesh.h"
 class CTexture;
+class CQuadTree;
 
 class CTerrainMesh
 	: public CMesh
 {
 private:
+	
 	LPDIRECT3DVERTEXBUFFER9		m_pVB;
 	LPDIRECT3DINDEXBUFFER9		m_pIB;
 	CTexture*					m_pTexture;
@@ -15,6 +17,9 @@ private:
 	string						m_strFileName;
 	int							m_iTriNum;
 
+	CQuadTree*					m_QuadTree;
+	VERTEXTERRAIN*				m_pvHeightMap;
+	
 public:
 	void Render(CShader* pShader, const UINT& uPass);
 	void Destroy();

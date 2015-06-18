@@ -27,6 +27,7 @@ typedef struct _tagSphereVertex
 
 typedef struct _tagTerrainVertex
 {
+	enum _FVF { FVF=(D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX1) };
 	D3DXVECTOR3 vPos;
 	D3DXVECTOR3 vNormal;
 	D3DXVECTOR2 vTex;

@@ -6,6 +6,7 @@
 #include "ResourceManager.h"
 #include "Shader.h"
 #include "Debug.h"
+#include "QuadTree.h"
 
 CTerrainMesh::CTerrainMesh(void)
 	: m_pVB(NULL)
@@ -13,6 +14,7 @@ CTerrainMesh::CTerrainMesh(void)
 	, m_pTexture(NULL)
 	, m_strFileName("")
 	, m_iTriNum(0)
+	, m_QuadTree(NULL)
 {
 	memset(&m_tInfo, 0, sizeof(m_tInfo));
 	memset(&m_tMtrl, 0, sizeof(m_tMtrl));
@@ -110,6 +112,13 @@ HRESULT CTerrainMesh::LoadResource(const LPTSTR _meshName)
 
 void CTerrainMesh::Render(CShader* pShader, const UINT& uPass)
 {
+	LPDWORD		pI = NULL;
+	if( FAILED( m_pIB->Lock( 
+		0, (m_tInfo.iCol-1)*(m_tInfo.iRow-1)*2 * sizeof(INDEX), (void**)&pI, 0 ) ) )
+        return ;
+
+	m_iTriNum = m_QuadTree->GenerateIndex( pI, m_pvHeightMap, _SINGLE(CFrustum) );
+    m_pIB->Unlock();
 	//D3DXMATRIX matWorld;
 	//D3DXMatrixIdentity(&matWorld);
 
@@ -119,7 +128,7 @@ void CTerrainMesh::Render(CShader* pShader, const UINT& uPass)
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_NEVER);
-
+	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 	pShader->BeginPass(uPass);
 
 	_SINGLE(CDevice)->GetDevice()->SetStreamSource(0, m_pVB, 0, sizeof(_tagTerrainVertex));
@@ -131,6 +140,7 @@ void CTerrainMesh::Render(CShader* pShader, const UINT& uPass)
 		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 	else
 		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+	
 	_SINGLE(CDevice)->GetDevice()->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_tInfo.iVtxNum,
 		0, m_iTriNum);
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, true);
@@ -154,6 +164,10 @@ bool CTerrainMesh::CreateTerrainInfo(const TERRAININFO& tInfo)
 	if(!CreateIndexInfo())
 		return false;
 
+	
+	m_QuadTree = new CQuadTree( m_tInfo.iRow, m_tInfo.iCol );
+	
+	m_QuadTree->Build( m_pvHeightMap );
 	return true;
 }
 
@@ -200,7 +214,8 @@ bool CTerrainMesh::CreateVertexInfo()
 	CloseHandle(hFile);
 
 	VERTEXTERRAIN* pV = NULL;
-
+	
+	m_pvHeightMap = new VERTEXTERRAIN[m_tInfo.iCol * m_tInfo.iRow];
 	m_pVB->Lock(0, 0, (void**)&pV, 0);
 
 	for(int i = 0; i < m_tInfo.iCol; ++i)
@@ -219,10 +234,12 @@ bool CTerrainMesh::CreateVertexInfo()
 			//	pV[iIndex].vPos.y = 0.f;
 			pV[iIndex].vTex = D3DXVECTOR2( float(j) / (m_tInfo.iRow - 1.f), 1.f - float(i) / (m_tInfo.iCol - 1.f));
 			pV[iIndex].vNormal = D3DXVECTOR3(0.f, 1.f, 0.f);
+			m_pvHeightMap[iIndex] = pV[iIndex];
 		}
 	}
 
-	m_pVB->Unlock();
+	m_pVB->Unlock();	
+	//지형 분할 시작
 	Safe_Delete(pPixel);
 	return true;
 }
@@ -262,7 +279,6 @@ bool CTerrainMesh::CreateIndexInfo()
 		}
 	}
 
-	m_pIB->Unlock();
 	return true;
 }
 
@@ -270,5 +286,7 @@ void CTerrainMesh::Destroy()
 {
 	Safe_Release(m_pVB);
 	Safe_Release(m_pIB);
+	Safe_Delete(m_QuadTree);
+	Safe_Delete_Array(m_pvHeightMap);
 
 }

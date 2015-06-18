@@ -81,7 +81,7 @@ void CCameraManager::Update()
 	
 #endif
 	//절두체 설정
-	_SINGLE(CFrustum)->setFrustum( GetCurCam()->GetMatViewProj() );
+	_SINGLE(CFrustum)->setFrustum( GetCamera("MainCamera")->GetMatViewProj() );
 }
 
 void CCameraManager::Input()

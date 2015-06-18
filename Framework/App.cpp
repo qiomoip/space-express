@@ -1,8 +1,6 @@
 #include "App.h"
 #include "Engine.h"
 
-
-
 CApp::CApp(void)
 	: m_hWnd(NULL)
 	, m_hInst(NULL)

@@ -21,6 +21,8 @@ public:
 	bool Init();
 	//절두체를 평면 설정
 	bool setFrustum(const D3DXMATRIXA16&);
+	//점이 프러스텀 안에 있는가?
+	bool isIn( D3DXVECTOR3* pv );
 	//오브젝트가 절두체 안에 있는가?
 	bool isInFrustum(const D3DXVECTOR3&,const float) ;
 

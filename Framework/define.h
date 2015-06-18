@@ -98,3 +98,5 @@ define
 #define COLOR_MAGENTA  D3DCOLOR_ARGB(255, 255, 000, 255)
 
 #define LOG_COUNT		30
+
+#define PLANE_EPSILON	5.0f

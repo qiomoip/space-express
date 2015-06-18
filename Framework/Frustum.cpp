@@ -69,6 +69,26 @@ bool CFrustum::setFrustum(const D3DXMATRIXA16& pmatViewProj )
 	return TRUE;
 }
 
+/// 한점 v가 프러스텀안에 있으면 TRUE를 반환, 아니면 FALSE를 반환한다.
+bool CFrustum::isIn( D3DXVECTOR3* pv )
+{
+	float		fDist;
+//	int			i;
+
+	// 현재는 left, right, far plane만 적용한다.
+//	for( i = 0 ; i < 6 ; i++ )
+	{
+		fDist = D3DXPlaneDotCoord( &m_plane[3], pv );
+		if( fDist > PLANE_EPSILON ) return FALSE;	// plane의 normal벡터가 far로 향하고 있으므로 양수이면 프러스텀의 바깥쪽
+		fDist = D3DXPlaneDotCoord( &m_plane[4], pv );
+		if( fDist > PLANE_EPSILON ) return FALSE;	// plane의 normal벡터가 left로 향하고 있으므로 양수이면 프러스텀의 왼쪽
+		fDist = D3DXPlaneDotCoord( &m_plane[5], pv );
+		if( fDist > PLANE_EPSILON ) return FALSE;	// plane의 normal벡터가 right로 향하고 있으므로 양수이면 프러스텀의 오른쪽
+	}
+
+	return true;
+}
+
 bool CFrustum::isInFrustum(const D3DXVECTOR3& _vPos ,const float _size)
 {
 	//오브젝트와 절두체 평면과의 거리

@@ -11,7 +11,7 @@
 //#pragma warning( disable : 4996 ) // disable deprecated warning 
 #include "define.h"
 #include "App.h"
-#include "Engine.h"
+//#include "Engine.h"
 
 //-----------------------------------------------------------------------------
 // Name: wWinMain()
