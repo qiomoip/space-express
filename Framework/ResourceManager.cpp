@@ -6,6 +6,9 @@
 #include "Texture.h"
 #include "GridMesh.h"
 #include "BoxMesh.h"
+#include "Shader.h"
+#include "ShaderManager.h"
+#include "UIMesh.h"
 
 CResourceManager::CResourceManager(void)
 	: m_mapMesh(NULL)
@@ -97,6 +100,11 @@ CMesh* CResourceManager::LoadMesh(const eMESH_TYPE& eMeshType, const eMESH_NUM& 
 			pMesh = new CGridMesh;
 		}
 		break;
+	case MT_UI:
+		{
+			pMesh = new CUIMesh;
+		}
+		break;
 #endif
 	default:
 		break;
@@ -183,11 +191,26 @@ TCHAR* CResourceManager::GetResourcePathT(const LPTSTR _str)
 	TCHAR* pFileName = new TCHAR[256];
 	_tcscpy_s(pFileName, 256, preFix);
 	_tcscat_s(pFileName, 256, _str);
-
+	
 	return pFileName;
 }
 
 const map<eMESH_NUM, CMesh*>*		CResourceManager::GetMeshList() const
 {
 	return m_mapMesh;
+}
+
+void	CResourceManager::RenderInstancingData()
+{
+	map<eMESH_NUM, CMesh*>::iterator iter = m_mapMesh->find(MN_ZOMBIE);
+
+	CShader* pShader = _SINGLE(CShaderManager)->FindShader(SHADER_DEFAULT);
+
+	_SINGLE(CShaderManager)->BeginShader(SHADER_DEFAULT, "DefaultTech");
+
+	((CStaticMesh*)iter->second)->RenderInstance(pShader, PASS_INSTANCING);
+	((CStaticMesh*)iter->second)->ResetInstancingCount();
+
+	_SINGLE(CShaderManager)->EndShader(SHADER_DEFAULT);
+
 }

@@ -11,6 +11,7 @@
 #include <assert.h>
 #include <string>
 #include <sstream>
+#include <time.h>
 
 #ifdef	_DEBUG
 #include <crtdbg.h>
@@ -70,6 +71,8 @@ enum KEY
 	KEYNAME_TURN_CLOCKWISE,
 	KEYNAME_TURN_NCLOCKWISE,
 	KEYNAME_WIREFRAME_TRIGGER,
+	KEY_NAME_L_BUTTON,
+	KEY_NAME_R_BUTTON,
 };
 
 /*

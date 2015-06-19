@@ -36,6 +36,7 @@ public:
 public:
 	//비운 리스트에 비지블한 오브젝트만 삽입해줌.
 	void Push_RenderList(CEntity* pEntity);
+	void Remove_Object(CEntity*	pEntity);
 	//렌더리스트 초기화함수(매 프레임마다 비우고 다시 채워놓는다.)
 	void Reset_RenderList();
 	//렌더리스트 반환

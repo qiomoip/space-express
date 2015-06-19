@@ -18,3 +18,8 @@ void CMesh::Destroy()
 {
 	Safe_Delete_Array(m_arrayTexture);
 }
+
+bool CMesh::GetCollisionPos(RAY& tRay)
+{
+	return false;
+}

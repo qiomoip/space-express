@@ -3,6 +3,7 @@
 #include "define.h"
 
 class CMesh;
+class CShader;
 
 /*
 엔티티 클래스
@@ -12,6 +13,8 @@ class CMesh;
 
 class CEntity
 {
+public:
+	eMESH_NUM		m_eMeshNum;
 protected:
 	std::string		m_strName;
 	CMesh*			m_pMesh;
@@ -55,6 +58,10 @@ protected:
 	//경계구 메시
 	LPD3DXMESH		m_SphereMesh;
 
+	//카메라의 뷰 타입
+	eVIEW_TYPE		m_eView;
+	bool			m_bDrawSphere;
+
 public:
 	virtual void Initialize();
 	virtual void Update();
@@ -63,8 +70,9 @@ public:
 	bool Collision();
 	//경계구 생성.
 	VOID			InitSphereMesh();
-	//경계구 그리기
-	void DrawSphere(/*D3DXVECTOR3, float*/);
+	////경계구 그리기
+	//void DrawSphere(/*D3DXVECTOR3, float*/);
+	void DrawSphere(CShader* pShader);
 
 	bool ComputeNormalVector(LPD3DXMESH, D3DXVECTOR3&, D3DXVECTOR3&, CEntity* );
 public:
@@ -86,7 +94,8 @@ public:
 	void SetShader(const eSHADER_KEY& pShader);
 	void SetVisiable(bool);
 	void SetRotation(const eAxis_TYPE& eAxis, const float& fAngle);
-	
+	void SetViewType(const eVIEW_TYPE& eView);
+	void SetDrawSphere(const bool& bDraw);
 
 //Getter
 public:

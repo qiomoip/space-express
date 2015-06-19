@@ -6,7 +6,8 @@
 #include "Shader.h"
 
 CGridMesh::CGridMesh(void)
-	: m_pGridVB(NULL)
+	: CMesh()
+	, m_pGridVB(NULL)
 	, m_pLineVB(NULL)
 	, m_iCnt(0)
 {

@@ -30,8 +30,9 @@ public:
 
 	CCamera*					GetCamera(const string& _CameraName);
 	const CCamera*				GetCurCam() const;
-	void						SetTransform(const string& _CameraName);
-	void						SetTransform();
+	void						SetTransform(const string& _CameraName, const eVIEW_TYPE& eView = VIEW_PERSPECTIVE);
+	void						SetTransform(const eVIEW_TYPE& eView = VIEW_PERSPECTIVE);
+
 
 	CCamera* 					CreateCamera(const eCAMERA_NUM& eCam);
 

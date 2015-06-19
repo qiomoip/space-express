@@ -101,7 +101,7 @@ public:
 	void			DrawLine();
 	//로그 추가
 	//HRESULT		AddLog(LPTSTR _log, ...);
-	//특정 인덱스에 로그 추가
+	//인덱스에 로그 추가(idx에 -1입력시 가장 마지막에 출력)
 	HRESULT			AddLog(int _idx, LPTSTR _log, ...);
 	//고정된 위치(우측상단)에 로그 출력.enum으로 번호 배정
 	HRESULT			AddStaticLog(int, LPTSTR , ...);

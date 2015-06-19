@@ -1,13 +1,6 @@
 #pragma once
 #include "Singleton.h"
 
-typedef struct _tagRay
-{
-	D3DXVECTOR3 vOrigin;
-	D3DXVECTOR3 vDir;
-	D3DXVECTOR3 vIntersectPos;
-}RAY;
-
 class CMouse
 	: public CSingleton<CMouse>
 {
@@ -29,6 +22,7 @@ public:
 //Getter
 public:
 	const RAY& GetRay() const;
+	const POINT& GetMousePos(){return m_pt;};
 
 private:
 	CMouse(void);

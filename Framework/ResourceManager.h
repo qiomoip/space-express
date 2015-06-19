@@ -36,5 +36,6 @@ public:
 
 	const map<eMESH_NUM, CMesh*>*		GetMeshList() const;
 
+	void							RenderInstancingData();
 };
 

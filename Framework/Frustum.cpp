@@ -4,9 +4,7 @@
 #include "Device.h"
 CFrustum::CFrustum(void) 
 {
-	memset(m_plane, 0 , sizeof(m_plane[0]) * 6 );
-	memset(m_vPos, 0 , sizeof(m_vPos) );
-	memset(m_vtx, 0 , sizeof(m_vtx[0]) * 8 );
+	Init();
 }
 
 
@@ -26,9 +24,8 @@ bool CFrustum::Init()
 
 bool CFrustum::setFrustum(const D3DXMATRIXA16& pmatViewProj )
 {
-	int				i;
 	D3DXMATRIXA16	matInv;
-
+	D3DXMatrixIdentity( &matInv );
 	// 투영행렬까지 거치면 모든 3차원 월드좌표의 점은 (-1,-1,0) ~ (1,1,1)사이의 값으로 바뀐다.
 	// m_vtx에 이 동차공간의 경계값을 넣어둔다.
 	m_vtx[0].x = -1.0f;	m_vtx[0].y = -1.0f;	m_vtx[0].z = 0.0f;
@@ -50,7 +47,7 @@ bool CFrustum::setFrustum(const D3DXMATRIXA16& pmatViewProj )
 	// 역행렬( Matrix_view * Matrix_Proj )^-1를 양변에 곱하면
 	// Vertex_최종 * 역행렬( Matrix_view * Matrix_Proj )^-1 = Vertex_World 가 된다.
 	// 그러므로, m_vtx * matInv = Vertex_world가 되어, 월드좌표계의 프러스텀 좌표를 얻을 수 있다.
-	for( i = 0; i < 8; i++ )
+	for( int i = 0; i < 8; i++ )
 		D3DXVec3TransformCoord( &m_vtx[i], &m_vtx[i], &matInv );
 
 	// 0번과 5번은 프러스텀중 near평면의 좌측상단과 우측하단이므로, 둘의 좌표를 더해서 2로 나누면
@@ -92,7 +89,7 @@ bool CFrustum::isIn( D3DXVECTOR3* pv )
 bool CFrustum::isInFrustum(const D3DXVECTOR3& _vPos ,const float _size)
 {
 	//오브젝트와 절두체 평면과의 거리
-	float		fDist;
+	float		fDist = 0.f;
 	// 현재는 left, right, far plane만 적용한다.
 	for(int i = 0 ; i < 6 ; i++ )
 	{
@@ -143,6 +140,7 @@ BOOL CFrustum::Draw( LPDIRECT3DDEVICE9 pDev )
 	} VTX;
 
 	VTX		vtx[8];
+	memset( vtx, 0, sizeof(vtx) * 8);
 
 	for( int i = 0 ; i < 8 ; i++ )
 		vtx[i].p = m_vtx[i];

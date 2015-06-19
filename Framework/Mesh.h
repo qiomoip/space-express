@@ -22,6 +22,8 @@ public:
 	virtual const eMESH_TYPE GetColliderType() const {return m_ColType;}
 
 	virtual const LPD3DXMESH GetMesh() const {return NULL;};
+	
+	virtual bool GetCollisionPos(RAY& tRay);
 
 public:
 	CMesh(void);

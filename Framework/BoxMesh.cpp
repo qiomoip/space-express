@@ -3,12 +3,12 @@
 #include "Shader.h"
 
 CBoxMesh::CBoxMesh(void)
-	: m_pMesh(NULL)
+	: CMesh()
+	, m_pMesh(NULL)
 	, m_fRadius(0.f)
 {
 	memset(&m_tMaterial, 0, sizeof(D3DMATERIAL9));
-	memset(&m_Size.vMax, 0, sizeof(D3DXVECTOR3));
-	memset(&m_Size.vMin, 0, sizeof(D3DXVECTOR3));
+	memset(&m_Size, 0, sizeof(BOXSIZE));
 	m_ColType = MT_BOX;
 }
 

@@ -7,8 +7,15 @@
 #include "Debug.h"
 
 CStaticMesh::CStaticMesh(void)
-	: m_pMeshInfo(NULL)
+	: CMesh()
+	, m_pMeshInfo(NULL)
 	, m_pD3DXMtrlBuffer(NULL)
+	, m_pDeclGeometry(NULL)
+	, m_pCloneMesh(NULL)
+	, m_pVB(NULL)
+	, m_pIB(NULL)
+	, m_pInstancingVB(NULL)
+	, m_iAddInstanceData(0)
 	
 {
 	m_ColType = MT_STATIC;
@@ -44,9 +51,11 @@ HRESULT CStaticMesh::LoadMesh(const LPTSTR szMeshName)
 
 	LPTSTR str = _SINGLE(CResourceManager)->GetResourcePathT(m_pMeshInfo->pName);
 
+	LPD3DXBUFFER	pAdj = NULL;
+
 	//메시 로드
 	if(	D3DXLoadMeshFromX( str, D3DXMESH_SYSTEMMEM, _SINGLE(CDevice)->GetDevice(), 
-		NULL, &m_pD3DXMtrlBuffer, NULL, &m_pMeshInfo->dwNumMaterials, &m_pMeshInfo->pMesh)		)
+		&pAdj, &m_pD3DXMtrlBuffer, NULL, &m_pMeshInfo->dwNumMaterials, &m_pMeshInfo->pMesh)		)
 	{
 		Safe_Delete_Array(str);
 		Safe_Delete(m_pMeshInfo);
@@ -57,6 +66,75 @@ HRESULT CStaticMesh::LoadMesh(const LPTSTR szMeshName)
 	GetSize();
 
 	Safe_Delete_Array(str);
+
+
+	D3DVERTEXELEMENT9 pDecl[] =
+	{
+		{0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
+		{0, 12, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL, 0},
+		{0, 24, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TANGENT, 0},
+		{0, 36, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0},	
+		D3DDECL_END()
+	};
+
+	LPD3DXMESH pMesh = NULL;
+
+
+	m_pMeshInfo->pMesh->CloneMesh( m_pMeshInfo->pMesh->GetOptions(), pDecl,
+		_SINGLE(CDevice)->GetDevice(), &pMesh );
+
+	//포맷이 변경된 메시 데이터
+	m_pCloneMesh = pMesh;
+
+	D3DXComputeTangent(m_pCloneMesh, 0 ,0, 0, TRUE, NULL);
+
+	//메시 최적화
+		m_pCloneMesh->OptimizeInplace(D3DXMESHOPT_COMPACT | D3DXMESHOPT_ATTRSORT | 
+		D3DXMESHOPT_VERTEXCACHE,
+		(DWORD*)pAdj->GetBufferPointer(),
+		NULL, NULL, NULL);
+
+	//이 버텍스 버퍼가 메인 버텍스 버퍼인 듯...
+	m_pCloneMesh->GetVertexBuffer(&m_pVB);
+	m_pCloneMesh->GetIndexBuffer(&m_pIB);
+
+	D3DVERTEXELEMENT9	decl[MAX_FVF_DECL_SIZE]	= {0};
+
+	//메인 메시의 선언 정보를 가져온다
+	m_pCloneMesh->GetDeclaration(decl);
+
+	//Geometry 선언 정보를 인스턴싱 데이터로 수정한다
+	_SINGLE(CDevice)->GetDevice()->CreateVertexDeclaration(g_tTotalFmt,
+		&m_pDeclGeometry);
+
+	//attribute range 정보를 가져온다 (특성 테이블?)
+	/*AttribId
+		속성 테이블의 식별자.
+	FaceStart
+		시작면.
+	FaceCount
+		면의 수.
+	VertexStart
+		시작 정점.
+	VertexCount
+		정점의 수.*/
+
+	m_pAttr	= new D3DXATTRIBUTERANGE[m_pMeshInfo->dwNumMaterials];
+
+	/*속성 테이블은, 다른 텍스처, 렌더링 스테이트, 머트리얼등에 의해
+	드로잉(Drawing) 할 필요가 있는 메쉬의 영역을 식별하기 위해서 사용된다. 
+		한층 더 애플리케이션은, 속성 테이블을 사용해, 
+		프레임의 드로잉(Drawing)시에 소정의 속성 식별자 (AttribId)를 드로잉(Drawing) 하지 않는 것에 따라, 
+		메쉬의 일부를 숨길 수가 있다.*/
+	m_pCloneMesh->GetAttributeTable(m_pAttr, &m_pMeshInfo->dwNumMaterials);
+
+	//인스턴싱 버퍼 생성
+	if(!m_pInstancingVB)
+		_SINGLE(CDevice)->GetDevice()->CreateVertexBuffer(INSTANCING_NUM * sizeof(InstancingData),
+		0, 0, D3DPOOL_MANAGED, &m_pInstancingVB,
+		NULL);
+
+
 	return S_OK;
 }
 
@@ -208,8 +286,8 @@ void CStaticMesh::Render(CShader* pShader, const UINT& uPass)
 
 	
 	#endif
-	pShader->EndPass();
-	
+	//pShader->EndPass();
+
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
@@ -241,10 +319,89 @@ void CStaticMesh::Destroy()
 		Safe_Release( m_pMeshInfo->pMesh );
 	}
 
+	Safe_Release(m_pCloneMesh);
+	Safe_Release(m_pDeclGeometry);
+	Safe_Release(m_pVB);
+	Safe_Release(m_pInstancingVB);
+	Safe_Release(m_pIB);
+	Safe_Delete(m_pAttr);
+
 	Safe_Delete( m_pMeshInfo );
 }
 
  const eMESH_TYPE CStaticMesh::GetType() const 
 {
 	return m_ColType;
+}
+
+
+ 
+void CStaticMesh::PushInstancingData( const D3DXMATRIX& matWorld )
+{
+	/*if(m_iAddInstanceData >= INSTANCING_NUM)
+		return;*/
+
+	PInstancingData	pData	= NULL;
+
+	m_pInstancingVB->Lock(m_iAddInstanceData * sizeof(InstancingData),
+		sizeof(InstancingData), (void**)&pData, 0);
+
+	memcpy(&pData->vRow1, &matWorld, sizeof(D3DXMATRIX));
+
+	pData->vRow1;
+	pData->vRow2;
+	pData->vRow3;
+	pData->vRow4;
+
+	m_pInstancingVB->Unlock();
+
+	++m_iAddInstanceData;
+}
+
+void CStaticMesh::ResetInstancingCount()
+{
+	m_iAddInstanceData = 0;
+}
+
+void CStaticMesh::RenderInstance(CShader* pShader, const UINT& uPass)
+{
+	LPDIRECT3DDEVICE9 pDevice = _SINGLE(CDevice)->GetDevice();
+	pDevice->SetVertexDeclaration(m_pDeclGeometry);
+
+	pDevice->SetStreamSourceFreq(0, 
+		D3DSTREAMSOURCE_INDEXEDDATA | m_iAddInstanceData);
+	pDevice->SetStreamSource(0, m_pVB, 0,
+		m_pCloneMesh->GetNumBytesPerVertex());
+
+	pDevice->SetStreamSourceFreq(1,
+		D3DSTREAMSOURCE_INSTANCEDATA | 1ul);
+	pDevice->SetStreamSource(1, m_pInstancingVB,
+		0, sizeof(InstancingData));
+
+	pDevice->SetIndices(m_pIB);
+
+	int iSize = sizeof(m_arrayTexture) / sizeof(m_arrayTexture[0]);
+	
+	for( DWORD i = 0; i < iSize; i++ )
+	{
+		// Set the material and texture for this subset
+		//_SINGLE(CDevice)->GetDevice()->SetMaterial( &m_pMeshInfo->pMaterials[i] );
+		pShader->SetValue("g_mtrlMesh", &m_pMeshInfo->pMaterials[i], sizeof(D3DMATERIAL9) );
+		// _SINGLE(CDevice)->GetDevice()->SetTexture( 0, m_pMeshInfo->pTextures[i] );
+//		m_vecTexture[i]->SetTexture();
+		//m_arrayTexture[i]->SetTexture();
+		pShader->SetTexture("g_BaseTex", m_arrayTexture[i]->GetTextureInfo());
+		
+		// Draw the mesh subset
+		pShader->BeginPass(uPass);
+		pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
+			0, 0, 
+			m_pAttr[i].VertexCount,
+			m_pAttr[i].FaceStart * 3,
+			m_pAttr[i].FaceCount);
+		pShader->EndPass();
+	}
+
+	pDevice->SetStreamSourceFreq(0, 1);
+	pDevice->SetStreamSourceFreq(1, 1);
 }

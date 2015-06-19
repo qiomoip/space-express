@@ -29,6 +29,9 @@ public:
 	float GetSize();
 	//셀의 높이값 리턴
 	float GetHeight(float fPosX, float fPosZ); 
+	//레이가 터레인과 충돌되었는지를 검사. 여기 레이는 월드의 레이
+	bool GetCollisionPos(RAY& tRay);
+
 
 public:
 	HRESULT LoadResource(const LPTSTR szMeshName);

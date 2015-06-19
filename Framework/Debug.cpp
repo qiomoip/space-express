@@ -221,7 +221,7 @@ void CDebug::DrawInfo()
 	DrawStaticLog();
 	DrawLog();
 	DrawLine();
-	DrawText3D();
+	//DrawText3D();
 }
 
 

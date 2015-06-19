@@ -14,12 +14,13 @@
 #include "ShaderManager.h"
 #include "Frustum.h"
 #include "SceneManager.h"
-#include <time.h>
 #include "TimeManager.h"
 #include "ZombieAttackState.h"
 #include "ZombieIdleState.h"
 #include "ZombieTrackingState.h"
 #include "ZombieFleeState.h"
+#include "SceneManager.h"
+#include "MainGameScene.h"
 
 
 CEngine::CEngine(void)
@@ -55,14 +56,17 @@ HRESULT CEngine::Initialize(HWND hWnd)
 	if(FAILED(CreateShader()))
 		return E_FAIL;
 
-	if(FAILED(CreateEntity()))
-		return E_FAIL;
+	//if(FAILED(CreateEntity()))
+	//	return E_FAIL;
 
-	if(FAILED(CreateCamera()))
-		return E_FAIL;
+	//if(FAILED(CreateCamera()))
+	//	return E_FAIL;
 
-	if(FAILED(CreateLight()))
-		return E_FAIL;
+	//if(FAILED(CreateLight()))
+	//	return E_FAIL;
+
+	//씬 생성
+	_SINGLE(CSceneManager)->CreateScene(STYPE_MAIN1);
 
 	//const CCamera* pMainCam = _SINGLE(CCameraManager)->GetCurCam();
 
@@ -88,17 +92,17 @@ HRESULT CEngine::CreateEntity()
 	srand((unsigned)time(NULL));
 	//CEntity* pSylvas[2];
 	//테스트용 NPC생성
-	for ( int i = 1; i <= 10; ++i)
+	for ( int i = 1; i <= 100; ++i)
 	{
-		float x = (float)(rand()%100);
-		float y = (float)(rand()%100);
+		float x = (float)(rand()%10);
+		float y = (float)(rand()%10);
 		string str = "Npc"; 
 		str += i;
 		pSylva = _SINGLE(CObjectManager)->CreateEntity(
-			MT_STATIC, RTYPE_ENTITY, str, MN_ZOMBIE, _T("tiger.x"));
+			MT_STATIC, RTYPE_ENTITY, str, MN_ZOMBIE, _T("sylva.x"));
 		/*pSylva->SetPos(D3DXVECTOR3(-3.f + ((float)i * 5.f), 0.0f, sin((float)i) * 5.f) );*/
 		pSylva->SetPos(D3DXVECTOR3(x, 0, y) );
-		pSylva->SetRotation(eAxis_TYPE::AT_X, D3DX_PI/2.0f);
+		pSylva->SetRotation(eAxis_TYPE::AT_X, D3DX_PI * 0.5f);
 		pSylva->SetShader(SHADER_DEFAULT);
 		pSylva->SetTechKey("DefaultTech");
 		pSylva->SetPass(PASS_DEFAULT);
@@ -214,9 +218,9 @@ HRESULT CEngine::CreateShader()
 
 void CEngine::Update()
 {
-	_SINGLE(CCameraManager)->Update();
 	_SINGLE(CObjectManager)->Update();
-	
+	_SINGLE(CCameraManager)->Update();
+	_SINGLE(CSceneManager)->Update();
 	#ifdef _DEBUG
 	_SINGLE(CDebug)->Update();
 #endif
@@ -224,47 +228,48 @@ void CEngine::Update()
 
 VOID CEngine::Render()
 {
-	if( NULL == m_pDevice->GetDevice() )
-		return;
-
-	// Clear the backbuffer to a blue color
-	m_pDevice->GetDevice()->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | 
-		D3DCLEAR_STENCIL, D3DCOLOR_XRGB( 200, 200, 200 ), 1.0f, 0 );
-
-	// Begin the scene
-	if( SUCCEEDED( m_pDevice->GetDevice()->BeginScene() ) )
-	{
-		// Rendering of scene objects can happen here
-
-		//Camera Transform
-		_SINGLE(CCameraManager)->SetTransform(); 
-
-		//Set Light
-		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, true);
-		for(unsigned int i = 0; i < m_vecLight.size(); ++i)
-		{
-			m_pDevice->GetDevice()->SetLight(i, m_vecLight[i]->GetLightInfo());
-			m_pDevice->GetDevice()->LightEnable(i, true);
-		}
-
-#ifdef _DEBUG
-
-		//Debug Render
-		_SINGLE(CDebug)->Render();
-		_SINGLE(CDebug)->InitFaceCount();
-		//_SINGLE(CFrustum)->Render();
-
-#endif
-
-		//ObjectRender
-		_SINGLE(CObjectManager)->Render();
-
-		// End the scene
-		m_pDevice->GetDevice()->EndScene();
-	}
-
-	// Present the backbuffer contents to the display
-	m_pDevice->GetDevice()->Present( NULL, NULL, NULL, NULL );
+	_SINGLE(CSceneManager)->Render();
+//	if( NULL == m_pDevice->GetDevice() )
+//		return;
+//
+//	// Clear the backbuffer to a blue color
+//	m_pDevice->GetDevice()->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | 
+//		D3DCLEAR_STENCIL, D3DCOLOR_XRGB( 200, 200, 200 ), 1.0f, 0 );
+//
+//	// Begin the scene
+//	if( SUCCEEDED( m_pDevice->GetDevice()->BeginScene() ) )
+//	{
+//		// Rendering of scene objects can happen here
+//
+//		//Camera Transform
+//		_SINGLE(CCameraManager)->SetTransform(); 
+//
+//		//Set Light
+//		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, true);
+//		for(unsigned int i = 0; i < m_vecLight.size(); ++i)
+//		{
+//			m_pDevice->GetDevice()->SetLight(i, m_vecLight[i]->GetLightInfo());
+//			m_pDevice->GetDevice()->LightEnable(i, true);
+//		}
+//
+//#ifdef _DEBUG
+//
+//		//Debug Render
+//		_SINGLE(CDebug)->Render();
+//		_SINGLE(CDebug)->InitFaceCount();
+//		//_SINGLE(CFrustum)->Render();
+//
+//#endif
+//
+//		//ObjectRender
+//		_SINGLE(CObjectManager)->Render();
+//
+//		// End the scene
+//		m_pDevice->GetDevice()->EndScene();
+//	}
+//
+//	// Present the backbuffer contents to the display
+//	m_pDevice->GetDevice()->Present( NULL, NULL, NULL, NULL );
 }
 
 VOID CEngine::Destroy()
@@ -314,7 +319,7 @@ void CEngine::Input()
 	_SINGLE(CKeyManager)->SetKeyState();
 	_SINGLE(CCameraManager)->Input();
 	_SINGLE(CObjectManager)->Input();
-	
+	_SINGLE(CSceneManager)->Input();
 #ifdef _DEBUG
 	_SINGLE(CDebug)->Input();
 #endif

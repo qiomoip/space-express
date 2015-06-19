@@ -28,13 +28,13 @@ public:
 	void SetCamera(const CAMERA&	_tCamera);
 
 public:
-	const D3DXMATRIX*			GetMatView()const;
-	const D3DXMATRIX*			GetMatProj()const;
-	const D3DXMATRIX			GetMatViewProj()const;
+	const D3DXMATRIX*			GetMatView(const eVIEW_TYPE& eView = VIEW_PERSPECTIVE)const;
+	const D3DXMATRIX*			GetMatProj(const eVIEW_TYPE& eView = VIEW_PERSPECTIVE)const;
+	const D3DXMATRIX			GetMatViewProj(const eVIEW_TYPE& eView = VIEW_PERSPECTIVE)const;
 	const CAMERA				GetCameraInfo() const;
 
 public:
-	void SetTransform();
+	void SetTransform(const eVIEW_TYPE& eView = VIEW_PERSPECTIVE);
 
 public:
 	CCamera(void);

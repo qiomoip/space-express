@@ -1,5 +1,6 @@
 #include "KeyManager.h"
 #include "Debug.h"
+#include "Mouse.h"
 
 CKeyManager::CKeyManager(void)
 {
@@ -33,6 +34,8 @@ void CKeyManager::Initialize()
 	SetKeyData(KEYNAME_TURN_CLOCKWISE, 'C');
 	//SetKeyData(KEYNAME_TURN_CLOCKWISE, 'C');
 	SetKeyData(KEYNAME_WIREFRAME_TRIGGER , VK_TAB);
+	SetKeyData(KEY_NAME_L_BUTTON, VK_LBUTTON);
+	SetKeyData(KEY_NAME_R_BUTTON, VK_RBUTTON);
 }
 void CKeyManager::SetKeyState()
 {
@@ -49,6 +52,9 @@ void CKeyManager::SetKeyState()
 	_SINGLE(CDebug)->AddStaticLog(LOG_KEY_INFO_4, _T("카메라 좌우 이동 : DEL, PAGE_DOWN")  );
 	_SINGLE(CDebug)->AddStaticLog(LOG_KEY_INFO_5, _T("캐릭터 4방향 이동: 화살표")  );
 #endif
+
+	_SINGLE(CMouse)->CaculateMousePos();
+	_SINGLE(CMouse)->CaculateRay();
 }
 
 bool CKeyManager::SetKeyData(const KEY eKeyName, const int& iKey)

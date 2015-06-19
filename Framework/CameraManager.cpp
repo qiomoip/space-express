@@ -12,6 +12,7 @@
 CCameraManager::CCameraManager(void)
 	: m_bChange(false)
 	, m_pCurCam(NULL)
+	, m_mapCamera()
 {
 }
 
@@ -33,21 +34,21 @@ CCamera* CCameraManager::GetCamera(const string& _CameraName)
 		return 0;
 }
 
-void	CCameraManager::SetTransform(const string& _CameraName)
+void	CCameraManager::SetTransform(const string& _CameraName, const eVIEW_TYPE& eView)
 {
 	CCamera* pCam = GetCamera(_CameraName);
 	if(pCam)
 	{
-		pCam->SetTransform();
+		pCam->SetTransform(eView);
 	}
 	else //존재하지 않는 카메라 접근
 		assert(false);
 }
 
-void	CCameraManager::SetTransform()
+void	CCameraManager::SetTransform(const eVIEW_TYPE& eView)
 {
 	if(m_pCurCam)
-		m_pCurCam->SetTransform();
+		m_pCurCam->SetTransform(eView);
 }
 
 void CCameraManager::Update()

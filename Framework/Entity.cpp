@@ -24,6 +24,9 @@ CEntity::CEntity(void)
 	, m_bTransformUpdate(false)
 	, m_fMoveSpeed(0.0f)
 	, m_SphereMesh(NULL)
+	, m_eMeshNum(MN_NULL)
+	, m_eView(VIEW_PERSPECTIVE)
+	, m_bDrawSphere(true)
 {
 	m_vecPass.reserve(10);
 	memset(&m_vPos, 0, sizeof(D3DXVECTOR3));
@@ -36,7 +39,6 @@ CEntity::CEntity(void)
 	D3DXMatrixIdentity(&m_matRot);
 	D3DXMatrixIdentity(&m_matScale);
 	D3DXMatrixIdentity(&m_matTrans);
-
 	D3DXMatrixIdentity(&m_matScale);
 
 	memset(&m_vMove, 0, sizeof(D3DXVECTOR3));
@@ -216,9 +218,17 @@ void CEntity::InitSphereMesh()
 		GetSize(), (UINT)16, (UINT)16, &m_SphereMesh, NULL);
 }
 
-void CEntity::DrawSphere(/*D3DXVECTOR3 _vPos, float _size*/)
+void CEntity::DrawSphere(CShader* pShader)
 {
+	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+
+	pShader->BeginPass(1);
+	
 	m_SphereMesh->DrawSubset(0);
+	
+	pShader->EndPass();
+
+	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 }
 
 bool CEntity::ComputeNormalVector(
@@ -323,7 +333,12 @@ void CEntity::Update()
 {
 	if(m_pMesh )
 	{
-		if (_SINGLE(CFrustum)->isInFrustum( m_vPos, GetSize() ) )
+		if(m_pMesh->GetColliderType() == MT_UI)
+		{
+			SetVisiable(true);
+			_SINGLE(CObjectManager)->Push_RenderList(this);
+		}
+		else if (_SINGLE(CFrustum)->isInFrustum( m_vPos, GetSize() ) )
 		{
 			SetVisiable(true);
 			_SINGLE(CObjectManager)->Push_RenderList(this);
@@ -346,27 +361,40 @@ void CEntity::Update()
 
 		m_bTransformUpdate = false;
 	}
+
 }
 
 void CEntity::Render()
 {
 	//_SINGLE(CDevice)->GetDevice()->SetTransform(D3DTS_WORLD, &m_matWorld);
+
 	m_matWorld = m_matScale * m_matRot * m_matTrans;
-	const D3DXMATRIX* pMatProj = _SINGLE(CCameraManager)->GetCurCam()->GetMatProj();
-	const D3DXMATRIX* pMatView = _SINGLE(CCameraManager)->GetCurCam()->GetMatView();
+	const D3DXMATRIX* pMatProj = _SINGLE(CCameraManager)->GetCurCam()->GetMatProj(m_eView);
+	const D3DXMATRIX* pMatView = _SINGLE(CCameraManager)->GetCurCam()->GetMatView(m_eView);
 
 	D3DXMATRIX matWVP = m_matWorld * (*pMatView);
 
 	CShader* pShader = _SINGLE(CShaderManager)->FindShader(m_eShader);
+
+	//if(m_eMeshNum == MN_ZOMBIE)
+	//{
+	//	m_vecPass.clear();
+	//	m_vecPass.push_back(3);
+	//}
+
+	D3DXMATRIX matIden;
+	D3DXMatrixIdentity(&matIden);
+
+	pShader->SetMatrix("g_matView", pMatView);
+	pShader->SetMatrix("g_matProj", pMatProj);
+
+	pShader->SetMatrix("g_matWorld", &m_matWorld);
+	
+	pShader->SetMatrix("g_matIden", &matIden);
+
 	pShader->SetMatrix("g_matWV", &matWVP);
 	matWVP *= (*pMatProj);
 	pShader->SetMatrix("g_matWVP", &matWVP);
-
-	//각각의 패스에 대해 렌더
-	for(unsigned int i = 0; i < m_vecPass.size(); ++i)
-	{
-		m_pMesh->Render(pShader, m_vecPass[i]);
-	}
 
 	D3DMATERIAL9 tMaterial;
 	tMaterial.Diffuse.a = 1.f;
@@ -378,7 +406,18 @@ void CEntity::Render()
 	tMaterial.Specular = tMaterial.Diffuse;
 	tMaterial.Power = 1.f;
 
+	//각각의 패스에 대해 렌더
+	for(unsigned int i = 0; i < m_vecPass.size(); ++i)
+	{
+		m_pMesh->Render(pShader, m_vecPass[i]);
+	}
+
 	pShader->SetValue("g_mtrlMesh", &tMaterial, sizeof(D3DMATERIAL9));
+
+	if(m_bDrawSphere)
+	{
+		DrawSphere(pShader);
+	}
 /*
 	_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 	
@@ -493,4 +532,14 @@ const float&		CEntity::GetRotationAngle(const eAxis_TYPE& eAngle) const
 const LPD3DXMESH CEntity::GetCollider() const
 {
 	return m_SphereMesh;
+}
+
+void CEntity::SetViewType(const eVIEW_TYPE& eView)
+{
+	m_eView = eView;
+}
+
+void CEntity::SetDrawSphere(const bool& bDraw)
+{
+	m_bDrawSphere = bDraw;
 }

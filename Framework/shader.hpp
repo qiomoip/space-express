@@ -4,6 +4,7 @@ matrix g_matView;
 matrix g_matProj;
 matrix g_matWV;
 matrix g_matWVP;
+matrix g_matIden;
 
 texture g_BaseTex;
 
@@ -51,11 +52,23 @@ struct VS_OUTPUT_NOTEX
 };
 
 
-
 struct VS_INPUT_COLOR
 {
 	float3 vPos : POSITION;
 	float4 vColor : COLOR0;
+};
+
+struct VS_INSTANCING_INPUT
+{
+	float3	vPos	: POSITION;
+	float3	vNormal	: NORMAL;
+	float3	vTangent: TANGENT;
+	float2	vTex	: TEXCOORD;
+	float4	vRow1	: TEXCOORD1;
+	float4	vRow2	: TEXCOORD2;
+	float4	vRow3	: TEXCOORD3;
+	float4	vRow4	: TEXCOORD4;
+
 };
 
 struct VS_OUTPUT_COLOR
@@ -63,6 +76,8 @@ struct VS_OUTPUT_COLOR
 	float4 vPos : POSITION;
 	float4 vColor : COLOR0;
 };
+
+
 
 
 struct PS_OUTPUT
@@ -119,6 +134,27 @@ PS_OUTPUT ColorPS(VS_OUTPUT_COLOR input)
 
 	return output;
 }
+
+VS_OUTPUT InstancingVS(VS_INSTANCING_INPUT input)
+{
+	VS_OUTPUT	output = (VS_OUTPUT)0;
+
+	matrix	matWorld	= {input.vRow1,
+							input.vRow2,
+							input.vRow3,
+							input.vRow4};
+	matrix	matWV = mul(matWorld, g_matView);
+	matrix	matWVP = mul(matWV, g_matProj);
+
+	//matrix matVP = mul(g_matView, g_matProj);
+	//matrix matWVP = mul(g_matWorld, matVP);
+
+	output.vPos	= mul(float4(input.vPos, 1.f), matWVP);
+	output.vTex	= input.vTex;
+
+	return output;
+};
+
 //
 //기본 테크닉
 technique DefaultTech
@@ -130,6 +166,10 @@ technique DefaultTech
 	{
 		vertexshader = compile vs_3_0 DefaultVS();
 		pixelshader = compile ps_3_0 DefaultPS();
+
+		ALPHABLENDENABLE       = TRUE;
+        SRCBLEND               = SRCALPHA;
+        DESTBLEND              = INVSRCALPHA;
 
 	}
 
@@ -150,5 +190,15 @@ technique DefaultTech
 	{
 		vertexshader = compile vs_3_0 ColorVS();
 		pixelshader = compile ps_3_0 ColorPS();
+	}
+
+	//인스턴싱 패스
+	//vs : 인스턴싱 vs
+	//ps : default ps
+	//인스턴싱은 float4 * 4로 매트릭스를 가져온다
+	pass InstancingPass
+	{
+		vertexshader = compile vs_3_0 InstancingVS();
+		pixelshader = compile ps_3_0 DefaultPS();
 	}
 }

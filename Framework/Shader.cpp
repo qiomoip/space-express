@@ -38,6 +38,7 @@ HRESULT CShader::Initialize(const TCHAR* pFileName)
 	CreateHandle("g_BaseTex");
 
 	CreateHandle("g_mtrlMesh");
+	CreateHandle("g_matIden");
 
 	return S_OK;
 }

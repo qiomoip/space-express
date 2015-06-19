@@ -7,9 +7,12 @@
 #include "Shader.h"
 #include "Debug.h"
 #include "QuadTree.h"
+#include "KeyManager.h"
+#include "Mouse.h"
 
 CTerrainMesh::CTerrainMesh(void)
-	: m_pVB(NULL)
+	: CMesh()
+	, m_pVB(NULL)
 	, m_pIB(NULL)
 	, m_pTexture(NULL)
 	, m_strFileName("")
@@ -90,6 +93,60 @@ float CTerrainMesh::GetHeight(float fPosX, float fPosZ)
 		return vPos[0].y + (vPos[3].y - vPos[2].y) * fRatioX + (vPos[3].y - vPos[1].y) * fRatioZ;
 	}
 	
+}
+
+bool CTerrainMesh::GetCollisionPos(RAY& tRay)
+{
+	D3DXVECTOR3 vPos;
+	memset(&vPos, 0, sizeof(D3DXVECTOR3));
+
+	//충돌을 검사합니다
+	//레이랑 터레인 정보랑 박는지 아닌지 검사.....
+	VERTEXTERRAIN* pV = NULL;
+	INDEX* pI = NULL;
+
+	m_pVB->Lock(0, 0, (void**)&pV, 0);
+
+	m_pIB->Lock(0, 0, (void**)&pI, 0);
+
+	WORD wIndex = 0;
+
+	float u = 0.f;
+		float v = 0.f;
+		float fDist = 0.f;
+
+	while(wIndex < m_iTriNum)
+	{
+		D3DXVECTOR3 v0 = pV[pI[wIndex]._0].vPos;
+		D3DXVECTOR3 v1 = pV[pI[wIndex]._1].vPos;
+		D3DXVECTOR3 v2 = pV[pI[wIndex]._2].vPos;
+		if(D3DXIntersectTri(&v0,
+				&v1,
+				&v2,
+				&tRay.vOrigin,
+				&tRay.vDir,
+				&u,
+				&v,
+				&fDist))
+			{
+				tRay.vIntersectPos = v0 + (v1 * u - v0 * u) + (v2 * v - v0 * v);
+
+				m_pVB->Unlock();
+
+				m_pIB->Unlock();
+
+				return true;
+			}
+
+		++wIndex;
+	}
+	
+
+	m_pVB->Unlock();
+
+	m_pIB->Unlock();
+	//충돌될 경우 true 리턴하고 해당 값을 tRay의 인터섹트포지션에 넣어줌...
+	return false;
 }
 
 HRESULT CTerrainMesh::LoadResource(const LPTSTR _meshName)

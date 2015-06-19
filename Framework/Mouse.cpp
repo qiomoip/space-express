@@ -1,5 +1,6 @@
 #include "Mouse.h"
 #include "CameraManager.h"
+#include "Camera.h"
 #include "Device.h"
 
 CMouse* CMouse::m_pInstance = 0;
@@ -33,6 +34,9 @@ void CMouse::CaculateRay()
 	D3DXMATRIX matProj;
 	_SINGLE(CDevice)->GetDevice()->GetTransform(D3DTS_PROJECTION, &matProj);
 
+	////이렇게 하면 안 됨 (뭔지 모르겠지만 레이가 계속 뷰포트의 중앙에 갖다박음...)
+	//_SINGLE(CCameraManager)->GetCurCam()->GetMatProj();
+
 	fX = (((2.f * m_pt.x) / vp.Width) - 1.f) / matProj(0, 0);
 	fY = (((-2.f * m_pt.y) / vp.Height) + 1.f) / matProj(1, 1);
 
@@ -40,7 +44,6 @@ void CMouse::CaculateRay()
 	m_tRay.vDir = D3DXVECTOR3(fX, fY, 1.f);
 
 	D3DXVec3Normalize(&m_tRay.vDir, &m_tRay.vDir);
-
 }
 
 RAY CMouse::TransformRay(const D3DXMATRIX* pMat)
@@ -63,6 +66,8 @@ RAY CMouse::TransformRay(const D3DXMATRIX* pMat)
 bool CMouse::IntersectRayToSphere(RAY* pRay, const D3DXVECTOR3& vPos, const float fRadius)
 {
 	D3DXVECTOR3 vDir = pRay->vOrigin - vPos;
+
+	//D3DXVec3Normalize(&vDir, &vDir);
 
 	float b = 2.f * D3DXVec3Dot(&pRay->vDir, &vDir);
 	float c = D3DXVec3Dot(&vDir, &vDir) - (fRadius * fRadius);
@@ -101,6 +106,7 @@ bool CMouse::IntersectRayToSphere(RAY* pRay, const D3DXVECTOR3& vPos, const floa
 
 	return false;
 }
+
 
 
 const RAY& CMouse::GetRay() const

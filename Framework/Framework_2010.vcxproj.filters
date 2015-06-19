@@ -125,12 +125,14 @@
     <Filter Include="Engine\Director\Manager\TimeManager">
       <UniqueIdentifier>{26ab653d-d85c-4af1-b9d0-cfe921a9fe55}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Director\DeviceRes\Mesh\UIMesh">
+      <UniqueIdentifier>{b1d20f25-72ab-411e-8c68-6ad386361bc5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXUT\Optional\directx.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entity.cpp">
@@ -229,10 +231,29 @@
     <ClCompile Include="ZombieTrackingState.cpp">
       <Filter>FSM\State\ZombieState</Filter>
     </ClCompile>
-    <ClCompile Include="TimeManager.cpp">
-      <Filter>Engine\Director\Manager\TimeManager</Filter>
-    </ClCompile>
+    <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="QuadTree.cpp" />
+    <ClCompile Include="EditorScene.cpp">
+      <Filter>Engine\Director\Manager\SceneManager\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="InitScene.cpp">
+      <Filter>Engine\Director\Manager\SceneManager\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="MainGameScene.cpp">
+      <Filter>Engine\Director\Manager\SceneManager\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="UIMesh.cpp">
+      <Filter>Engine\Director\DeviceRes\Mesh\UIMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseButton.cpp">
+      <Filter>Engine\Director\Manager\ObjeceManager\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="SaveButton.cpp">
+      <Filter>Engine\Director\Manager\ObjeceManager\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneButton.cpp">
+      <Filter>Engine\Director\Manager\ObjeceManager\Entity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -334,9 +355,6 @@
     <ClInclude Include="FiniteStateMachine.h">
       <Filter>FSM</Filter>
     </ClInclude>
-    <ClInclude Include="State.h">
-      <Filter>FSM\State</Filter>
-    </ClInclude>
     <ClInclude Include="ZombieAttackState.h">
       <Filter>FSM\State\ZombieState</Filter>
     </ClInclude>
@@ -349,10 +367,29 @@
     <ClInclude Include="ZombieTrackingState.h">
       <Filter>FSM\State\ZombieState</Filter>
     </ClInclude>
-    <ClInclude Include="TimeManager.h">
-      <Filter>Engine\Director\Manager\TimeManager</Filter>
-    </ClInclude>
+    <ClInclude Include="TimeManager.h" />
     <ClInclude Include="QuadTree.h" />
+    <ClInclude Include="EditorScene.h">
+      <Filter>Engine\Director\Manager\SceneManager\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="MainGameScene.h">
+      <Filter>Engine\Director\Manager\SceneManager\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="InitScene.h">
+      <Filter>Engine\Director\Manager\SceneManager\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="UIMesh.h">
+      <Filter>Engine\Director\DeviceRes\Mesh\UIMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseButton.h">
+      <Filter>Engine\Director\Manager\ObjeceManager\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveButton.h">
+      <Filter>Engine\Director\Manager\ObjeceManager\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneButton.h">
+      <Filter>Engine\Director\Manager\ObjeceManager\Entity</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
