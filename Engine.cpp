@@ -56,30 +56,14 @@ HRESULT CEngine::Initialize(HWND hWnd)
 	if(FAILED(CreateShader()))
 		return E_FAIL;
 
-	//if(FAILED(CreateEntity()))
-	//	return E_FAIL;
-
-	//if(FAILED(CreateCamera()))
-	//	return E_FAIL;
-
-	//if(FAILED(CreateLight()))
-	//	return E_FAIL;
-
 	//씬 생성
 	_SINGLE(CSceneManager)->CreateScene(STYPE_MAIN1);
-
-	//const CCamera* pMainCam = _SINGLE(CCameraManager)->GetCurCam();
-
-	//((CThirdCam*)pMainCam)->SetLookObject(_SINGLE(CObjectManager)->FindObject("Tiger"));
-
 
 	return S_OK;
 }
 
 HRESULT CEngine::CreateEntity()
 {
-	//_SINGLE(CResourceManager)->Load(MT_STATIC, "Tiger", _T("tiger.x"));
-
 	CEntity* pSylva = _SINGLE(CObjectManager)->CreateEntity(
 		MT_STATIC, RTYPE_ENTITY, "Tiger", MN_TIGER, _T("tiger.x"));
 	pSylva->SetPos(D3DXVECTOR3(-5.f, 0.f, 0.f));
@@ -90,9 +74,8 @@ HRESULT CEngine::CreateEntity()
 	
 	
 	srand((unsigned)time(NULL));
-	//CEntity* pSylvas[2];
 	//테스트용 NPC생성
-	for ( int i = 1; i <= 100; ++i)
+	for ( int i = 1; i <= 10; ++i)
 	{
 		float x = (float)(rand()%10);
 		float y = (float)(rand()%10);
@@ -108,57 +91,6 @@ HRESULT CEngine::CreateEntity()
 		pSylva->SetPass(PASS_DEFAULT);
 	}
 	
-	//*
-	CEntity* pTerrain = _SINGLE(CObjectManager)->CreateEntity(
-		MT_TERRAIN, RTYPE_TERRAIN, "MainTerrain", MN_TERRAIN, _T("MainTerrain"));
-	pTerrain->SetShader(SHADER_DEFAULT);
-	pTerrain->SetTechKey("DefaultTech");
-	pTerrain->SetPass(PASS_DEFAULT);
-	//*/
-	
-	//*
-	CEntity* pEnvi = _SINGLE(CObjectManager)->CreateEntity(
-		MT_STATIC, RTYPE_ENVIRONMENT, "Envi", MN_ENVIRONMENT, _T("Environment.X"));
-	pEnvi->SetPos(D3DXVECTOR3(0.f, 10.f, 0.f));
-	pEnvi->SetScale(5.f, 5.f, 5.f);
-	pEnvi->SetShader(SHADER_DEFAULT);
-	pEnvi->SetTechKey("DefaultTech");
-	pEnvi->SetPass(PASS_DEFAULT);//PASS_NOTEXTURE
-	//*/
-	
-	//*
-#ifdef _DEBUG
-	CEntity* pGrid = _SINGLE(CObjectManager)->CreateEntity(
-		MT_GRID, RTYPE_GRID, "DebugGrid", MN_GRID, _T("Grid"));
-	pGrid->SetShader(SHADER_DEFAULT);
-	pGrid->SetTechKey("DefaultTech");
-	pGrid->SetPass(PASS_NOTEXTURE);
-#endif
-	//*/
-
-	//박스로 빌딩 역할 (임시)
-/*
-	CEntity* pBox;
-
-	srand(0);
-
-	for(int i = 0; i < 1; ++i)
-	{
-		float iScale = 1.f;
-		float iPosX = -5.f;
-		float iPosZ = -5.f;
-
-		string strName = "Box"; 
-		strName += i;
-
-		pBox = _SINGLE(CObjectManager)->CreateEntity(
-			MT_BOX, RTYPE_ENTITY, strName, MN_BOX);
-		pBox->SetPos(D3DXVECTOR3(iPosX, 0.f, iPosZ));
-		pBox->SetScale(iScale, iScale, iScale);
-		pBox->SetShader(SHADER_DEFAULT);
-		pBox->SetTechKey("DefaultTech");
-		pBox->SetPass(PASS_NOTEXTURE);
-	}*/
 	return S_OK;
 }
 
@@ -229,47 +161,6 @@ void CEngine::Update()
 VOID CEngine::Render()
 {
 	_SINGLE(CSceneManager)->Render();
-//	if( NULL == m_pDevice->GetDevice() )
-//		return;
-//
-//	// Clear the backbuffer to a blue color
-//	m_pDevice->GetDevice()->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | 
-//		D3DCLEAR_STENCIL, D3DCOLOR_XRGB( 200, 200, 200 ), 1.0f, 0 );
-//
-//	// Begin the scene
-//	if( SUCCEEDED( m_pDevice->GetDevice()->BeginScene() ) )
-//	{
-//		// Rendering of scene objects can happen here
-//
-//		//Camera Transform
-//		_SINGLE(CCameraManager)->SetTransform(); 
-//
-//		//Set Light
-//		_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, true);
-//		for(unsigned int i = 0; i < m_vecLight.size(); ++i)
-//		{
-//			m_pDevice->GetDevice()->SetLight(i, m_vecLight[i]->GetLightInfo());
-//			m_pDevice->GetDevice()->LightEnable(i, true);
-//		}
-//
-//#ifdef _DEBUG
-//
-//		//Debug Render
-//		_SINGLE(CDebug)->Render();
-//		_SINGLE(CDebug)->InitFaceCount();
-//		//_SINGLE(CFrustum)->Render();
-//
-//#endif
-//
-//		//ObjectRender
-//		_SINGLE(CObjectManager)->Render();
-//
-//		// End the scene
-//		m_pDevice->GetDevice()->EndScene();
-//	}
-//
-//	// Present the backbuffer contents to the display
-//	m_pDevice->GetDevice()->Present( NULL, NULL, NULL, NULL );
 }
 
 VOID CEngine::Destroy()
@@ -306,15 +197,12 @@ VOID CEngine::Run()
 {
 	Input();
 	Update();
-	//업데이트후에 최신의 상태를 갖고 충돌체크를 해야할거 같아서 
-	//충돌체크의 위치를 업데이트후로 바꿈.
 	Collision();
 	Render();
 }
 
 void CEngine::Input()
 {
-	
 	_SINGLE(CTimeManager)->CheckFps();
 	_SINGLE(CKeyManager)->SetKeyState();
 	_SINGLE(CCameraManager)->Input();

@@ -71,6 +71,7 @@ HRESULT CMainGameScene::CreateEntity()
 	pSylva->SetRotation(AT_Y, D3DX_PI);
 	
 	
+	/*
 	srand((unsigned)time(NULL));
 	//CEntity* pSylvas[2];
 	//테스트용 NPC생성
@@ -82,15 +83,16 @@ HRESULT CMainGameScene::CreateEntity()
 		str += i;
 		pSylva = _SINGLE(CObjectManager)->CreateEntity(
 			MT_STATIC, RTYPE_ENTITY, str, MN_ZOMBIE, _T("tiger.x"));
-		/*pSylva->SetPos(D3DXVECTOR3(-3.f + ((float)i * 5.f), 0.0f, sin((float)i) * 5.f) );*/
+		//pSylva->SetPos(D3DXVECTOR3(-3.f + ((float)i * 5.f), 0.0f, sin((float)i) * 5.f) );
 		pSylva->SetPos(D3DXVECTOR3(x, 0, y) );
 		pSylva->SetRotation(eAxis_TYPE::AT_X, D3DX_PI * 0.5f);
 		pSylva->SetShader(SHADER_DEFAULT);
 		pSylva->SetTechKey("DefaultTech");
 		pSylva->SetPass(PASS_DEFAULT);
 	}
+	*/
 	
-	//*
+	/*
 	CEntity* pTerrain = _SINGLE(CObjectManager)->CreateEntity(
 		MT_TERRAIN, RTYPE_TERRAIN, "MainTerrain", MN_TERRAIN, _T("MainTerrain"));
 	pTerrain->SetShader(SHADER_DEFAULT);
@@ -98,7 +100,7 @@ HRESULT CMainGameScene::CreateEntity()
 	pTerrain->SetPass(PASS_DEFAULT);
 	//*/
 	
-	//*
+	/*
 	CEntity* pEnvi = _SINGLE(CObjectManager)->CreateEntity(
 		MT_STATIC, RTYPE_ENVIRONMENT, "Envi", MN_ENVIRONMENT, _T("Environment.X"));
 	pEnvi->SetPos(D3DXVECTOR3(0.f, 10.f, 0.f));
