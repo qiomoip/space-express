@@ -28,7 +28,7 @@ public:
 
 public:
 	CEntity*	FindObject(const string& strObjKey);
-
+	void		RemoveObject(CEntity* pEntity);
 public:
 	CEntity*			CreateEntity(const eMESH_TYPE& eMeshType, const eRENDER_TYPE& eRender, const string& strEntityKey, const eMESH_NUM& eMeshNum, const LPTSTR szMeshName = NULL);
 	CEntity*			CreateEntity(const string& strEntityKey);

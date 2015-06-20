@@ -345,5 +345,5 @@ void CTerrainMesh::Destroy()
 	Safe_Release(m_pIB);
 	Safe_Delete(m_QuadTree);
 	Safe_Delete_Array(m_pvHeightMap);
-
+//	Safe_Delete(m_pTexture);
 }

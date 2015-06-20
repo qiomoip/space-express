@@ -273,7 +273,7 @@ void CStaticMesh::Render(CShader* pShader, const UINT& uPass)
 	}
 #ifdef _DEBUG
 	_SINGLE(CDebug)->AddFaceCount( (UINT)m_pMeshInfo->pMesh->GetNumFaces() );
-	pShader->BeginPass(PASS_NOTEXTURE);
+//	pShader->BeginPass(PASS_NOTEXTURE);
 
 	//_SINGLE(CDebug)->DrawSphere(m_pMeshInfo->fSize * 0.5f);	
 	//경계구 그리기
@@ -284,9 +284,9 @@ void CStaticMesh::Render(CShader* pShader, const UINT& uPass)
 	r = _mesh->DrawSubset(0);	
 	Safe_Release( _mesh);*/
 
-	
+//	pShader->EndPass();
 	#endif
-	//pShader->EndPass();
+	
 
 	//_SINGLE(CDevice)->GetDevice()->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
@@ -394,6 +394,8 @@ void CStaticMesh::RenderInstance(CShader* pShader, const UINT& uPass)
 		
 		// Draw the mesh subset
 		pShader->BeginPass(uPass);
+
+		pShader->CommitChanges();
 		pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
 			0, 0, 
 			m_pAttr[i].VertexCount,

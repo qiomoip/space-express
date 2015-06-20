@@ -184,9 +184,10 @@ HRESULT CMainGameScene::CreateBox(LPCWSTR pFileName)
 	
 	int iBoxCount = *pData;
 
+	string* pName = new string;
+
 	for(int i = 0; i < iBoxCount; ++i)
 	{
-		string* pName = new string;
 		D3DXVECTOR3* pPos = new D3DXVECTOR3;
 
 		//*pName = string("PickingBox" + i);
@@ -212,11 +213,11 @@ HRESULT CMainGameScene::CreateBox(LPCWSTR pFileName)
 		pBox->SetTechKey("DefaultTech");
 		pBox->SetPass(PASS_NOTEXTURE);
 
-//		Safe_Delete(pName);
 		Safe_Delete(pPos);
 		Safe_Delete(pData);
 
 	}
+
 
 	CloseHandle(hFile);
 

@@ -9,7 +9,7 @@ class CStaticMesh
 private:
 	MESH_INFO*			m_pMeshInfo;
 	
-	LPD3DXBUFFER		m_pD3DXMtrlBuffer;
+	LPD3DXBUFFER		m_pD3DXMtrlBuffer; //¿©±â?
 
 	LPD3DXMESH			m_pCloneMesh;
 

@@ -40,10 +40,7 @@ void CSaveButton::Schedule()
 
 	DWORD dwBytes = 0;
 
-	int* pCount = new int;
-	*pCount = iBoxCount;
-
-	WriteFile(hFile, pCount, sizeof(int), &dwBytes, NULL);
+	WriteFile(hFile, &iBoxCount, sizeof(int), &dwBytes, NULL);
 
 	for(int i = 0; i < iBoxCount; ++i)
 	{
@@ -69,8 +66,6 @@ void CSaveButton::Schedule()
 				return;
 			}
 		}
-
-		
 
 	}
 

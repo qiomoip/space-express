@@ -6,11 +6,16 @@
 #include "Tiger.h"
 #include "Frustum.h"
 #include "Zombie.h"
+
 #include "Debug.h"
+
 //임시
 #include "Mesh.h"
 
 #include "Device.h"
+
+#include "SceneButton.h"
+#include "SaveButton.h"
 
 
 CObjectManager::CObjectManager(void)
@@ -77,6 +82,12 @@ CEntity* CObjectManager::CreateEntity(
 		iter = m_mapObject.find("Tiger");
 		 ((CZombie*)pEntity)->SetHero(iter->second );
 		break;
+	case MN_SCENEBUTTON:
+		pEntity = new CSceneButton;
+		break;
+	case MN_SAVEBUTTON:
+		pEntity = new CSaveButton;
+		break;
 	default:
 		pEntity = new CEntity;
 		break;
@@ -98,7 +109,7 @@ CEntity* CObjectManager::CreateEntity(
 	//메시크기로 경계구 생성
 	pEntity->InitSphereMesh();
 
-
+	pEntity->m_eMeshNum = eMeshNum;
 	
 	return pEntity;
 }
@@ -149,20 +160,37 @@ HRESULT CObjectManager::Render()
 	dpcall = 0;
 	for(int i = RTYPE_NONE + 1; i < RTYPE_MAX; ++i)
 	{
+		if(i == RTYPE_UI)
+			continue;
+
 		for(list<CEntity*>::iterator iter = m_listRenderList[i].begin(); iter != m_listRenderList[i].end();
 			++iter)
 		{
 			_SINGLE(CShaderManager)->BeginShader((*iter)->GetShader(), (*iter)->GetTechKey());
-			
-			dpcall++;
+
 			(*iter)->Render();
 
 			_SINGLE(CShaderManager)->EndShader((*iter)->GetShader());
 		}
 	}
+	_SINGLE(CResourceManager)->RenderInstancingData();
+
+	//ui는 따로~~
+	list<CEntity*>::iterator iter = m_listRenderList[RTYPE_UI].begin();
+
+	for(; iter != m_listRenderList[RTYPE_UI].end(); ++iter)
+	{
+		_SINGLE(CShaderManager)->BeginShader((*iter)->GetShader(), (*iter)->GetTechKey());
+
+			(*iter)->Render();
+
+			_SINGLE(CShaderManager)->EndShader((*iter)->GetShader());
+	}
+
 #ifdef _DEBUG
 	_SINGLE(CDebug)->AddStaticLog(LOG_DPCALL, _T("DP call : %d"), dpcall) ;
 #endif _DEBUG
+
 
 	//렌더리스트 초기화
 	Reset_RenderList();
@@ -195,6 +223,23 @@ void CObjectManager::Reset_RenderList()
 {
 	for (int i = RTYPE_NONE + 1; i < RTYPE_MAX; ++i)
 		m_listRenderList[i].clear();
+}
+
+void CObjectManager::Remove_Object(CEntity*	pEntity)
+{
+	m_mapObject.erase(pEntity->GetName());
+	for(list<CEntity*>::iterator iter = m_listRenderList[pEntity->GetRenderType()].begin();
+		iter != m_listRenderList[pEntity->GetRenderType()].end();
+		++iter)
+	{
+		if((*iter)->GetName() == pEntity->GetName())
+		{
+			iter = m_listRenderList[pEntity->GetRenderType()].erase(iter);
+			break;
+		}
+	}
+
+	Safe_Delete(pEntity);
 }
 
 CEntity*	CObjectManager::FindObject(const string& strObjKey)

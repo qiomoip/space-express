@@ -323,9 +323,13 @@ HRESULT CEditorScene::CreateBox(LPCWSTR pFileName)
 	
 	int iBoxCount = *pData;
 
+	Safe_Delete(pData);
+
+	string* pName = new string;
+
 	for(int i = 0; i < iBoxCount; ++i)
 	{
-		string* pName = new string;
+		
 		D3DXVECTOR3* pPos = new D3DXVECTOR3;
 
 		//*pName = string("PickingBox" + i);
@@ -351,7 +355,6 @@ HRESULT CEditorScene::CreateBox(LPCWSTR pFileName)
 		pBox->SetTechKey("DefaultTech");
 		pBox->SetPass(PASS_NOTEXTURE);
 
-//		Safe_Delete(pName);
 		Safe_Delete(pPos);
 
 		m_listBox.push_back(pBox);

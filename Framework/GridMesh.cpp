@@ -17,6 +17,7 @@ CGridMesh::CGridMesh(void)
 
 CGridMesh::~CGridMesh(void)
 {
+	Destroy();
 }
 
 HRESULT CGridMesh::LoadResource(const LPTSTR szMeshName)
@@ -106,7 +107,6 @@ void CGridMesh::Destroy()
 {
 	Safe_Release(m_pGridVB);
 	Safe_Release(m_pLineVB);
-
 }
 
 float CGridMesh::GetSize()

@@ -116,6 +116,11 @@ void CShader::BeginPass(const UINT& uPass)
 	m_pEffect->BeginPass(uPass);
 }
 
+void CShader::CommitChanges()
+{
+	m_pEffect->CommitChanges();
+}
+
 void CShader::EndPass()
 {
 	m_pEffect->EndPass();

@@ -4,7 +4,13 @@
 #include "Frustum.h"
 #include "ObjectManager.h"
 #include "Tiger.h"
+
+#include "StaticMesh.h"
+
 #include "TimeManager.h"
+
+
+
 
 CZombie::CZombie(void) : 
 	m_Hero(NULL), 
@@ -15,6 +21,7 @@ CZombie::CZombie(void) :
 	m_fRange(2.5f),
 	m_fAttackSpeed(2.f),
 	m_fElapsedTime(0.0)
+
 {
 	static int id = 0;
 	m_Id = id++;
@@ -52,7 +59,7 @@ void CZombie::Update()
 		if (_SINGLE(CFrustum)->isInFrustum( m_vPos, GetSize() ) )
 		{
 			SetVisiable(true);
-			_SINGLE(CObjectManager)->Push_RenderList(this);
+		//	_SINGLE(CObjectManager)->Push_RenderList(this);
 		}
 		else 
 			SetVisiable(false);
@@ -73,15 +80,23 @@ void CZombie::Update()
 		m_bTransformUpdate = false;
 	}
 
-	_SINGLE(CDebug)->AddText3D( m_Id , m_vPos,
-		m_pFSM->GetCurrentState()->ToString());
+	//_SINGLE(CDebug)->AddText3D( m_Id , m_vPos,
+	//	m_pFSM->GetCurrentState()->ToString());
+
+	if(m_bVisiable)
+	{
+		m_matWorld = m_matScale * m_matRot * m_matTrans;
+
+		((CStaticMesh*)m_pMesh)->PushInstancingData(m_matWorld);
+	}
+
 }
 
 void CZombie::Input()
 {
 	m_fMoveSpeed = 3.f * _SINGLE(CTimeManager)->GetDeltaTime();
 
-	m_pFSM->Update();
+	//m_pFSM->Update();
 	//D3DXVECTOR3 vLen = m_vPos - m_Hero->GetPos();
 	//float fSeeDist = 20.f;
 	////추적상태 전환 조건

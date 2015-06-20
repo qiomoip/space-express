@@ -280,11 +280,11 @@ VOID CEngine::Destroy()
 	_SINGLE(CFrustum)->KillInstance();
 	_SINGLE(CShaderManager)->KillInstance();
 	_SINGLE(CMouse)->KillInstance();
+	_SINGLE(CSceneManager)->KillInstance();
 	_SINGLE(CObjectManager)->KillInstance();
 	_SINGLE(CResourceManager)->KillInstance();
 	_SINGLE(CCameraManager)->KillInstance();
 	_SINGLE(CKeyManager)->KillInstance();
-	_SINGLE(CSceneManager)->KillInstance();
 #ifdef _DEBUG
 	_SINGLE(CDebug)->KillInstance();
 #endif

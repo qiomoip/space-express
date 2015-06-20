@@ -15,6 +15,7 @@ CUIMesh::CUIMesh(void)
 
 CUIMesh::~CUIMesh(void)
 {
+	Destroy();
 }
 
 HRESULT CUIMesh::LoadResource(const LPTSTR szMeshName)
@@ -62,6 +63,7 @@ void CUIMesh::Destroy()
 {
 	Safe_Release(m_pVB);
 	Safe_Release(m_pIB);
+//	Safe_Delete(m_pTexture);
 }
 
 HRESULT CUIMesh::CreateVertexBuffer()

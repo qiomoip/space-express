@@ -28,6 +28,7 @@ public:
 
 	void SetTech(const LPCSTR pName);
 	void BeginPass(const UINT& uPass);
+	void CommitChanges();
 	void EndPass();
 	//getter
 public:
