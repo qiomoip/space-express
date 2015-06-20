@@ -382,7 +382,7 @@ void CStaticMesh::RenderInstance(CShader* pShader, const UINT& uPass)
 
 	int iSize = sizeof(m_arrayTexture) / sizeof(m_arrayTexture[0]);
 	
-	for( DWORD i = 0; i < iSize; i++ )
+	for( DWORD i = 0; i < (DWORD)iSize; i++ )
 	{
 		// Set the material and texture for this subset
 		//_SINGLE(CDevice)->GetDevice()->SetMaterial( &m_pMeshInfo->pMaterials[i] );
