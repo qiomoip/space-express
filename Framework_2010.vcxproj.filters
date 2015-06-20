@@ -119,12 +119,23 @@
     <Filter Include="FSM\State">
       <UniqueIdentifier>{c755ebb0-2d68-480d-9612-0d2935bd2dc5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Director\Manager\TimeManager">
+      <UniqueIdentifier>{62424f94-8215-45c1-b690-b1fa296ad092}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\Manager\ObjeceManager\Entity\Button">
+      <UniqueIdentifier>{10b6fb70-788e-41d5-b240-c485ddefa2ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\DeviceRes\Mesh\UiMesh">
+      <UniqueIdentifier>{c2dc68e7-6892-4f83-baf7-8a6b50a4cf39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Director\QuadTree">
+      <UniqueIdentifier>{8701f6e5-c419-494a-93f4-bf185d56c750}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXUT\Optional\directx.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entity.cpp">
@@ -217,17 +228,39 @@
     <ClCompile Include="ZombieTrackingState.cpp">
       <Filter>FSM\State</Filter>
     </ClCompile>
-    <ClCompile Include="ZombieFleeState.cpp" />
-    <ClCompile Include="ZombieAttackState.cpp" />
-    <ClCompile Include="TimeManager.cpp" />
-    <ClCompile Include="QuadTree.cpp" />
-    <ClCompile Include="BaseButton.cpp" />
-    <ClCompile Include="EditorScene.cpp" />
-    <ClCompile Include="InitScene.cpp" />
-    <ClCompile Include="MainGameScene.cpp" />
-    <ClCompile Include="SaveButton.cpp" />
-    <ClCompile Include="SceneButton.cpp" />
-    <ClCompile Include="UIMesh.cpp" />
+    <ClCompile Include="ZombieAttackState.cpp">
+      <Filter>FSM\State</Filter>
+    </ClCompile>
+    <ClCompile Include="ZombieFleeState.cpp">
+      <Filter>FSM\State</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeManager.cpp">
+      <Filter>Engine\Director\Manager\TimeManager</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorScene.cpp">
+      <Filter>Engine\Director\Manager\SceneManager\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="InitScene.cpp">
+      <Filter>Engine\Director\Manager\SceneManager\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="MainGameScene.cpp">
+      <Filter>Engine\Director\Manager\SceneManager\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseButton.cpp">
+      <Filter>Engine\Director\Manager\ObjeceManager\Entity\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="SaveButton.cpp">
+      <Filter>Engine\Director\Manager\ObjeceManager\Entity\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneButton.cpp">
+      <Filter>Engine\Director\Manager\ObjeceManager\Entity\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="UIMesh.cpp">
+      <Filter>Engine\Director\DeviceRes\Mesh\UiMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="QuadTree.cpp">
+      <Filter>Engine\Director\QuadTree</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -338,17 +371,39 @@
     <ClInclude Include="ZombieTrackingState.h">
       <Filter>FSM\State</Filter>
     </ClInclude>
-    <ClInclude Include="ZombieFleeState.h" />
-    <ClInclude Include="ZombieAttackState.h" />
-    <ClInclude Include="TimeManager.h" />
-    <ClInclude Include="QuadTree.h" />
-    <ClInclude Include="BaseButton.h" />
-    <ClInclude Include="EditorScene.h" />
-    <ClInclude Include="InitScene.h" />
-    <ClInclude Include="MainGameScene.h" />
-    <ClInclude Include="SaveButton.h" />
-    <ClInclude Include="SceneButton.h" />
-    <ClInclude Include="UIMesh.h" />
+    <ClInclude Include="ZombieAttackState.h">
+      <Filter>FSM\State</Filter>
+    </ClInclude>
+    <ClInclude Include="ZombieFleeState.h">
+      <Filter>FSM\State</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeManager.h">
+      <Filter>Engine\Director\Manager\TimeManager</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorScene.h">
+      <Filter>Engine\Director\Manager\SceneManager\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="InitScene.h">
+      <Filter>Engine\Director\Manager\SceneManager\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="MainGameScene.h">
+      <Filter>Engine\Director\Manager\SceneManager\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseButton.h">
+      <Filter>Engine\Director\Manager\ObjeceManager\Entity\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveButton.h">
+      <Filter>Engine\Director\Manager\ObjeceManager\Entity\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneButton.h">
+      <Filter>Engine\Director\Manager\ObjeceManager\Entity\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="UIMesh.h">
+      <Filter>Engine\Director\DeviceRes\Mesh\UiMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="QuadTree.h">
+      <Filter>Engine\Director\QuadTree</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
