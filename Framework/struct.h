@@ -27,7 +27,6 @@ typedef struct _tagSphereVertex
 
 typedef struct _tagTerrainVertex
 {
-	enum _FVF { FVF=(D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX1) };
 	D3DXVECTOR3 vPos;
 	D3DXVECTOR3 vNormal;
 	D3DXVECTOR2 vTex;
@@ -42,6 +41,12 @@ Index Format
 typedef struct _tagIndex
 {
 	WORD _0, _1, _2;
+	_tagIndex(WORD i, WORD j, WORD k)
+	{
+		_0 = i;
+		_1 = j;
+		_2 = k;
+	}
 }INDEX;
 
 
@@ -69,8 +74,8 @@ typedef struct _tagKey
 
 typedef struct _tagCamera
 {
-	D3DXMATRIX matView;
-	D3DXMATRIX matProj;
+	D3DXMATRIX matView[VIEW_MAX];
+	D3DXMATRIX matProj[VIEW_MAX];
 	D3DXVECTOR3 vPos;
 	D3DXVECTOR3 vLook;
 	D3DXVECTOR3 vUp;
@@ -96,6 +101,13 @@ typedef struct _tagMeshInfo
 	float				fSize;
 }MESH_INFO;
 
+typedef struct _tagTextureVertex
+{
+	D3DXVECTOR3 vPos;
+	D3DXVECTOR2 vTex;
+}VTXTEXTURE;
+
+#define VTXTEXTUREFVF	D3DFVF_XYZ | D3DFVF_TEX1
 
 typedef struct _tagTextureInfo
 {
@@ -127,12 +139,39 @@ typedef struct _tagBoxSize
 	D3DXVECTOR3 vMax;
 }BOXSIZE;
 
-
-
-typedef struct _tagTime
+static D3DVERTEXELEMENT9	g_tTotalFmt[]	=
 {
-	double			m_CurrentTime;
-	double			m_PreviousTime;
-	double			m_DeltaTime;
-	double			m_ElapsedTime;
+	{0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
+	{0, 12, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL, 0},
+	{0, 24, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TANGENT, 0},
+	{0, 36, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0},
+	{1, 0, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 1},
+	{1, 16, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 2},
+	{1, 32, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 3},
+	{1, 48, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 4},
+	D3DDECL_END()
+};
+
+typedef struct _tagInstancingData 
+{
+	D3DXVECTOR4	vRow1;
+	D3DXVECTOR4	vRow2;
+	D3DXVECTOR4	vRow3;
+	D3DXVECTOR4	vRow4;
+}InstancingData, *PInstancingData;
+
+typedef struct _tagRay
+{
+	D3DXVECTOR3 vOrigin;
+	D3DXVECTOR3 vDir;
+	D3DXVECTOR3 vIntersectPos;
+}RAY;
+
+typedef struct _tagTimeInfo
+{
+	double m_CurrentTime;
+	double m_DeltaTime ;
+	double m_ElapsedTime ;
+	double m_PreviousTime;
+
 }TIME_INFO;
